@@ -1,0 +1,52 @@
+package ganymedes01.etfuturum;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import com.google.gson.*;
+import net.minecraft.enchantment.*;
+import net.minecraft.init.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.potion.*;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.functions.EnchantRandomly;
+import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+/** Released weighted data uses native items, potions, enchantments, inventory filling and Forge hooks. */
+public final class ModernLoot {
+    private static final Map<String,JsonObject> TABLES=new LinkedHashMap<>();
+    private ModernLoot() { }
+    static void initialize(){try(BufferedReader reader=new BufferedReader(new InputStreamReader(ModernLoot.class.getResourceAsStream("/data/loot/tables.txt"),StandardCharsets.UTF_8))){String name;while((name=reader.readLine())!=null){if(name.isEmpty())continue;try(Reader json=new InputStreamReader(ModernLoot.class.getResourceAsStream("/data/loot/"+name+".json"),StandardCharsets.UTF_8)){TABLES.put(name,new JsonParser().parse(json).getAsJsonObject());}LootTableList.register(new ResourceLocation(UAB.ID,name));}}catch(IOException error){throw new IllegalStateException("Cannot load released loot tables",error);}net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new ModernLoot());}
+    @SubscribeEvent public void load(LootTableLoadEvent event){String id=event.getName().getPath();if(!event.getName().getNamespace().equals(UAB.ID)||!TABLES.containsKey(id))return;event.setTable(new LootTable(new LootPool[0]){@Override public List<ItemStack> generateLootForPools(Random random,LootContext context){List<ItemStack> result=new ArrayList<>(super.generateLootForPools(random,context));roll(id,random,context,result,0);return result;}});}
+    public static List<ItemStack> roll(String id,Random random,WorldServer world){List<ItemStack> result=new ArrayList<>();roll(id.replace("minecraft:","").replace(UAB.ID+":",""),random,new LootContext.Builder(world).build(),result,0);return result;}
+    private static void roll(String id,Random random,LootContext context,List<ItemStack> result,int depth){if(depth>8)throw new IllegalStateException("Recursive released loot: "+id);JsonObject table=TABLES.get(id);if(table==null)throw new IllegalArgumentException("Unknown released loot table "+id);
+        for(JsonElement p:table.getAsJsonArray("pools")){JsonObject pool=p.getAsJsonObject();if(!conditions(pool,random))continue;JsonArray entries=pool.getAsJsonArray("entries");int total=0;for(JsonElement e:entries)total+=weight(e.getAsJsonObject());int rolls=integer(pool.get("rolls"),random,1)+(int)Math.floor(number(pool.get("bonus_rolls"),random,0)*context.getLuck());
+            for(int i=0;i<rolls&&total>0;i++){int pick=random.nextInt(total);JsonObject chosen=null;for(JsonElement e:entries){pick-=weight(e.getAsJsonObject());if(pick<0){chosen=e.getAsJsonObject();break;}}if(chosen==null||!conditions(chosen,random))continue;String type=chosen.get("type").getAsString();if(type.equals("minecraft:empty"))continue;if(type.equals("minecraft:loot_table")){String nested=chosen.has("value")?chosen.get("value").getAsString():chosen.get("name").getAsString();roll(nested.replace("minecraft:",""),random,context,result,depth+1);continue;}if(!type.equals("minecraft:item"))throw new IllegalArgumentException("Unsupported released loot entry "+type);ItemStack stack=item(chosen.get("name").getAsString());if(stack.isEmpty())continue;stack=functions(stack,chosen,random,context);stack=functions(stack,pool,random,context);stack=functions(stack,table,random,context);if(!stack.isEmpty())result.add(stack);}
+        }
+    }
+    private static int weight(JsonObject entry){return entry.has("weight")?Math.max(0,entry.get("weight").getAsInt()):1;}
+    private static boolean conditions(JsonObject object,Random random){if(object.has("conditions"))for(JsonElement e:object.getAsJsonArray("conditions")){JsonObject c=e.getAsJsonObject();if(!c.get("condition").getAsString().equals("minecraft:random_chance"))throw new IllegalArgumentException("Unsupported released condition "+c);if(random.nextFloat()>=c.get("chance").getAsFloat())return false;}return true;}
+    private static double number(JsonElement value,Random random,double fallback){if(value==null)return fallback;if(value.isJsonPrimitive())return value.getAsDouble();JsonObject range=value.getAsJsonObject();double min=range.get("min").getAsDouble(),max=range.get("max").getAsDouble();return min+random.nextDouble()*(max-min);}
+    private static int integer(JsonElement value,Random random,int fallback){if(value==null)return fallback;if(value.isJsonPrimitive())return value.getAsInt();JsonObject range=value.getAsJsonObject();int min=range.get("min").getAsInt(),max=range.get("max").getAsInt();return min+random.nextInt(Math.max(1,max-min+1));}
+    private static ItemStack functions(ItemStack stack,JsonObject owner,Random random,LootContext context){if(!owner.has("functions"))return stack;for(JsonElement value:owner.getAsJsonArray("functions")){if(stack.isEmpty())return stack;JsonObject f=value.getAsJsonObject();if(!conditions(f,random))continue;String function=f.get("function").getAsString();
+            if(function.equals("minecraft:set_count")){int count=integer(f.get("count"),random,1);if(f.has("add")&&f.get("add").getAsBoolean())count+=stack.getCount();stack.setCount(Math.max(0,Math.min(stack.getMaxStackSize(),count)));}
+            else if(function.equals("minecraft:set_damage"))stack.setItemDamage((int)((1-Math.max(0,Math.min(1,number(f.get("damage"),random,1))))*stack.getMaxDamage()));
+            else if(function.equals("minecraft:enchant_with_levels"))stack=EnchantmentHelper.addRandomEnchantment(random,stack,integer(f.get("levels"),random,20),false);
+            else if(function.equals("minecraft:enchant_randomly"))stack=new EnchantRandomly(new LootCondition[0],Collections.emptyList()).apply(stack,random,context);
+            else if(function.equals("minecraft:set_potion")){ResourceLocation potion=new ResourceLocation(f.get("id").getAsString());if(!PotionType.REGISTRY.containsKey(potion))return ItemStack.EMPTY;PotionUtils.addPotionToItemStack(stack,PotionType.REGISTRY.getObject(potion));}
+            else if(function.equals("minecraft:set_ominous_bottle_amplifier"))stack.setItemDamage(integer(f.get("amplifier"),random,0));
+            else if(function.equals("minecraft:set_enchantments")){for(Map.Entry<String,JsonElement> entry:f.getAsJsonObject("enchantments").entrySet()){ResourceLocation id=new ResourceLocation(entry.getKey());Enchantment enchantment=Enchantment.REGISTRY.getObject(id);if(enchantment==null)enchantment=Enchantment.REGISTRY.getObject(new ResourceLocation(UAB.ID,id.getPath()));if(enchantment==null||!ModEnchantments.available(enchantment))return ItemStack.EMPTY;int level=integer(entry.getValue(),random,1);if(stack.getItem()==Items.ENCHANTED_BOOK)ItemEnchantedBook.addEnchantment(stack,new EnchantmentData(enchantment,level));else stack.addEnchantment(enchantment,level);}}
+            else if(function.equals("minecraft:set_stew_effect")){JsonArray effects=f.getAsJsonArray("effects");JsonObject e=effects.get(random.nextInt(effects.size())).getAsJsonObject();Potion effect=Potion.REGISTRY.getObject(new ResourceLocation(e.get("type").getAsString()));if(effect==null)return ItemStack.EMPTY;stack=SuspiciousStew.effect(effect,integer(e.get("duration"),random,5)*(effect.isInstant()?1:20));}
+            else if(function.equals("minecraft:exploration_map")){net.minecraft.util.math.BlockPos target=OceanTreasure.nearest(context.getWorld(),context.getKillerPlayer()==null?context.getWorld().getSpawnPoint():context.getKillerPlayer().getPosition());if(target==null)return ItemStack.EMPTY;stack=ItemMap.setupNewMap(context.getWorld(),target.getX(),target.getZ(),(byte)(f.has("zoom")?f.get("zoom").getAsInt():1),true,true);ItemMap.renderBiomePreviewMap(context.getWorld(),stack);NBTTagCompound tag=stack.hasTagCompound()?stack.getTagCompound():new NBTTagCompound(),marker=new NBTTagCompound();NBTTagList markers=new NBTTagList();marker.setByte("type",(byte)4);marker.setString("id","uab_treasure");marker.setDouble("x",target.getX());marker.setDouble("z",target.getZ());marker.setDouble("rot",180);markers.appendTag(marker);tag.setTag("Decorations",markers);stack.setTagCompound(tag);}
+            else if(function.equals("minecraft:set_name")){JsonElement name=f.get("name");String text=name.isJsonPrimitive()?name.getAsString():name.getAsJsonObject().has("text")?name.getAsJsonObject().get("text").getAsString():"Buried Treasure Map";stack.setStackDisplayName(text);}
+            else throw new IllegalArgumentException("Unsupported released loot function "+function);
+        }return stack;
+    }
+    public static ItemStack item(String id){String name=id.replace("minecraft:","");if(Content.ITEMS.containsKey(name))return Content.available(name)?Content.stack(name):ItemStack.EMPTY;String[] fish={"cod","salmon","tropical_fish","pufferfish"};for(int i=0;i<fish.length;i++)if(name.equals(fish[i]))return new ItemStack(Items.FISH,1,i);if(name.equals("cooked_cod")||name.equals("cooked_salmon"))return new ItemStack(Items.COOKED_FISH,1,name.equals("cooked_salmon")?1:0);if(name.equals("lapis_lazuli"))return new ItemStack(Items.DYE,1,4);if(name.equals("cocoa_beans"))return new ItemStack(Items.DYE,1,3);if(name.equals("ink_sac"))return new ItemStack(Items.DYE);if(name.equals("bone_meal"))return new ItemStack(Items.DYE,1,15);if(name.equals("map"))return new ItemStack(Items.MAP);if(name.equals("dead_bush"))name="deadbush";if(name.equals("terracotta"))name="hardened_clay";if(name.equals("oak_boat"))name="boat";
+        ResourceLocation key=new ResourceLocation(id.startsWith("minecraft:")?"minecraft:"+name:id);if(Item.REGISTRY.containsKey(key))return new ItemStack(Item.REGISTRY.getObject(key));NBTTagCompound state=new NBTTagCompound();state.setString("Name","minecraft:"+name);net.minecraft.block.state.IBlockState block=ModernStates.read(state);return block==null||Item.getItemFromBlock(block.getBlock())==Items.AIR?ItemStack.EMPTY:new ItemStack(block.getBlock(),1,block.getBlock().getMetaFromState(block));}
+}

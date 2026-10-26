@@ -2,12 +2,13 @@
 
 UAB adapts Java Edition content through 1.21.11 to Forge 1.7.10. The native world height, loader, save format and server ownership remain in place. A modern content name does not imply complete modern engine behavior. Feature families use update-based controls in [config/uab.cfg](CONFIGURATION.md).
 
-| Origin | Main implemented families |
+| Origin | Main implemented families on 1.7.10 |
 | --- | --- |
 | 1.8 - Bountiful Update | Granite/andesite/diorite, prismarine/sea lanterns, monuments/guardians, wet sponge, slime, banners, armour stands, rabbits/mutton, coarse dirt, wood fences/gates/doors, red sandstone, enchanting/anvil/beacon improvements. |
 | 1.9 - Combat Update | Chorus/purpur/End bricks/rods, beetroot, outer End/islands/cities/gateways, shulkers, elytra, rowing boats, tipped/spectral arrows, lingering potions, Mending/Frost Walker, dragon respawn and selected sounds. |
 | 1.10 - Frostburn Update | Husks, strays, polar bears, magma, bone, Nether wart/red Nether bricks, fossils and mesa generation changes. |
-| 1.11 - Exploration Update | Observers, shulker boxes, iron nuggets, totems, llamas, vindicators, evokers, vexes and woodland mansions. |
+| 1.11 - Exploration Update | Observers, shulker boxes, totems, llamas, vindicators, evokers, vexes and woodland mansions. |
+| 1.11.1 | Iron nuggets. |
 | 1.12 - World of Color Update | Concrete, glazed terracotta, colored beds and the registered Illusioner adaptation. |
 | 1.13 - Update Aquatic | Fish, dolphins, turtles, drowned, phantoms, tridents, seagrass, kelp/dried kelp, sea pickles, coral/reefs, conduits/Heart of the Sea, shipwrecks/ocean ruins/buried treasure, buckets, scutes, ocean-temperature biomes, blue ice, stripped/bark logs, wood trapdoors/buttons/plates and bubble columns. |
 | 1.14 - Village & Pillage | Bamboo/jungles, berries/flowers, foxes, brown mooshrooms, cats, pandas, pillagers/ravagers/traders, patrols/raids/outposts, crossbows, suspicious stew, barrels, workstations and lanterns. |
@@ -25,6 +26,12 @@ UAB adapts Java Edition content through 1.21.11 to Forge 1.7.10. The native worl
 | 1.21.7 | Lava Chicken disc. |
 | 1.21.9 - The Copper Age | Copper chests, copper golems/statues and End sky flashes. |
 | 1.21.11 - Mounts of Mayhem | Spears, nautiluses/zombie nautiluses, nautilus armor, parched and camel husks. |
+
+## Target coverage
+
+The table and detailed behavior descriptions on this page describe the maintained 1.7.10 implementation. The 1.12.2 target currently ports selected copper/netherite and building materials, native slab/wall families and tuff decorations, deepslate ore drops and configured lower-layer/tuff generation, budding amethyst and geodes, barrel/smithing/smoker/blast-furnace workstations, stonecutting, native-banner looms, map copying/scaling/locking, composter automation, and modern wood doors/trapdoors/buttons/plates, bamboo growth and wood/mosaic parts, moss/azalea and native oak-based azalea trees, berry-bearing cave vines, multi-face glow lichen, pale moss and hanging moss, ten native surface biomes, berry bushes/kelp, all five living/dead coral families and contained-water fans, sea pickles, bubble columns, ocean climate biomes, conduits, seagrass, fish/buckets, dolphins/Grace, turtle breeding/eggs/scutes/helmets, axolotls/buckets and glow squid, drowned, phantoms and tridents, crimson/warped nylium and plants, huge fungi, both Nether vines, hyphae, four Nether biomes, piglins/brutes, hoglins/zoglins, striders, bartering, Soul Speed and charged crossbows. Cherry trees branch, mangroves form roots and ripening hanging propagules, and pale oak requires four saplings. Ocean generation includes saved shipwrecks, small/large warm and cold ruins with masonry overlays and drowned, plus once-only buried treasure with native loot and Heart of the Sea. Native saved structure bounds prevent overlapping admitted sites. Released block models supply the current building geometry, while kelp retains separate plant/water passes and tridents render in three dimensions in hand and in flight. Modern general waterlogging, exploration-map markers and the remaining world-generation families are still outside this implementation. Many remaining mobs, biomes, structures, workstations, client effects and optional integrations still require native implementations. Do not interpret a catalog entry, registered name or successful build as completed 1.12.2 support.
+
+Feature metadata distinguishes **native** target functionality, families requiring a **full backport**, and **adapted** requirements such as mixed families and custom rules. These classifications describe what the platform lacks; they are independent of implementation or runtime acceptance. Component dates prevent later additions from being hidden just because the base family already exists in vanilla. Custom recipes, mod integrations and alternate gameplay rules belong to General.
 
 ## Adaptation boundaries
 
@@ -64,4 +71,4 @@ All 18 patterns and eleven materials (including resin) are supported, subject to
 
 ## Release attribution
 
-Minor versions are distinct where content actually differs. Mojang's [1.21.7 release notes](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-7) identify Lava Chicken; its [1.21.9 release notes](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-9) identify End light flashes. The ceiling remains 1.21.11. Historical audit records describe their own validation checkpoints and are not a blanket acceptance claim for this release.
+Minor versions are distinct where content actually differs. Salmon-size variants date to [Java 1.21.2](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-2), while the salmon mob itself dates to 1.13. Smooth named blocks begin in 1.13; their smelting recipes and additional shapes arrive in [Village & Pillage](https://www.minecraft.net/en-us/article/village---pillage-out-java-). Mojang's [1.21.7 release notes](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-7) identify Lava Chicken; its [1.21.9 release notes](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-9) identify End light flashes. The ceiling remains 1.21.11. Historical audit records describe their own validation checkpoints and are not a blanket acceptance claim for this release.

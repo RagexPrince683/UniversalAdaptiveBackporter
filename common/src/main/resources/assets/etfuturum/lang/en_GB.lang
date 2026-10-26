@@ -1,0 +1,587 @@
+# Subtitles
+subtitle.item.armor.equip_generic=Leather armour equipped
+subtitle.item.armor.equip_iron=Iron armour equipped
+subtitle.item.armor.equip_gold=Golden armour equipped
+subtitle.item.armor.equip_chain=Chainmail armour equipped
+subtitle.item.armor.equip_diamond=Diamond armour equipped
+subtitle.item.armor.equip_netherite=Netherite armour equipped
+
+# Entities
+entity.etfuturum.wooden_armorstand.name=Armour Stand
+
+# Items
+item.etfuturum.armor_stand.name=Armour Stand
+item.etfuturum.rabbit_stew.name=Rabbit Soup
+item.etfuturum.netherite_spade.name=Netherite Spade
+item.etfuturum.suspicious_stew.name=Suspicious Soup
+
+# Blocks
+tile.etfuturum.gray_glazed_terracotta.name=Grey Glazed Terracotta
+tile.etfuturum.light_gray_glazed_terracotta.name=Light Grey Glazed Terracotta
+
+tile.etfuturum.gray_concrete_powder.name=Grey Concrete Powder
+tile.etfuturum.light_gray_concrete_powder.name=Light Grey Concrete Powder
+
+tile.etfuturum.gray_concrete.name=Grey Concrete
+tile.etfuturum.light_gray_concrete.name=Light Grey Concrete
+
+tile.etfuturum.gray_bed.name=Grey Bed
+tile.etfuturum.light_gray_bed.name=Light Grey Bed
+
+tile.etfuturum.gray_shulker_box.name=Grey Shulker Box
+tile.etfuturum.light_gray_shulker_box.name=Light Grey Shulker Box
+
+# Damage types
+
+death.attack.stonecutter=%1$s discovered why HSE guidelines were created
+
+# Banners
+item.banner.light_gray.name=Light Grey Banner
+item.banner.gray.name=Grey Banner
+
+item.banner.square_bottom_left.light_gray=Light Grey Base Dexter Canton
+item.banner.square_bottom_left.gray=Grey Base Dexter Canton
+
+item.banner.square_bottom_right.light_gray=Light Grey Base Sinister Canton
+item.banner.square_bottom_right.gray=Grey Base Sinister Canton
+
+item.banner.square_top_left.light_gray=Light Grey Chief Dexter Canton
+item.banner.square_top_left.gray=Grey Chief Dexter Canton
+
+item.banner.square_top_right.light_gray=Light Grey Chief Sinister Canton
+item.banner.square_top_right.gray=Grey Chief Sinister Canton
+
+item.banner.stripe_bottom.light_gray=Light Grey Base Fess
+item.banner.stripe_bottom.gray=Grey Base Fess
+
+item.banner.stripe_top.light_gray=Light Grey Chief Fess
+item.banner.stripe_top.gray=Grey Chief Fess
+
+item.banner.stripe_left.light_gray=Light Grey Pale Dexter
+item.banner.stripe_left.gray=Grey Pale Dexter
+
+item.banner.stripe_right.light_gray=Light Grey Pale Sinister
+item.banner.stripe_right.gray=Grey Pale Sinister
+
+item.banner.stripe_center.light_gray=Light Grey Pale
+item.banner.stripe_center.gray=Grey Pale
+
+item.banner.stripe_middle.light_gray=Light Grey Fess
+item.banner.stripe_middle.gray=Grey Fess
+
+item.banner.stripe_downright.light_gray=Light Grey Bend
+item.banner.stripe_downright.gray=Grey Bend
+
+item.banner.stripe_downleft.light_gray=Light Grey Bend Sinister
+item.banner.stripe_downleft.gray=Grey Bend Sinister
+
+item.banner.small_stripes.light_gray=Light Grey Paly
+item.banner.small_stripes.gray=Grey Paly
+
+item.banner.cross.light_gray=Light Grey Saltire
+item.banner.cross.gray=Grey Saltire
+
+item.banner.triangle_bottom.light_gray=Light Grey Chevron
+item.banner.triangle_bottom.gray=Grey Chevron
+
+item.banner.triangle_top.light_gray=Light Grey Inverted Chevron
+item.banner.triangle_top.gray=Grey Inverted Chevron
+
+item.banner.triangles_bottom.light_gray=Light Grey Base Indented
+item.banner.triangles_bottom.gray=Grey Base Indented
+
+item.banner.triangles_top.light_gray=Light Grey Chief Indented
+item.banner.triangles_top.gray=Grey Chief Indented
+
+item.banner.diagonal_left.light_gray=Light Grey Per Bend Sinister
+item.banner.diagonal_left.gray=Grey Per Bend Sinister
+
+item.banner.diagonal_right.light_gray=Light Grey Per Bend
+item.banner.diagonal_right.gray=Grey Per Bend
+
+item.banner.diagonal_up_left.light_gray=Light Grey Per Bend Inverted
+item.banner.diagonal_up_left.gray=Grey Per Bend Inverted
+
+item.banner.diagonal_up_right.light_gray=Light Grey Per Bend Sinister Inverted
+item.banner.diagonal_up_right.gray=Grey Per Bend Sinister Inverted
+
+item.banner.circle.light_gray=Light Grey Roundel
+item.banner.circle.gray=Grey Roundel
+
+item.banner.rhombus.light_gray=Light Grey Lozenge
+item.banner.rhombus.gray=Grey Lozenge
+
+item.banner.half_vertical.light_gray=Light Grey Per Pale
+item.banner.half_vertical.gray=Grey Per Pale
+
+item.banner.half_horizontal.light_gray=Light Grey Per Fess
+item.banner.half_horizontal.gray=Grey Per Fess
+
+item.banner.half_vertical_right.light_gray=Light Grey Per Pale Inverted
+item.banner.half_vertical_right.gray=Grey Per Pale Inverted
+
+item.banner.half_horizontal_bottom.light_gray=Light Grey Per Fess Inverted
+item.banner.half_horizontal_bottom.gray=Grey Per Fess Inverted
+
+item.banner.creeper.light_gray=Light Grey Creeper Charge
+item.banner.creeper.gray=Grey Creeper Charge
+
+item.banner.bricks.light_gray=Light Grey Field Masoned
+item.banner.bricks.gray=Grey Field Masoned
+
+item.banner.gradient.light_gray=Light Grey Gradient
+item.banner.gradient.gray=Grey Gradient
+
+item.banner.gradient_up.light_gray=Light Grey Base Gradient
+item.banner.gradient_up.gray=Grey Base Gradient
+
+item.banner.skull.light_gray=Light Grey Skull Charge
+item.banner.skull.gray=Grey Skull Charge
+
+item.banner.flower.light_gray=Light Grey Flower Charge
+item.banner.flower.gray=Grey Flower Charge
+
+item.banner.border.light_gray=Light Grey Bordure
+item.banner.border.gray=Grey Bordure
+
+item.banner.curly_border.light_gray=Light Grey Bordure Indented
+item.banner.curly_border.gray=Grey Bordure Indented
+
+item.banner.mojang.light_gray=Light Grey Thing
+item.banner.mojang.gray=Grey Thing
+
+item.banner.straight_cross.light_gray=Light Grey Cross
+item.banner.straight_cross.gray=Grey Cross
+
+
+###############################
+# BEGIN MOD SUPPORT LANG KEYS #
+###############################
+
+
+# Mod support blocks
+
+tile.etfuturum.gray_iron_shulker_box.name=Grey Iron Shulker Box
+tile.etfuturum.light_gray_iron_shulker_box.name=Light Grey Iron Shulker Box
+
+tile.etfuturum.gold_shulker_box.name=Golden Shulker Box
+tile.etfuturum.white_gold_shulker_box.name=White Golden Shulker Box
+tile.etfuturum.orange_gold_shulker_box.name=Orange Golden Shulker Box
+tile.etfuturum.magenta_gold_shulker_box.name=Magenta Golden Shulker Box
+tile.etfuturum.light_blue_gold_shulker_box.name=Light Blue Golden Shulker Box
+tile.etfuturum.yellow_gold_shulker_box.name=Yellow Golden Shulker Box
+tile.etfuturum.lime_gold_shulker_box.name=Lime Golden Shulker Box
+tile.etfuturum.pink_gold_shulker_box.name=Pink Golden Shulker Box
+tile.etfuturum.gray_gold_shulker_box.name=Grey Golden Shulker Box
+tile.etfuturum.light_gray_gold_shulker_box.name=Light Grey Golden Shulker Box
+tile.etfuturum.cyan_gold_shulker_box.name=Cyan Golden Shulker Box
+tile.etfuturum.purple_gold_shulker_box.name=Purple Golden Shulker Box
+tile.etfuturum.blue_gold_shulker_box.name=Blue Golden Shulker Box
+tile.etfuturum.brown_gold_shulker_box.name=Brown Golden Shulker Box
+tile.etfuturum.green_gold_shulker_box.name=Green Golden Shulker Box
+tile.etfuturum.red_gold_shulker_box.name=Red Golden Shulker Box
+tile.etfuturum.black_gold_shulker_box.name=Black Golden Shulker Box
+
+tile.etfuturum.gray_diamond_shulker_box.name=Grey Diamond Shulker Box
+tile.etfuturum.light_gray_diamond_shulker_box.name=Light Grey Diamond Shulker Box
+
+tile.etfuturum.gray_copper_shulker_box.name=Grey Copper Shulker Box
+tile.etfuturum.light_gray_copper_shulker_box.name=Light Grey Copper Shulker Box
+
+tile.etfuturum.gray_silver_shulker_box.name=Grey Silver Shulker Box
+tile.etfuturum.light_gray_silver_shulker_box.name=Light Grey Silver Shulker Box
+
+tile.etfuturum.gray_crystal_shulker_box.name=Grey Crystal Shulker Box
+tile.etfuturum.light_gray_crystal_shulker_box.name=Light Grey Crystal Shulker Box
+
+tile.etfuturum.gray_obsidian_shulker_box.name=Grey Obsidian Shulker Box
+tile.etfuturum.light_gray_obsidian_shulker_box.name=Light Grey Obsidian Shulker Box
+
+tile.etfuturum.raw_aluminum_block.name=Raw Aluminium Block
+
+tile.etfuturum.deepslate_aluminum_ore.name=Deepslate Aluminium Ore
+
+# Mod support items
+
+item.etfuturum.raw_aluminum.name=Raw Aluminium
+
+
+
+# PATRIOTS IN CONTROL  😎 🇺🇸 🦅 #
+uab.config.general.adjusted_attenuation=Modern sound distances
+uab.config.general.arrow_falling_fix=Arrow Falling Fix
+uab.config.general.attacked_at_yaw_fix=Attacked At Yaw Fix
+uab.config.general.auto_add_blast_furnace=Auto Add Blast Furnace
+uab.config.general.auto_add_composter=Auto Add Composter
+uab.config.general.auto_add_smoker=Auto Add Smoker
+uab.config.general.barrel_iron_chest=Barrel Iron Chest
+uab.config.general.barrel_iron_chest_upgrade_item=Barrel Iron Chest Upgrade Item
+uab.config.general.baubles_mending=Baubles Mending
+uab.config.general.cave_ambience=Cave Ambience
+uab.config.general.climbing_plants=Climbing Plants
+uab.config.general.collided_throwable_fix=Projectile block interactions
+uab.config.general.color_grass_block_item_sides=Color Grass Block Item Sides
+uab.config.general.dyable_shulkers=Dyable Shulkers
+uab.config.general.end_portal_fix=End Portal Fix
+uab.config.general.fence_wall_connect_fix=Fence connections
+uab.config.general.flower_pot_fixes=Flower Pot Fixes
+uab.config.general.legacy_new_boat_buoyancy=Legacy New Boat Buoyancy
+uab.config.general.limit_vanilla_squid=Limit Vanilla Squid
+uab.config.general.mob_dungeon_content=Mob Dungeon Content
+uab.config.general.modded_deepslate_ores=Modded Deepslate Ores
+uab.config.general.modded_raw_ores=Modded Raw Ores
+uab.config.general.modern_block_light_tint=Modern Block Light Tint
+uab.config.general.modern_hostile_spawning=Modern Hostile Spawning
+uab.config.general.modern_lightmap_gamma=Modern Lightmap Gamma
+uab.config.general.modern_night_vision=Modern Night Vision
+uab.config.general.modern_passive_spawning=Modern Passive Spawning
+uab.config.general.modern_zombie_behavior=Modern Zombie Behavior
+uab.config.general.old_base_daylight_sensor=Old Base Daylight Sensor
+uab.config.general.old_gravel=Old Gravel
+uab.config.general.old_husk_spawning=Old Husk Spawning
+uab.config.general.old_roses=Old Roses
+uab.config.general.old_stray_spawning=Old Stray Spawning
+uab.config.general.player_skin_overlay=Player Skin Overlay
+uab.config.general.potion_cauldron=Potion Cauldron
+uab.config.general.prevent_custom_npcs_in_boats=Prevent Custom Npcs In Boats
+uab.config.general.prismarine_recipes=Prismarine Recipes
+uab.config.general.recipe_for_totem=Recipe For Totem
+uab.config.general.register_raw_item_as_ore=Register Raw Item As Ore
+uab.config.general.shulker_boxes_iron_chest=Shulker Boxes Iron Chest
+uab.config.general.shulker_boxes_iron_chest_upgrade_item=Shulker Boxes Iron Chest Upgrade Item
+uab.config.general.shulker_upgrade_returns_shell=Shulker Upgrade Returns Shell
+uab.config.general.shulkers_spawn_anywhere=Shulkers Spawn Anywhere
+uab.config.general.squids_blind_players=Squids Blind Players
+uab.config.general.step_height_fix=Step Height Fix
+uab.config.general.stonecutter_saw_hurts=Stonecutter Saw Hurts
+uab.config.general.stop_boat_rotation_lock=Stop Boat Rotation Lock
+uab.config.general.surface_biomes=Surface Biomes
+uab.config.general.use_stone_hardness_for_deepslate=Use Stone Hardness For Deepslate
+uab.config.update_1_10.bone_block=Bone Block
+uab.config.update_1_10.extra_mesa_gold=Extra Mesa Gold
+uab.config.update_1_10.fossils=Fossils
+uab.config.update_1_10.husks=Husks
+uab.config.update_1_10.magma_block=Magma Block
+uab.config.update_1_10.mesa_mineshaft=Mesa Mineshaft
+uab.config.update_1_10.nether_endermen=Nether Endermen
+uab.config.update_1_10.netherwart_block=Netherwart Block
+uab.config.update_1_10.polar_bears=Polar Bears
+uab.config.update_1_10.red_nether_bricks=Nether brick variants
+uab.config.update_1_10.strays=Strays
+uab.config.update_1_11.do_weather_cycle=Do Weather Cycle
+uab.config.update_1_11.mobs.evoker=Evoker
+uab.config.update_1_11.mobs.llama=Llama
+uab.config.update_1_11.mobs.vex=Vex
+uab.config.update_1_11.mobs.vindicator=Vindicator
+uab.config.update_1_11.observers=Observers
+uab.config.update_1_11.rain_sounds=Rain sounds
+uab.config.update_1_11.shulker_boxes=Shulker Boxes
+uab.config.update_1_11.totem_undying=Totem Undying
+uab.config.update_1_11.woodland_mansions=Woodland mansions
+uab.config.update_1_11_1=Minecraft 1.11.1 - Exploration Update - Iron Nuggets
+uab.config.update_1_11_1.iron_nugget=Iron nuggets
+uab.config.update_1_12.avoid_dropping_items_when_closing=Return crafting contents
+uab.config.update_1_12.bouncy_beds=Bouncy Beds
+uab.config.update_1_12.concrete=Concrete
+uab.config.update_1_12.dyed_beds=Dyed Beds
+uab.config.update_1_12.glazed_terracotta=Glazed Terracotta
+uab.config.update_1_12.inventory_bed_models=Inventory Bed Models
+uab.config.update_1_12.mobs.illusioner=Illusioner
+uab.config.update_1_12.note_block_notes=Additional note-block instruments
+uab.config.update_1_13.adjusted_liquid_physics=Adjusted Liquid Physics
+uab.config.update_1_13.aquatic_spawning=Aquatic Spawning
+uab.config.update_1_13.bark_logs=Bark Logs
+uab.config.update_1_13.blue_ice=Blue Ice
+uab.config.update_1_13.bubble_columns=Bubble Columns
+uab.config.update_1_13.buried_treasure=Buried treasure
+uab.config.update_1_13.cold_ocean=Cold Ocean
+uab.config.update_1_13.conduits=Conduits
+uab.config.update_1_13.coral=Coral
+uab.config.update_1_13.coral_reefs=Coral reefs
+uab.config.update_1_13.deep_cold_ocean=Deep Cold Ocean
+uab.config.update_1_13.deep_frozen_ocean=Deep Frozen Ocean
+uab.config.update_1_13.deep_lukewarm_ocean=Deep Lukewarm Ocean
+uab.config.update_1_13.drowned_spawning=Drowned Spawning
+uab.config.update_1_13.fish_buckets=Fish buckets
+uab.config.update_1_13.kelp=Kelp and dried kelp
+uab.config.update_1_13.lang_replacements=Lang Replacements
+uab.config.update_1_13.liquid_item_float=Liquid Item Float
+uab.config.update_1_13.lukewarm_ocean=Lukewarm Ocean
+uab.config.update_1_13.mobs.cod=Cod
+uab.config.update_1_13.mobs.dolphin=Dolphin
+uab.config.update_1_13.mobs.pufferfish=Pufferfish
+uab.config.update_1_13.mobs.salmon=Salmon
+uab.config.update_1_13.mobs.tropical_fish=Tropical fish
+uab.config.update_1_13.mobs.turtle=Turtle
+uab.config.update_1_13.nautilus_shells=Nautilus shells
+uab.config.update_1_13.ocean_plants=Ocean plant generation
+uab.config.update_1_13.ocean_ruins=Ocean ruins
+uab.config.update_1_13.phantom_membranes=Phantom membranes
+uab.config.update_1_13.phantom_spawning=Phantom Spawning
+uab.config.update_1_13.ridden_horses_in_water=Ridden Horses In Water
+uab.config.update_1_13.scutes=Turtle scutes and helmets
+uab.config.update_1_13.sea_pickles=Sea pickles
+uab.config.update_1_13.seagrass=Seagrass
+uab.config.update_1_13.shipwrecks=Shipwrecks
+uab.config.update_1_13.squid_ink=Squid ink clouds
+uab.config.update_1_13.stripped_logs=Stripped Logs
+uab.config.update_1_13.tridents=Tridents
+uab.config.update_1_13.warm_ocean=Warm Ocean
+uab.config.update_1_14.bamboo_jungle=Bamboo Jungle
+uab.config.update_1_14.bamboo_plants=Bamboo plants
+uab.config.update_1_14.bamboo_worldgen=Bamboo Worldgen
+uab.config.update_1_14.barrel=Barrel
+uab.config.update_1_14.blast_furnace=Blast Furnace
+uab.config.update_1_14.block_hopper_interaction=Block Hopper Interaction
+uab.config.update_1_14.book_page_turn=Book page-turning sounds
+uab.config.update_1_14.bounded_block_breaking_particles=Bounded Block Breaking Particles
+uab.config.update_1_14.brown_mooshroom=Brown Mooshroom
+uab.config.update_1_14.cartography_table=Cartography Table
+uab.config.update_1_14.composter=Composter
+uab.config.update_1_14.cornflower=Cornflower
+uab.config.update_1_14.crossbows=Crossbows
+uab.config.update_1_14.extra_vanilla_slabs=Extra Vanilla Slabs
+uab.config.update_1_14.extra_vanilla_stairs=Extra Vanilla Stairs
+uab.config.update_1_14.extra_vanilla_walls=Extra Vanilla Walls
+uab.config.update_1_14.fletching_table=Fletching Table
+uab.config.update_1_14.foxes=Foxes
+uab.config.update_1_14.lantern=Lantern
+uab.config.update_1_14.lily_of_the_valley=Lily Of The Valley
+uab.config.update_1_14.loom=Loom
+uab.config.update_1_14.mobs.cat=Cat
+uab.config.update_1_14.mobs.panda=Panda
+uab.config.update_1_14.mobs.pillager=Pillager
+uab.config.update_1_14.mobs.ravager=Ravager
+uab.config.update_1_14.mobs.trader_llama=Trader llama
+uab.config.update_1_14.mobs.wandering_trader=Wandering trader
+uab.config.update_1_14.modern_loading_screen=Modern Loading Screen
+uab.config.update_1_14.new_block_sounds=New Block Sounds
+uab.config.update_1_14.new_dyes=New Dyes
+uab.config.update_1_14.new_textures=New Textures
+uab.config.update_1_14.outposts=Outposts
+uab.config.update_1_14.patrols=Patrols
+uab.config.update_1_14.raids=Raids
+uab.config.update_1_14.smithing_table=Smithing Table
+uab.config.update_1_14.smoker=Smoker
+uab.config.update_1_14.smooth_quartz=Smooth Quartz
+uab.config.update_1_14.smooth_sand_stone=Smooth Sand Stone
+uab.config.update_1_14.smooth_stone=Smooth Stone
+uab.config.update_1_14.stonecutter=Stonecutter
+uab.config.update_1_14.suspicious_stew=Suspicious Stew
+uab.config.update_1_14.sweet_berry_bushes=Sweet Berry Bushes
+uab.config.update_1_14.wither_rose=Wither Rose
+uab.config.update_1_15.bee_nests_on_grown_trees=Bee nests on grown trees
+uab.config.update_1_15.bees=Bees
+uab.config.update_1_15.bonemealing=Bonemealing
+uab.config.update_1_15.honey=Honey
+uab.config.update_1_15.new_elytra_takeoff_logic=New Elytra Takeoff Logic
+uab.config.update_1_16.basalt=Basalt
+uab.config.update_1_16.bastions=Bastions
+uab.config.update_1_16.blackstone=Blackstone
+uab.config.update_1_16.chain=Chain
+uab.config.update_1_16.crimson_blocks=Crimson Blocks
+uab.config.update_1_16.crying_obsidian=Crying Obsidian
+uab.config.update_1_16.fireproof_items=Fireproof Items
+uab.config.update_1_16.gamemode_switcher=Gamemode Switcher
+uab.config.update_1_16.generate_basalt_deltas=Basalt Deltas
+uab.config.update_1_16.generate_crimson_forest=Crimson Forest
+uab.config.update_1_16.generate_soul_sand_valley=Soul Sand Valley
+uab.config.update_1_16.generate_warped_forest=Warped Forest
+uab.config.update_1_16.hoe_mining=Hoe Mining
+uab.config.update_1_16.mobs.hoglin=Hoglin
+uab.config.update_1_16.mobs.piglin=Piglin
+uab.config.update_1_16.mobs.strider=Strider
+uab.config.update_1_16.mobs.zoglin=Zoglin
+uab.config.update_1_16.nether_ambience=Nether biome ambience
+uab.config.update_1_16.nether_biomes=Nether biomes
+uab.config.update_1_16.nether_content=Nether content
+uab.config.update_1_16.nether_gold=Nether Gold
+uab.config.update_1_16.nether_mobs=Nether Mobs
+uab.config.update_1_16.netherite=Netherite
+uab.config.update_1_16.pigstep=Pigstep
+uab.config.update_1_16.quartz_bricks=Quartz Bricks
+uab.config.update_1_16.soul_fire=Soul Fire
+uab.config.update_1_16.soul_lighting=Soul Lighting
+uab.config.update_1_16.soul_soil=Soul Soil
+uab.config.update_1_16.soul_speed=Soul Speed
+uab.config.update_1_16.target=Target
+uab.config.update_1_16.warped_blocks=Warped Blocks
+uab.config.update_1_16_2.mobs.piglin_brute=Piglin brute
+uab.config.update_1_17.amethyst=Amethyst
+uab.config.update_1_17.amethyst_geodes=Amethyst Geodes
+uab.config.update_1_17.axolotl_buckets=Axolotl buckets
+uab.config.update_1_17.calcite=Calcite
+uab.config.update_1_17.candles=Candles
+uab.config.update_1_17.copper=Copper
+uab.config.update_1_17.deepslate=Deepslate
+uab.config.update_1_17.deepslate_ores=Deepslate Ores
+uab.config.update_1_17.dripstone=Dripstone
+uab.config.update_1_17.glow_berries=Glow Berries
+uab.config.update_1_17.glow_ink=Glow ink sacs
+uab.config.update_1_17.glow_lichen=Glow Lichen
+uab.config.update_1_17.goats=Goats
+uab.config.update_1_17.lava_cauldrons=Lava Cauldrons
+uab.config.update_1_17.light_block=Light Block
+uab.config.update_1_17.lightning_rod=Lightning Rod
+uab.config.update_1_17.mobs.axolotl=Axolotl
+uab.config.update_1_17.mobs.glow_squid=Glow squid
+uab.config.update_1_17.moss_and_azalea=Moss and azalea
+uab.config.update_1_17.raw_ores=Raw Ores
+uab.config.update_1_17.sleeping_player_percentage=Sleeping player percentage
+uab.config.update_1_17.tuff=Tuff
+uab.config.update_1_18.frozen_peaks=Frozen Peaks
+uab.config.update_1_18.grove=Grove
+uab.config.update_1_18.jagged_peaks=Jagged Peaks
+uab.config.update_1_18.meadow=Meadow
+uab.config.update_1_18.otherside=Otherside
+uab.config.update_1_18.snowy_slopes=Snowy Slopes
+uab.config.update_1_18.stony_peaks=Stony Peaks
+uab.config.update_1_19.ancient_cities=Ancient Cities
+uab.config.update_1_19.frogs=Frogs
+uab.config.update_1_19.mangrove_blocks=Mangrove Blocks
+uab.config.update_1_19.mangrove_swamp=Mangrove Swamp
+uab.config.update_1_19.mobs.allay=Allay
+uab.config.update_1_19.mobs.warden=Warden
+uab.config.update_1_19.mud=Mud
+uab.config.update_1_19.music_disc_5=Music disc 5
+uab.config.update_1_19.sculk=Sculk
+uab.config.update_1_19.swift_sneak=Swift Sneak
+uab.config.update_1_20.ancient_plants=Ancient plants
+uab.config.update_1_20.archaeology=Archaeology
+uab.config.update_1_20.armor_trims=Armor trims
+uab.config.update_1_20.bamboo_blocks=Bamboo wood
+uab.config.update_1_20.brushes=Brushes
+uab.config.update_1_20.cherry_blocks=Cherry Blocks
+uab.config.update_1_20.cherry_grove=Cherry Grove
+uab.config.update_1_20.decorated_pots=Decorated pots
+uab.config.update_1_20.mobs.camel=Camel
+uab.config.update_1_20.mobs.sniffer=Sniffer
+uab.config.update_1_20.sniffer_eggs=Sniffer eggs
+uab.config.update_1_20.template_smithing=Netherite upgrade templates
+uab.config.update_1_20.trail_ruins=Trail ruins
+uab.config.update_1_20_5.mobs.armadillo=Armadillo
+uab.config.update_1_20_5.wolf_armor=Wolf armor
+uab.config.update_1_21.creator=Creator
+uab.config.update_1_21.creator_music_box=Creator music box disc
+uab.config.update_1_21.decorative_copper=Decorative copper
+uab.config.update_1_21.heavy_cores=Heavy cores
+uab.config.update_1_21.mobs.bogged=Bogged
+uab.config.update_1_21.mobs.breeze=Breeze
+uab.config.update_1_21.ominous_bottles=Ominous bottles
+uab.config.update_1_21.precipice=Precipice
+uab.config.update_1_21.trial_chambers=Trial Chambers
+uab.config.update_1_21.wind_charges=Wind charges
+uab.config.update_1_21_11.mobs.camel_husk=Camel husk
+uab.config.update_1_21_11.mobs.nautilus=Nautilus
+uab.config.update_1_21_11.mobs.parched=Parched
+uab.config.update_1_21_11.mobs.zombie_nautilus=Zombie nautilus
+uab.config.update_1_21_11.nautilus_armor=Nautilus armor
+uab.config.update_1_21_11.spears=Spears
+uab.config.update_1_21_4.pale_garden=Pale Garden
+uab.config.update_1_21_6.dried_ghasts=Dried ghasts
+uab.config.update_1_21_6.harnesses=Harnesses
+uab.config.update_1_21_6.mobs.happy_ghast=Happy ghast
+uab.config.update_1_21_6.tears=Tears
+uab.config.update_1_21_7.lava_chicken=Lava Chicken
+uab.config.update_1_21_9.copper_chests=Copper chests
+uab.config.update_1_21_9.copper_golem_statues=Copper golem statues
+uab.config.update_1_21_9.end_flashes=End Flashes
+uab.config.update_1_21_9.mobs.copper_golem=Copper golem
+uab.config.update_1_21_9.modern_end_ambient_color=Modern End Ambient Color
+uab.config.update_1_8.anvil_costs=Anvil costs
+uab.config.update_1_8.armor_stand=Armor Stand
+uab.config.update_1_8.baby_growth_boost=Baby Growth Boost
+uab.config.update_1_8.banners=Banners
+uab.config.update_1_8.barrier=Barrier
+uab.config.update_1_8.better_pistons=Better Pistons
+uab.config.update_1_8.bow_rendering=Bow Rendering
+uab.config.update_1_8.coarse_dirt=Coarse Dirt
+uab.config.update_1_8.coarse_dirt_replacement=Coarse Dirt Replacement
+uab.config.update_1_8.colored_beacon_beams=Colored beacon beams
+uab.config.update_1_8.door_recipe_buffs=Door Recipe Buffs
+uab.config.update_1_8.enchanting=Enchanting
+uab.config.update_1_8.endermite=Endermite
+uab.config.update_1_8.extra_burnable_blocks=Extra Burnable Blocks
+uab.config.update_1_8.extra_f3_htooltips=Extra F3 HTooltips
+uab.config.update_1_8.fancy_skulls=Fancy Skulls
+uab.config.update_1_8.fill_command=Fill Command
+uab.config.update_1_8.firework_recipe_fixes=Firework Recipe Fixes
+uab.config.update_1_8.guardians=Guardians
+uab.config.update_1_8.inverted_sensor=Inverted Sensor
+uab.config.update_1_8.iron_trapdoor=Iron Trapdoor
+uab.config.update_1_8.mutton=Mutton
+uab.config.update_1_8.new_f3_behavior=New F3 Behavior
+uab.config.update_1_8.ocean_monuments=Ocean Monuments
+uab.config.update_1_8.prismarine=Prismarine
+uab.config.update_1_8.rabbits=Rabbits
+uab.config.update_1_8.random_tick_speed=Random Tick Speed
+uab.config.update_1_8.red_sandstone=Red Sandstone
+uab.config.update_1_8.shearable_cobwebs=Shearable Cobwebs
+uab.config.update_1_8.skull_drop=Skull Drop
+uab.config.update_1_8.slime_block=Slime Block
+uab.config.update_1_8.spectator_mode=Spectator Mode
+uab.config.update_1_8.sponge=Sponge
+uab.config.update_1_8.stone_brick_recipes=Stone Brick Recipes
+uab.config.update_1_8.stone_variants=Granite, andesite and diorite
+uab.config.update_1_8.transparent_amour=Transparent Amour
+uab.config.update_1_8.updated_food=Updated carrot and potato food values
+uab.config.update_1_8.updated_harvest_levels=Updated Harvest Levels
+uab.config.update_1_8.villager_turns_into_witch=Villager Turns Into Witch
+uab.config.update_1_9.armor_equip=Armor Equip
+uab.config.update_1_9.beetroot=Beetroot
+uab.config.update_1_9.brewing_fuel=Brewing fuel
+uab.config.update_1_9.bush_sticks=Bush Sticks
+uab.config.update_1_9.chest_open_close=Chest Open Close
+uab.config.update_1_9.chorus_blocks=Chorus Blocks
+uab.config.update_1_9.combat_sounds=Combat Sounds
+uab.config.update_1_9.dmg_indicator=Damage particles
+uab.config.update_1_9.door_open_close=Door Open Close
+uab.config.update_1_9.dragon_respawn=Dragon Respawn
+uab.config.update_1_9.dust_under_falling_blocks=Dust Under Falling Blocks
+uab.config.update_1_9.elytra=Elytra
+uab.config.update_1_9.end_cities=End Cities
+uab.config.update_1_9.end_portal_fill_sounds=End Portal Fill Sounds
+uab.config.update_1_9.fix_silent_placing=Fix Silent Placing
+uab.config.update_1_9.floating_trap_doors=Floating Trap Doors
+uab.config.update_1_9.floor_ceiling_buttons=Floor Ceiling Buttons
+uab.config.update_1_9.fluid_interact=Fluid Interact
+uab.config.update_1_9.frost_walker=Frost Walker
+uab.config.update_1_9.furnace_crackle=Furnace crackling
+uab.config.update_1_9.grass_path=Grass Path
+uab.config.update_1_9.hay_bale_falls=Hay Bale Falls
+uab.config.update_1_9.heavy_water_splashing=Heavy Water Splashing
+uab.config.update_1_9.hide_single_level_enchants=Hide Single Level Enchants
+uab.config.update_1_9.hoe_tilling=Hoe Tilling
+uab.config.update_1_9.horse_eat_cow_milk=Horse Eat Cow Milk
+uab.config.update_1_9.ladder_trapdoors=Ladder Trapdoors
+uab.config.update_1_9.leash_sounds=Leash Sounds
+uab.config.update_1_9.lingering_potions=Lingering Potions
+uab.config.update_1_9.mending=Mending
+uab.config.update_1_9.mob_spawner_egging=Mob Spawner Egging
+uab.config.update_1_9.modern_skeleton_behavior=Modern Skeleton Behavior
+uab.config.update_1_9.new_beacon_sounds=New Beacon Sounds
+uab.config.update_1_9.new_enchanting_sounds=New Enchanting Sounds
+uab.config.update_1_9.new_ender_eye_sounds=New Ender Eye Sounds
+uab.config.update_1_9.new_fishing_rod_sounds=New Fishing Rod Sounds
+uab.config.update_1_9.new_hurt_sounds=New Hurt Sounds
+uab.config.update_1_9.new_mob_sounds=New Mob Sounds
+uab.config.update_1_9.outer_end_islands=Outer End islands
+uab.config.update_1_9.painting_item_frame_placing=Painting Item Frame Placing
+uab.config.update_1_9.pet_death_messages=Pet Death Messages
+uab.config.update_1_9.pressure_plate_button=Pressure Plate Button
+uab.config.update_1_9.rowing_boats=Boats, chest boats and rafts
+uab.config.update_1_9.seed_planting=Seed Planting
+uab.config.update_1_9.shearable_snow_golems=Shearable Snow Golems
+uab.config.update_1_9.shulker=Shulker
+uab.config.update_1_9.silk_mushroom=Silk Mushroom
+uab.config.update_1_9.spectral_arrows=Spectral Arrows
+uab.config.update_1_9.subtitles=Subtitles
+uab.config.update_1_9.thin_panes=Thin Panes
+uab.config.update_1_9.thorns_sounds=Thorns Sounds
+uab.config.update_1_9.tipped_arrows=Tipped Arrows
+uab.config.update_1_9.world_save_thumbnails=World thumbnails
+uab.config.update_1_9.zombie_villager=Zombie villager professions
+uab.config.update_1_13.smooth_quartz=Smooth Quartz
+uab.config.update_1_13.smooth_sand_stone=Smooth Sand Stone
+uab.config.update_1_13.smooth_stone=Smooth Stone
+uab.config.update_1_8.silk_mushroom=Silk Mushroom

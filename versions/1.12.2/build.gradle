@@ -1,0 +1,67 @@
+plugins { id 'java'; id 'xyz.wagyourtail.unimined' version '1.4.1' }
+ext.minecraftTarget = '1.12.2'
+apply from: '../../build-logic/release.gradle'
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+tasks.withType(JavaCompile).configureEach {
+    options.release = 8
+    options.encoding = 'UTF-8'
+}
+unimined.minecraft {
+    version '1.12.2'
+    mappings { mcp('stable', '39-1.12') }
+    runs {
+        config('client') { javaVersion = JavaVersion.VERSION_1_8 }
+        config('server') { javaVersion = JavaVersion.VERSION_1_8 }
+    }
+    minecraftForge { loader '14.23.5.2859' }
+}
+configurations.matching { it.name == 'minecraftLibraries' }.configureEach {
+    exclude group: 'org.jetbrains', module: 'annotations'
+}
+repositories { maven { url 'https://maven.cleanroommc.com' } }
+dependencies {
+    compileOnly 'org.jetbrains:annotations:24.0.1'
+    implementation('zone.rong:mixinbooter:11.18') { transitive = false }
+}
+jar.manifest.attributes('MixinConfigs': 'mixins.etfuturum.1_12_2.json')
+sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
+sourceSets.test.runtimeClasspath += sourceSets.main.runtimeClasspath
+def buildVersionDirectory = layout.buildDirectory.dir('generated/sources/uabVersion')
+String uabReleaseVersion = version.toString()
+tasks.register('generateBuildVersion') {
+    inputs.file(file('../../version.properties'))
+    inputs.property('version', uabReleaseVersion)
+    outputs.dir(buildVersionDirectory)
+    doLast {
+        File output = new File(buildVersionDirectory.get().asFile, 'ganymedes01/etfuturum/BuildVersion.java')
+        output.parentFile.mkdirs()
+        output.text = 'package ganymedes01.etfuturum;\npublic final class BuildVersion { public static final String VERSION = "' + uabReleaseVersion + '"; private BuildVersion() {} }\n'
+    }
+}
+sourceSets.main.java.srcDir(buildVersionDirectory)
+compileJava.dependsOn generateBuildVersion
+processResources {
+    inputs.property('modVersion', project.version)
+    filesMatching('mcmod.info') { expand(modVersion: project.version) }
+}
+jar.finalizedBy 'remapJar'
+tasks.register('configurationTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'ganymedes01.etfuturum.configuration.TargetConfigurationTest'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }
+}
+check.dependsOn configurationTest
+test.dependsOn configurationTest
+tasks.register('connectionSettingsTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'ganymedes01.etfuturum.ConnectionSettingsTest'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }
+}
+check.dependsOn connectionSettingsTest
+test.dependsOn connectionSettingsTest
+
+sourceSets.main.java.srcDir '../../common/src/forge/java'
+
+sourceSets.test.java.srcDir '../../common/src/forgeTest/java'

@@ -4,7 +4,7 @@
 
 `config/uab.cfg` is the primary native Forge configuration. There are no separate block, entity, world, sound or experiments files to maintain. The in-game Forge configuration screen uses update and feature names.
 
-Existing potion allocations remain in `config/legacy-potion-ids.properties`, shared with cooperating legacy mods. This is persistent identity data, not another feature configuration. Do not delete or regenerate it in an existing installation.
+For 1.7.10, existing potion allocations remain in `config/legacy-potion-ids.properties`, shared with cooperating legacy mods. This is persistent identity data, not another feature configuration. Do not delete or regenerate it in an existing installation.
 
 The precedence order is: an existing UAB value, a recognized split legacy value under `config/etfuturum/`, a recognized monolithic legacy value (`config/etfuturum/etfuturum.cfg`, then `config/etfuturum.cfg`), and the UAB default. Exact legacy categories are preferred; a monolithic key is matched across categories only when unique. Conflicting aliases for a consolidated boolean preserve a disabled setting.
 
@@ -12,7 +12,9 @@ Migration creates an adjacent `.uab.bak` copy before importing, leaves original 
 
 ## Categories and feature families
 
-Categories cover only implemented content relevant to Forge 1.7.10, from the Bountiful Update through Mounts of Mayhem (1.21.11), plus General. Minor updates have distinct categories where needed, including 1.16.2, 1.20.5, 1.21.4, 1.21.6, 1.21.7 and 1.21.9. Empty update categories are not displayed.
+The shared catalog attributes features from the Bountiful Update through Mounts of Mayhem (1.21.11), plus General. Attribution describes the feature requirement, not whether its target implementation is complete. The 1.12.2 port currently implements a subset of the catalog. Minor updates have distinct categories where needed, including iron nuggets in 1.11.1, 1.16.2, 1.20.5, 1.21.4, 1.21.6, 1.21.7 and 1.21.9. Empty update categories are not displayed. Mixed families remain under their earliest named feature update, with component dates in the shared catalog. For example, prismarine starts in 1.8 but includes 1.13 stairs/slabs and 1.14 walls. Basalt includes 1.17 smooth basalt; tuff includes 1.21 decorations. On 1.12.2, wholly native controls are omitted from freshly generated configuration and vanilla prerequisites cannot be disabled by an old backport switch. Mixed families keep controls for their remaining additions.
+
+Corrected category locations migrate automatically. The first such migration preserves the exact original file as `uab.cfg.catalog-v2.bak`; this backup is never overwritten. An explicit value already at the corrected location takes precedence. Otherwise the old value moves, and a feature previously suppressed by its old update's parent switch remains disabled after moving. Unrelated settings are retained.
 
 Each update has an `enabled` switch. Feature families have their own `enabled` switch and useful parameters alongside it. There are no separate controls for each slab, stair, color, waxed state or plant growth stage. New mobs have individual switches. General contains cross-update policies, optional compatibility and custom conveniences; advanced identity settings are kept out of ordinary GUI navigation.
 
@@ -40,29 +42,30 @@ Special acquisition uses feature switches rather than invented spawn weights: in
 
 Content, generation, spawning, recipe, asset and compatibility settings require restarting Minecraft or the dedicated server. The GUI marks this requirement. Saving advanced tooltip, gamemode-switcher, F3-key, transparent-armour, shulker-tooltip-line and subtitle-filter preferences can update their directly read client settings without changing registries. Changes to restart settings remain pending until the next launch.
 
-Common active settings are compared during Forge's existing handshake, alongside the existing version and potion-ID checks. A mismatch is rejected before gameplay; copy the server's UAB configuration and restart. Client-only preferences are excluded from this comparison and are not generated on dedicated servers. The old field-binding classes remain internal compatibility adapters; they neither own nor save configuration files.
+Both targets compare common active settings during Forge's existing handshake. A mismatch is rejected before gameplay; copy the server's UAB configuration and restart. The 1.12.2 server-list compatibility response carries the same settings fingerprint as login. Client-only preferences are excluded from this comparison and are not generated on dedicated servers. Saving settings in the 1.12.2 configuration screen preserves active restart-bound gameplay until the next launch. The 1.7.10 target also retains its potion-ID checks. The old 1.7.10 field-binding classes remain internal compatibility adapters; they neither own nor save configuration files.
 
 ## Feature counts
 
-The catalog contains **358 distinct feature switches**, counting shared legacy aliases once and excluding update parent switches and numeric or presentation parameters. These represent gameplay behaviors, systems, content families and individual mobs, rather than every registered block.
+The catalog contains **372 distinct feature switches**, counting shared legacy aliases once and excluding update parent switches and numeric or presentation parameters. These represent gameplay behaviors, systems, content families and individual mobs, rather than every registered block.
 
 | Origin | Feature switches |
 | --- | ---: |
-| General / cross-update | 29 |
+| General / cross-update | 49 |
 | 1.8 | 40 |
-| 1.9 | 62 |
-| 1.10 | 13 |
-| 1.11 | 12 |
-| 1.12 | 6 |
-| 1.13 | 29 |
-| 1.14 | 49 |
+| 1.9 | 53 |
+| 1.10 | 11 |
+| 1.11 | 10 |
+| 1.11.1 | 1 |
+| 1.12 | 8 |
+| 1.13 | 42 |
+| 1.14 | 40 |
 | 1.15 | 5 |
-| 1.16 | 30 |
+| 1.16 | 31 |
 | 1.16.2 | 1 |
-| 1.17 | 27 |
+| 1.17 | 22 |
 | 1.18 | 7 |
 | 1.19 | 10 |
-| 1.20 | 9 |
+| 1.20 | 13 |
 | 1.20.5 | 2 |
 | 1.21 | 10 |
 | 1.21.4 | 1 |

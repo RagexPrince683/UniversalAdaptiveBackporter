@@ -274,3 +274,83 @@
 
 - Give UAB's external wood fences the same delegated icon registration contract as its other plank-backed fences. Biomes O' Plenty and Witchery planks retain ownership of their side/metadata textures; fences read the current source icons after resource reloads instead of passing an unused null texture name to vanilla registration.
 - Preserve vanilla fence registration, fence/wall connectivity, rendering and saved block identities. Add focused registration, source-icon delegation and reload regression coverage to the normal verification tasks.
+
+2026-10-24 17:21 — Separate native targets and begin Forge 1.12.2 support
+
+- Move the maintained 1.7.10 sources and build into versions/1.7.10. Share platform-neutral feature metadata, deterministic seeds, resources and Forge configuration logic while retaining native gameplay ownership.
+- Add an independent Unimined/Forge 1.12.2 build and initial native materials, barrel/smithing, aquatic entities, tridents, conduits and ocean structures. This remains an incomplete development port, documented separately from maintained 1.7.10 coverage.
+- Coordinate independent buildAll/testAll/cleanAll tasks, preserve root version.properties, generate combined update metadata and verify production target metadata and Java 8 bytecode. Retain legacy root Gradle run-task entry points.
+- Translate released ocean palettes and native loot pools, defer unavailable prerequisites/rewards and suppress generation observer notifications that could load neighboring chunks. Preserve structure completion, consumed loot and barrel inventory identities.
+- Preserve smithing equipment NBT/damage and consume template, equipment and ingot inputs. Keep contained-water behavior local to native Forge hooks; prevent Fortune from multiplying ore blocks when raw drops are disabled.
+
+2026-10-24 17:21 — Correct feature attribution and preserve category preferences
+
+- Move feature attribution into the shared catalog rather than feature-name exceptions in version-classification code. Record component dates for mixed prismarine/red sandstone shapes, Nether bricks, banners, boats, note-block instruments, basalt, tuff, sponge drying, shulker boxes and salmon sizes.
+- Correct patch/update attribution for iron nuggets, zombie-villager professions, squid ink, food values, world thumbnails, mushroom Silk Touch, crafting-close behavior and selected sounds. Put custom recipes, alternate gameplay rules and mod integrations under General rather than implying vanilla availability.
+- Migrate corrected UAB property locations with an exact, non-overwritten .catalog-v2.bak backup. Preserve explicit values, existing canonical settings, old parent-switch disables and unrelated settings. Keep native prerequisites enabled without generating misleading backport controls.
+- Reject conflicting classification aliases and inconsistent component dates, align furnace-crackling aliases as client preferences, retain the legacy FeatureRegistry.TARGET API constant and update translations and distinct-feature counts.
+
+2026-10-24 18:34 — Expand Forge 1.12.2 content, native rendering and connection checks
+
+- Exchange immutable gameplay settings during Forge login and server-list queries. Reject mismatched gameplay settings before world entry while retaining independent client preferences and the legacy client-only server policy. Require MixinBooter 11.18 or later for the Forge handshake hooks.
+- Add the shared native configuration screen, safe persistence of pending restart settings, readable update labels and legacy-language adaptation. Preserve technical registry names and existing translations; fill missing content names from the released assets.
+- Replace placeholder cubes with released block-state/model geometry, native lantern/chain placement and bounds, separate kelp/water render passes, drowned outer skin, and three-dimensional held/projectile tridents. Supply kelp's source-water level to native fluid queries so nearby flowing water and dropped items cannot crash. Validate the offline asset archive's Minecraft version.
+- Give barrels their own native lootable inventory instead of chest tile inheritance, preserve existing inventory/lock/loot NBT, orient the block and synchronize its open state. Clear stale open states after loading without discarding stored items.
+- Port branching cherry, shallow-water mangrove roots/propagules and four-sapling pale oak growth. Validate complete tree placement before writing, respect the native growth event and retain observer-safe new-chunk placement.
+- Add native single/double slabs, merging, wall connections and building recipes for the supported wood, deepslate, blackstone, tuff, mud, smooth-block, prismarine and red Nether brick families. Retain previously registered stair identities and add polished/chiseled tuff decorations.
+- Complete warm/large ruin selection, cold masonry overlays, once-only primary loot/mob markers and beach shipwreck eligibility. Add saved buried treasure and its locate command, native structure reservation checks, exact native fish metadata and pool-level water-breathing potion loot. Consumed loot and existing saved plans remain intact; unavailable exploration maps and rewards remain deferred.
+
+2026-10-24 18:25 — Port native deepslate geology and amethyst acquisition
+
+- Add the eight native deepslate ore variants, ore-specific harvest levels, delegated drops/experience and smelting. Convert vanilla iron/gold harvests to raw ores while preserving Silk Touch, unrelated contributed drops and configured Fortune/base quantities. Restore deepslate's axis, cobbled drop, hardness preferences and building progression.
+- Generate configured deepslate layers or ellipsoid clusters and tuff in new chunks, retaining dimension/replacement controls, existing ore identities and saved structure reservations. Confine geology writes to the population chunk.
+- Add budding amethyst, all four oriented growth stages, native harvesting/piston rules, amethyst-block and tinted-glass crafting. Generate maintained double-Perlin geode shells with configurable materials, validate complete placements before writing and save unloaded candidates for bounded server-thread completion after their footprint is populated.
+
+2026-10-24 18:44 — Port the native workstation and building-content batch
+
+- Add smokers and blast furnaces with independent native recipe ownership, automatic food/metal selection, explicit overrides/removal, hundred-tick cooking, proportional fuel consumption and native output experience. Preserve inventories, locks, names and full-width fuel timers; expose native sided inventory and item-handler automation.
+- Port stonecutters, looms and cartography tables with server-owned recipe selection, atomic output extraction, repeated shift crafting and safe return of transient inputs. Retain native banners and reusable pattern items; copy, scale and lock native map identities with persisted terrain-update locks.
+- Add composter levels, delayed maturation, bone-meal output, configured composting percentages and native hopper/item-handler access. Inventory queries do not consume ingredients or extract compost, and failed hopper transfers can restore their output.
+- Retain barrel, cooking and composter tile entities when only their block properties change, preventing Forge's default modded-state refresh from discarding inventories or automation state.
+- Add missing vanilla stone/slab/stair/wall families and explicit stonecutting conversions. Port modern wood doors, trapdoors, buttons and pressure plates, preserve their general shape controls, register native wood ingredients and keep crimson/warped wood out of furnace fuel.
+
+2026-10-24 19:12 — Port aquatic plants, bubble columns and ocean climates
+
+- Add every live/dead coral block, plant and floor/wall fan, plus dry/submerged sea-pickle clusters. Preserve canonical item drops, Silk Touch, support checks, delayed coral death, bucket transitions, bone-meal spreading and pickle light/dye behavior.
+- Consolidate local source-water behavior across aquatic plants, retaining native fluid depth, water after harvesting, separate plant/water render passes and released geometry. Ignore constant fluid-depth properties in model selection instead of baking redundant meshes.
+- Add source-water bubble columns above soul sand/magma, separate direction from fluid depth, preserve native liquid rendering and apply server/client movement and air effects. Column updates remain bounded to loaded vertical terrain.
+- Register six native ocean-climate biomes and port the maintained seeded climate-cell layer after native coastline/river selection. Preserve native monument eligibility, biome identities, new-chunk-only decoration and warm-ocean acquisition for coral, pickles and tropical fish.
+- Deep-copy the source map's saved color data when locking a map so later updates to the original cannot change its locked copy.
+
+
+2026-10-24 19:46 — Port bamboo, cave plants and native surface biomes
+
+- Add bamboo shoots, native stalk age/leaves/stage states, bounded growth, bone meal, sword harvesting, fuel and jungle decoration. Port bamboo blocks, stripping, planks, mosaics and their native slab/stair/fence/door/redstone families, preserving separate plant and building controls and exact material yields.
+- Port moss/carpet spreading, normal/flowering azalea and leaves, native oak-based azalea trees, glow berries, climbing cave vines, harvesting, shearing and saved tip growth limits. Keep berry-state changes from replacing the growing tip tile.
+- Add six-face glow lichen with native synchronized attachment masks, precise face selection, shears, bone-meal spread and support removal. Cave decoration stays in new chunks and yields to saved structure bounds.
+- Register the ten maintained surface-biome identities through Forge and native climate selection, with their generation controls, legacy terrain profiles, colors, native inhabitants and tree families. Add pale moss, carpet and hanging moss for natural Pale Garden vegetation; retain loaded-footprint validation for tree placement.
+
+
+2026-10-25 00:04 — Port turtle and dolphin survival content
+
+- Add native dolphins and turtles with the maintained entity identities, native spawning controls, saved state and released geometry. Dolphins retain moisture/air needs, retaliation, item play, swimmer following and guidance to saved treasure/ocean sites/monuments without generating terrain.
+- Port seagrass, shears and paired tall growth; retain independent natural generation and water bone meal. Add turtle beach breeding, saved home and pregnancy, return-to-home egg laying, egg count/crack states and incubation, child growth, scutes, repairable turtle helmets and their breathing reserve. Native egg collision enables real trampling callbacks while respecting sneaking, turtles and griefing hooks.
+- Register Dolphin's Grace through the native Forge potion registry and released effect icon. A mapped Mixin changes only the player's horizontal water drag after native Depth Strider handling; native vertical movement and swimming controls remain authoritative.
+- Map pale moss carpet to the maintained flat geometry instead of feeding unsupported modern side properties to the native model baker.
+
+
+2026-10-25 00:24 — Port cave aquatics, native buckets and population admission
+
+- Add axolotls with synchronized variants/play-dead recovery, moisture, tropical-fish breeding, inherited/rare variants, hunting, guardian targeting and assisted-player regeneration. Preserve variant, age, health, name and persistence across capture/release. Add glow squid with native squid movement, synchronized damage-darkening, full-bright rendering and conditional glow ink drops. Keep its light state distinct from the native outline-glow effect.
+- Replace the custom bucket placement path with native ItemBucket handling so ray tracing, permission checks, Forge bucket events and evaporation remain authoritative. Spawn and restore the bucketed animal only after successful native placement; failed entity joins retain the original bucket.
+- Port loaded aquatic lifecycle indexing, shared/species budgets, small-area school allowances and local density. Native world listeners count successful joins and removals; natural spawning alone performs admission. Preserve native monster ownership for guardians, leave other mods' squid subclasses alone, and retain commands, conversions, spawners and bucket releases.
+- Respect native NoAI for custom aquatic steering and retain the native breeding, potion and persistence boundaries.
+
+
+2026-10-25 22:53 — Port Nether biomes, vegetation, inhabitants and equipment to Forge 1.12.2
+
+- Add crimson/warped nylium, roots, sprouts, fungi, huge fungi, shroomlights, hyphae and climbing vines. Preserve exact family prerequisites, loaded-footprint checks, inventory protection, bone-meal spreading and stopped vine tips.
+- Adapt the maintained weighted Nether biome layer to native Forge biome identities. Add biome surfaces, forest vegetation, basalt formations, delta pools and released fossil templates while retaining native terrain, caves, fortresses and existing chunk data. Foreign biome providers retain ownership. Restore vertical defaults for generated basalt and muddy roots, and retain fractional biome fog blending with darkness, potion and graphics settings.
+- Port piglins/brutes, hoglins/zoglins and striders, native model renderers, bartering, group anger, breeding, conversion and saddle/boost interaction. Preserve equipment and entity state during conversion; keep strider movement server-owned with native rider input and a separate lava spawning path.
+- Add charged crossbows with saved arrow ammunition, quick charge, multishot, piercing and tipped/spectral effects. Add treasure-only Soul Speed, native movement modifiers and soul-sand slowdown cancellation. Disabled prerequisites omit acquisition paths instead of substituting ingredients.
+- Retain configured aquatic spawn-entry identity between native selection and eligibility queries, allowing actual natural spawning while preserving population admission.

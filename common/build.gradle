@@ -1,0 +1,10 @@
+plugins { id 'java-library' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+tasks.withType(JavaCompile).configureEach { options.release = 8; options.encoding = 'UTF-8' }
+tasks.register('catalogTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'ganymedes01.etfuturum.configuration.FeatureCatalogTest'
+}
+check.dependsOn catalogTest
+tasks.named('test') { dependsOn catalogTest; failOnNoDiscoveredTests = false }

@@ -1,23 +1,2 @@
-
-pluginManagement {
-    repositories {
-        maven {
-            // RetroFuturaGradle
-            name "GTNH Maven"
-            url "https://nexus.gtnewhorizons.com/repository/public/"
-            mavenContent {
-                includeGroup("com.gtnewhorizons")
-                includeGroupByRegex("com\\.gtnewhorizons\\..+")
-            }
-        }
-        gradlePluginPortal()
-        mavenCentral()
-        mavenLocal()
-    }
-}
-
-plugins {
-    id 'com.gtnewhorizons.gtnhsettingsconvention' version '2.0.29'
-}
-
-rootProject.name = "uab"
+rootProject.name = 'uab'
+include 'common'

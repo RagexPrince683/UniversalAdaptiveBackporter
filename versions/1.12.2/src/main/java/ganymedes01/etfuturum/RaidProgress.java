@@ -1,0 +1,33 @@
+package ganymedes01.etfuturum;
+
+import ganymedes01.etfuturum.entities.*;
+import net.minecraft.entity.*;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.village.Village;
+import net.minecraft.world.*;
+import net.minecraft.world.storage.WorldSavedData;
+import java.util.*;
+
+/** Native village raids, including native evokers and vindicators, saved with each world. */
+public final class RaidProgress extends WorldSavedData {
+    private final List<Raid> raids=new ArrayList<>();
+    private final Set<Long> outposts=new HashSet<>();
+    private int nextId=1;
+    private static final class Raid {int id,x,y,z,wave,delay=300,age;final Set<UUID> alive=new HashSet<>();}
+    public RaidProgress(String name){super(name);}
+    public static RaidProgress get(World world){RaidProgress data=(RaidProgress)world.getPerWorldStorage().getOrLoadData(RaidProgress.class,"etfuturum_raids");if(data==null){data=new RaidProgress("etfuturum_raids");world.getPerWorldStorage().setData("etfuturum_raids",data);}return data;}
+    public void addOutpost(int x,int z){if(outposts.add(ChunkPos.asLong(x,z)))markDirty();}
+    public boolean isOutpost(int x,int z){return outposts.contains(ChunkPos.asLong(x>>4,z>>4));}
+    public boolean start(World world,EntityPlayer player,Village village){if(raids.size()>=16||!MobRegistry.enabled(EntityPillager.class))return false;BlockPos center=village.getCenter();for(Raid raid:raids)if((raid.x-center.getX())*(double)(raid.x-center.getX())+(raid.z-center.getZ())*(double)(raid.z-center.getZ())<9216)return false;Raid raid=new Raid();raid.id=nextId++;raid.x=center.getX();raid.y=center.getY();raid.z=center.getZ();raids.add(raid);markDirty();player.sendMessage(new TextComponentTranslation("etfuturum.raid.approaching"));return true;}
+    public boolean isActive(int id){for(Raid raid:raids)if(raid.id==id)return true;return false;}
+    public static int membership(EntityLiving mob){return mob instanceof EntityIllager?((EntityIllager)mob).raidId:mob.getEntityData().getInteger("EFRRaid");}
+    public void died(EntityLiving mob){int id=membership(mob);for(Raid raid:raids)if(raid.id==id&&raid.alive.remove(mob.getUniqueID())){markDirty();break;}}
+    public void tick(World world){if(world.provider.getDimension()!=0||!Features.enabled("entities.enableRaids"))return;if(world.getDifficulty()==EnumDifficulty.PEACEFUL){if(!raids.isEmpty()){raids.clear();markDirty();}return;}Iterator<Raid> iterator=raids.iterator();while(iterator.hasNext()){Raid raid=iterator.next();if(++raid.age>3600){iterator.remove();markDirty();continue;}BlockPos center=new BlockPos(raid.x,raid.y,raid.z);if(world.getClosestPlayer(raid.x,raid.y,raid.z,128,false)==null||!world.isBlockLoaded(center))continue;Village village=world.getVillageCollection().getNearestVillage(center,48);if(village==null||village.getNumVillagers()==0){iterator.remove();markDirty();continue;}if(!raid.alive.isEmpty())continue;int waves=world.getDifficulty()==EnumDifficulty.EASY?3:world.getDifficulty()==EnumDifficulty.HARD?7:5;if(raid.wave>=waves){for(EntityPlayer player:world.playerEntities)if(player.getDistanceSq(raid.x,raid.y,raid.z)<=9216){player.getEntityData().setInteger("EFRHeroOfVillage",48000);player.addExperience(100);player.sendMessage(new TextComponentTranslation("etfuturum.raid.victory"));}iterator.remove();markDirty();continue;}if(raid.delay-->0)continue;int spawned=wave(world,raid);if(spawned>0){raid.wave++;raid.delay=15;markDirty();}else raid.delay=10;}if(!raids.isEmpty())markDirty();}
+    private int wave(World world,Raid raid){int spawned=0;for(int i=0,count=4+raid.wave;i<count;i++){EntityCreature mob=raid.wave>=2&&i==0&&MobRegistry.enabled(EntityRavager.class)?new EntityRavager(world):raid.wave>=3&&i==1?new EntityEvoker(world):i%3==0?new EntityVindicator(world):new EntityPillager(world);for(int attempt=0;attempt<8;attempt++){double angle=world.rand.nextDouble()*Math.PI*2;int x=raid.x+(int)(Math.cos(angle)*48),z=raid.z+(int)(Math.sin(angle)*48);BlockPos column=new BlockPos(x,0,z);if(!world.isBlockLoaded(column))continue;BlockPos pos=world.getTopSolidOrLiquidBlock(column);mob.setLocationAndAngles(x+.5,pos.getY(),z+.5,0,0);if(world.containsAnyLiquid(mob.getEntityBoundingBox())||!world.getCollisionBoxes(mob,mob.getEntityBoundingBox()).isEmpty()||!world.checkNoEntityCollision(mob.getEntityBoundingBox()))continue;mob.onInitialSpawn(world.getDifficultyForLocation(pos),null);mob.setHomePosAndDistance(new BlockPos(raid.x,raid.y,raid.z),64);if(mob instanceof EntityIllager){((EntityIllager)mob).raidId=raid.id;((EntityIllager)mob).setCaptain(i==0&&!(mob instanceof EntityRavager));}else mob.getEntityData().setInteger("EFRRaid",raid.id);if(world.spawnEntity(mob)){raid.alive.add(mob.getUniqueID());spawned++;}break;}}return spawned;}
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound tag){NBTTagList towers=new NBTTagList();for(long pos:outposts){NBTTagCompound tower=new NBTTagCompound();tower.setLong("Pos",pos);towers.appendTag(tower);}tag.setTag("Outposts",towers);tag.setInteger("NextId",nextId);NBTTagList list=new NBTTagList();for(Raid raid:raids){NBTTagCompound entry=new NBTTagCompound();entry.setInteger("Id",raid.id);entry.setInteger("X",raid.x);entry.setInteger("Y",raid.y);entry.setInteger("Z",raid.z);entry.setInteger("Wave",raid.wave);entry.setInteger("Delay",raid.delay);entry.setInteger("Age",raid.age);NBTTagList mobs=new NBTTagList();for(UUID mob:raid.alive)mobs.appendTag(new NBTTagString(mob.toString()));entry.setTag("Mobs",mobs);list.appendTag(entry);}tag.setTag("Raids",list);return tag;}
+    @Override public void readFromNBT(NBTTagCompound tag){outposts.clear();NBTTagList towers=tag.getTagList("Outposts",10);for(int i=0;i<towers.tagCount();i++)outposts.add(towers.getCompoundTagAt(i).getLong("Pos"));raids.clear();nextId=Math.max(1,tag.getInteger("NextId"));NBTTagList list=tag.getTagList("Raids",10);for(int i=0;i<Math.min(16,list.tagCount());i++){NBTTagCompound entry=list.getCompoundTagAt(i);Raid raid=new Raid();raid.id=Math.max(1,entry.getInteger("Id"));raid.x=entry.getInteger("X");raid.y=MathHelper.clamp(entry.getInteger("Y"),1,255);raid.z=entry.getInteger("Z");raid.wave=MathHelper.clamp(entry.getInteger("Wave"),0,7);raid.delay=MathHelper.clamp(entry.getInteger("Delay"),0,300);raid.age=MathHelper.clamp(entry.getInteger("Age"),0,3601);NBTTagList mobs=entry.getTagList("Mobs",8);for(int n=0;n<Math.min(64,mobs.tagCount());n++)try{raid.alive.add(UUID.fromString(mobs.getStringTagAt(n)));}catch(IllegalArgumentException ignored){}raids.add(raid);nextId=Math.max(nextId,raid.id+1);}}
+}

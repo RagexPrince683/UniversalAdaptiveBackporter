@@ -88,3 +88,11 @@ usernamecache.json
 
 /*.kate-swp
 addon.local.gradle
+
+# Independent Minecraft build islands
+**/.gradle/
+**/build/
+**/run/
+**/.idea/
+!versions/*/gradlew.bat
+!versions/*/gradle/wrapper/gradle-wrapper.jar

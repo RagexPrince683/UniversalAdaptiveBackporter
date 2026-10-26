@@ -1,0 +1,32 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "compatibilityLevel": "JAVA_8",
+  "package": "ganymedes01.etfuturum.mixins",
+  "mixins": [
+    "HandshakeModListMixin",
+    "ServerStatusMixin",
+    "MapDataMixin",
+    "ItemMapMixin",
+    "MapScalingRecipeMixin",
+    "OceanMonumentMixin",
+    "DolphinGraceMixin",
+    "AquaticSpawningMixin",
+    "NetherProviderMixin",
+    "NetherSurfaceMixin",
+    "SoulSandMixin",
+    "LavaSpawningMixin",
+    "StriderRidingMixin",
+    "LightningAttractionMixin",
+    "LightningStrikeMixin",
+    "SoulFireMixin",
+    "BrushableFallingMixin",
+    "RaidMembershipMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "SwiftSneakMixin"
+  ]
+}

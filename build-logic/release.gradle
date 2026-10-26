@@ -1,0 +1,28 @@
+Properties releaseProperties = new Properties()
+File releaseFile = file('../../version.properties')
+releaseFile.withInputStream { releaseProperties.load(it) }
+String releaseVersion = releaseProperties.getProperty('modVersion', '').trim()
+if (!(releaseVersion ==~ /[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?/)) {
+    throw new GradleException('version.properties must contain a valid modVersion')
+}
+for (String key : ['VERSION', 'RELEASE_VERSION']) {
+    String value = System.getenv(key)
+    if (value != null && value != releaseVersion) throw new GradleException(key + ' disagrees with version.properties')
+}
+if (findProperty('modVersion') != null && findProperty('modVersion').toString() != releaseVersion) {
+    throw new GradleException('modVersion override disagrees with version.properties')
+}
+String ref = System.getenv('GITHUB_REF') ?: ''
+if (ref.startsWith('refs/tags/') && ref.substring(10).replaceFirst(/^v/, '') != releaseVersion) {
+    throw new GradleException('Release tag must match version.properties: ' + releaseVersion)
+}
+version = releaseVersion
+group = 'ganymedes01.etfuturum'
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveBaseName = 'uab'
+    archiveVersion = releaseVersion + '+mc' + minecraftTarget
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+sourceSets.main.java.srcDir '../../common/src/main/java'
+sourceSets.main.resources.srcDir '../../common/src/main/resources'

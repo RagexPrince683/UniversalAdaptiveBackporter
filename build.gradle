@@ -1,92 +1,100 @@
-plugins {
-    id("com.gtnewhorizons.gtnhconvention")
-}
+plugins { id 'base'; id 'jvm-toolchains' }
 
-// A release has one version across metadata, artifacts and both upload services.
-Properties releaseProperties = new Properties()
-File releaseFile = rootProject.file("version.properties")
-if (!releaseFile.isFile()) throw new GradleException("Missing root version.properties")
-releaseFile.withInputStream { releaseProperties.load(it) }
-String releaseVersion = releaseProperties.getProperty("modVersion", "").trim()
-if (!(releaseVersion ==~ /[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?/)) {
-    throw new GradleException("version.properties must contain a valid modVersion (for example 4.0.0)")
-}
-version = releaseVersion
-if (project.findProperty("modVersion") != null && project.findProperty("modVersion").toString() != releaseVersion) {
-    throw new GradleException("modVersion override disagrees with version.properties")
-}
-ext.modVersion = releaseVersion
-for (String overrideName : ["VERSION", "RELEASE_VERSION"]) {
-    String overrideValue = System.getenv(overrideName)
-    if (overrideValue != null && overrideValue != releaseVersion) throw new GradleException(overrideName + " disagrees with version.properties")
-}
-String tagRef = System.getenv("GITHUB_REF") ?: ""
-boolean isTaggedRelease = tagRef.startsWith("refs/tags/")
-if (isTaggedRelease && tagRef.substring("refs/tags/".length()).replaceFirst(/^v/, "") != releaseVersion) {
-    throw new GradleException("Release tag must match version.properties: " + releaseVersion)
-}
-boolean stableRelease = isTaggedRelease && !releaseVersion.contains("-")
-base { archivesName = "uab" }
-tasks.withType(AbstractArchiveTask).configureEach {
-    archiveBaseName = "uab"
-    archiveVersion = releaseVersion + "+mc" + project.minecraftVersion
-}
-
-minecraft {
-    injectedTags.put("MOD_ID", project.modId)
-    injectedTags.put("MOD_NAME", project.modName)
-    injectedTags.put("MOD_GROUP", project.modGroup)
-    injectedTags.put("VERSION", releaseVersion)
-
-    //Returns true if this build isn't a tagged release build, meaning it came from the CI (or was arbitrarily built)
-    injectedTags.put("SNAPSHOT_BUILD", !isTaggedRelease)
-    //Returns true if this build is a tagged build, and contains no version keywords that may indicate it possibly being a pre-release tagged build.
-    injectedTags.put("STABLE_BUILD", stableRelease)
-    // SNAPSHOT_BUILD == false but STABLE_BUILD == false means this release is a tagged beta, alpha, release candidate, etc.
-    // Neither of these values can be true at the same time.
-
-    injectedTags.put("MC_ASSET_VER", "minecraft_1.21.11")
-}
-
-tasks.register("configurationTest", JavaExec) {
-    group = "verification"
-    description = "Exercises native Forge configuration, legacy migration and spawn parameter validation."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets.test.runtimeClasspath
-    mainClass = "ganymedes01.etfuturum.configuration.ConfigurationTest"
-    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }
-}
-tasks.named("check") { dependsOn(tasks.named("configurationTest")) }
-
-tasks.register("fenceTextureTest", JavaExec) {
-    group = "verification"
-    description = "Checks native and delegated fence texture registration across resource reloads."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets.test.runtimeClasspath
-    mainClass = "ganymedes01.etfuturum.blocks.FenceTextureTest"
-    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }
-}
-tasks.named("check") { dependsOn(tasks.named("fenceTextureTest")) }
-tasks.named("test") {
-    dependsOn(tasks.named("configurationTest"))
-    dependsOn(tasks.named("fenceTextureTest"))
-    // The regression suites use plain Java entry points rather than JUnit discovery.
-    failOnNoDiscoveredTests = false
-}
-
-def releaseMetadataOutput = layout.buildDirectory.file("release/uab-update.json")
-String releaseMinecraftVersion = project.minecraftVersion.toString()
-tasks.register("generateReleaseMetadata") {
-    inputs.file(rootProject.file("version.properties"))
-    inputs.property("minecraftVersion", releaseMinecraftVersion)
-    outputs.file(releaseMetadataOutput)
-    doLast {
-        File output = releaseMetadataOutput.get().asFile
-        output.parentFile.mkdirs()
-        output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
-            homepages: [GitHub: "https://github.com/RagexPrince683/Et-Futurum-Requiem-Reforged/releases/tag/v" + releaseVersion],
-            promos: [(releaseMinecraftVersion + "-latest"): releaseVersion]
-        ])) + "\n"
+// Each target uses its own wrapper, plugins, mappings and runtime toolchain.
+def targets = ['1.7.10': 25, '1.12.2': 21]
+targets.each { mc, jdk ->
+    def launcher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(jdk) }
+    ['build', 'test', 'clean', 'runClient', 'runServer'].each { action ->
+        tasks.register(action + mc.replace('.', '_'), Exec) {
+            group = 'multiversion'
+            description = "${action} UAB for Minecraft ${mc} with its native build."
+            workingDir file("versions/${mc}")
+            doFirst {
+                def java = launcher.get()
+                environment 'JAVA_HOME', java.metadata.installationPath.asFile.absolutePath
+                def arguments = [java.executablePath.asFile.absolutePath, '-classpath',
+                    file("versions/${mc}/gradle/wrapper/gradle-wrapper.jar").absolutePath,
+                    'org.gradle.wrapper.GradleWrapperMain', action, '--console=plain',
+                    '--no-configuration-cache', '--max-workers=2']
+                if (gradle.startParameter.offline) arguments.add('--offline')
+                commandLine arguments
+            }
+        }
     }
 }
-tasks.named("build") { dependsOn(tasks.named("generateReleaseMetadata")) }
+// Existing IntelliJ Gradle run configurations continue to launch the original target.
+['runClient', 'runClient17', 'runClient21', 'runClient25', 'runServer', 'runServer17', 'runServer21', 'runServer25', 'runObfClient', 'runObfServer', 'configurationTest', 'fenceTextureTest'].each { action ->
+    tasks.register(action, Exec) {
+        group = 'multiversion'
+        workingDir file('versions/1.7.10')
+        def launcher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+        doFirst {
+            def java = launcher.get()
+            environment 'JAVA_HOME', java.metadata.installationPath.asFile.absolutePath
+            commandLine java.executablePath.asFile.absolutePath, '-classpath', file('versions/1.7.10/gradle/wrapper/gradle-wrapper.jar').absolutePath,
+                'org.gradle.wrapper.GradleWrapperMain', action, '--console=plain', '--no-configuration-cache', '--max-workers=2'
+        }
+    }
+}
+Properties releaseProperties = new Properties()
+file('version.properties').withInputStream { releaseProperties.load(it) }
+String releaseVersion = releaseProperties.getProperty('modVersion', '').trim()
+def releaseMetadata = layout.buildDirectory.file('release/uab-update.json')
+tasks.register('generateReleaseMetadata') {
+    inputs.file(file('version.properties'))
+    outputs.file(releaseMetadata)
+    doLast {
+        File output = releaseMetadata.get().asFile
+        output.parentFile.mkdirs()
+        output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
+            homepages: [GitHub: 'https://github.com/RagexPrince683/Et-Futurum-Requiem-Reforged/releases/tag/v' + releaseVersion],
+            promos: ['1.7.10-latest': releaseVersion, '1.12.2-latest': releaseVersion]
+        ])) + '\n'
+    }
+}
+tasks.register('verifyArtifacts') {
+    group = 'verification'
+    dependsOn 'build1_7_10', 'build1_12_2'
+    doLast {
+        targets.keySet().each { mc ->
+            File artifact = file("versions/${mc}/build/libs/uab-${releaseVersion}+mc${mc}.jar")
+            if (!artifact.isFile()) throw new GradleException("Missing ${mc} production artifact: ${artifact}")
+            new java.util.zip.ZipFile(artifact).withCloseable { jar ->
+                ['mcmod.info', 'uab/options.tsv'].each { name ->
+                    if (jar.getEntry(name) == null) throw new GradleException("Missing ${name} in ${artifact.name}")
+                }
+                def metadata = new groovy.json.JsonSlurper().parse(jar.getInputStream(jar.getEntry('mcmod.info')))
+                def mod = metadata.find { it.modid == 'etfuturum' }
+                if (mod == null || mod.version != releaseVersion || mod.mcversion != mc) throw new GradleException("Incorrect release metadata in ${artifact.name}")
+                int classes = 0
+                jar.entries().each { entry ->
+                    if (entry.name.endsWith('.class') && !entry.name.startsWith('META-INF/versions/')) {
+                        jar.getInputStream(entry).withCloseable { stream ->
+                            def data = new DataInputStream(stream)
+                            if (data.readInt() != (0xCAFEBABE as int)) throw new GradleException("Invalid class ${entry.name}")
+                            data.readUnsignedShort()
+                            int major = data.readUnsignedShort()
+                            if (major > 52) throw new GradleException("Java 8 incompatible class ${entry.name} (${major}) in ${artifact.name}")
+                            classes++
+                        }
+                    }
+                }
+                logger.lifecycle("Verified ${artifact.name}: ${classes} Java 8 compatible classes and target metadata")
+            }
+        }
+    }
+}
+tasks.register('buildAll') {
+    group = 'multiversion'
+    dependsOn ':common:check', 'verifyArtifacts', 'generateReleaseMetadata'
+}
+tasks.register('testAll') {
+    group = 'multiversion'
+    dependsOn ':common:check', 'test1_7_10', 'test1_12_2'
+}
+tasks.register('cleanAll') {
+    group = 'multiversion'
+    dependsOn ':common:clean', 'clean1_7_10', 'clean1_12_2', 'clean'
+}
+tasks.named('build') { dependsOn 'buildAll' }
+tasks.named('check') { dependsOn 'testAll' }

@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+set -eu
+TASK_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+REPO_DIR=$(CDPATH= cd -- "$TASK_DIR/../.." && pwd)
+. "$REPO_DIR/scripts/select-java.sh"
+select_java 21
+cd "$TASK_DIR"
+exec "$JAVA_HOME/bin/java" -classpath "$TASK_DIR/gradle/wrapper/gradle-wrapper.jar" org.gradle.wrapper.GradleWrapperMain "$@"
