@@ -32,21 +32,7 @@ public final class Gameplay {
         if(event.getState().getMaterial()!=net.minecraft.block.material.Material.WATER&&event.getState().getBlock()!=Blocks.SOUL_SAND&&event.getState().getBlock()!=Blocks.MAGMA)return;
         BubbleColumn.seed(event.getWorld(),event.getPos());BubbleColumn.seed(event.getWorld(),event.getPos().up());
     }
-    @SubscribeEvent public void rawOres(BlockEvent.HarvestDropsEvent event) {
-        if (event.isSilkTouching()) return;
-        Block block = event.getState().getBlock();
-        Block base = block instanceof DeepslateOre ? ((DeepslateOre) block).base : block;
-        String raw = base == Blocks.IRON_ORE ? "raw_iron" : base == Blocks.GOLD_ORE ? "raw_gold" : null;
-        if (raw == null || !Content.available(raw)) return;
-        // Replace only this ore's own drop; leave drops contributed by other mods intact.
-        for (int i = 0; i < event.getDrops().size(); i++) {
-            ItemStack drop = event.getDrops().get(i);
-            if (drop.getItem() != Item.getItemFromBlock(block)) continue;
-            int quantity = RawOreDrops.quantity(base == Blocks.IRON_ORE ? "oreIron" : "oreGold", 1, 1, event.getFortuneLevel(), event.getWorld().rand);
-            ItemStack replacement = Content.stack(raw); replacement.setCount(drop.getCount() * quantity);
-            event.getDrops().set(i, replacement);
-        }
-    }
+    @SubscribeEvent public void rawOres(BlockEvent.HarvestDropsEvent event) { OreCompatibility.harvest(event); }
     @SubscribeEvent public void fuel(FurnaceFuelBurnTimeEvent event) {
         if (event.getItemStack().getItem() == Content.item("dried_kelp_block")) event.setBurnTime(4000);
     }

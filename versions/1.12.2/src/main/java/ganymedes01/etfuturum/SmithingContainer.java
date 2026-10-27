@@ -5,6 +5,7 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import ganymedes01.etfuturum.recipes.SmithingTableRecipes;
 
 public final class SmithingContainer extends Container {
     private final World world;
@@ -16,16 +17,17 @@ public final class SmithingContainer extends Container {
     };
     public SmithingContainer(InventoryPlayer inventory, World world, BlockPos pos) {
         this.world = world; this.pos = pos;
-        addSlotToContainer(new Slot(input, 0, 26, 35));
-        addSlotToContainer(new Slot(input, 1, 62, 35));
-        addSlotToContainer(new Slot(input, 2, 98, 35));
+        addSlotToContainer(new Slot(input,0,26,35){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isTemplate(stack);}});
+        addSlotToContainer(new Slot(input,1,62,35){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isBase(stack);}});
+        addSlotToContainer(new Slot(input,2,98,35){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isMaterial(stack);}});
         addSlotToContainer(new Slot(output, 0, 144, 35) {
             @Override public boolean isItemValid(ItemStack stack) { return false; }
             @Override public boolean canTakeStack(EntityPlayer player) { return !getStack().isEmpty(); }
             @Override public ItemStack onTake(EntityPlayer player, ItemStack stack) {
                 consuming = true;
-                for (int i = Features.enabled("content.template_smithing") ? 0 : 1; i < 3; i++) input.decrStackSize(i, 1);
-                consuming = false; updateResult();
+                try{for(int i=0;i<3;i++)input.decrStackSize(i,1);}finally{consuming=false;}
+                if(!world.isRemote){stack.onCrafting(world,player,stack.getCount());world.playSound(null,pos,ModernSounds.get("block.smithing_table.use"),net.minecraft.util.SoundCategory.BLOCKS,1,1);}
+                updateResult();
                 return super.onTake(player, stack);
             }
         });
@@ -33,20 +35,7 @@ public final class SmithingContainer extends Container {
         for (int column = 0; column < 9; column++) addSlotToContainer(new Slot(inventory, column, 8 + column * 18, 142));
     }
     private void updateResult() {
-        ItemStack result = ItemStack.EMPTY, gear = input.getStackInSlot(1), addition = input.getStackInSlot(2), template = input.getStackInSlot(0);
-        if (!gear.isEmpty() && addition.getItem() == Content.item("netherite_ingot") && Content.available("netherite_ingot")
-                && (!Features.enabled("content.template_smithing") || template.getItem() == Content.item("netherite_upgrade_smithing_template"))) {
-            String name = gear.getItem().getRegistryName().toString();
-            if (name.startsWith("minecraft:diamond_")) {
-                String target = "netherite_" + name.substring("minecraft:diamond_".length());
-                if (Content.ITEMS.containsKey(target)) {
-                    result = Content.stack(target);
-                    if (gear.hasTagCompound()) result.setTagCompound(gear.getTagCompound().copy());
-                    result.setItemDamage(Math.min(gear.getItemDamage(), result.getMaxDamage()));
-                }
-            }
-            if(gear.getItem()==Content.item("diamond_spear")&&Content.available("netherite_spear")){result=Content.stack("netherite_spear");if(gear.hasTagCompound())result.setTagCompound(gear.getTagCompound().copy());result.setItemDamage(Math.min(gear.getItemDamage(),result.getMaxDamage()));}
-        }
+        ItemStack result=SmithingTableRecipes.getInstance().findMatchingRecipe(input.getStackInSlot(0),input.getStackInSlot(1),input.getStackInSlot(2),world);
         output.setInventorySlotContents(0, result); detectAndSendChanges();
     }
     @Override public boolean canInteractWith(EntityPlayer player) { return world.getBlockState(pos).getBlock() == Content.block("smithing_table") && player.getDistanceSq(pos) <= 64; }
@@ -59,12 +48,13 @@ public final class SmithingContainer extends Container {
         } else if (index < 3) {
             if (!mergeItemStack(original, 4, 40, false)) return ItemStack.EMPTY;
         } else {
-            int target = original.getItem() == Content.item("netherite_upgrade_smithing_template") ? 0 : original.getItem() == Content.item("netherite_ingot") ? 2 : 1;
+            SmithingTableRecipes recipes=SmithingTableRecipes.getInstance();int target=recipes.isTemplate(original)?0:recipes.isBase(original)?1:recipes.isMaterial(original)?2:-1;
+            if(target<0)return ItemStack.EMPTY;
             if (!mergeItemStack(original, target, target + 1, false)) return ItemStack.EMPTY;
         }
         if (original.isEmpty()) slot.putStack(ItemStack.EMPTY); else slot.onSlotChanged();
         if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;
-        slot.onTake(player, original);
+        slot.onTake(player,index==3?copy:original);
         return copy;
     }
     @Override public void onContainerClosed(EntityPlayer player) { super.onContainerClosed(player); if (!world.isRemote) clearContainer(player, world, input); }

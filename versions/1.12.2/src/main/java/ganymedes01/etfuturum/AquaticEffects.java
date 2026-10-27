@@ -12,9 +12,10 @@ import net.minecraftforge.fml.relauncher.*;
 @Mod.EventBusSubscriber(modid=UAB.ID)
 public final class AquaticEffects {
     public static final Potion DOLPHINS_GRACE=new Grace();
+    public static final Potion NAUTILUS_BREATH=new Status("nautilus_breath",false,0x61A5BF);
     public static final Potion DARKNESS=new Status("darkness",true,0x292721);
     private AquaticEffects(){ }
-    @SubscribeEvent public static void register(RegistryEvent.Register<Potion> event){event.getRegistry().registerAll(DOLPHINS_GRACE,DARKNESS);}
+    @SubscribeEvent public static void register(RegistryEvent.Register<Potion> event){event.getRegistry().registerAll(DOLPHINS_GRACE,DARKNESS,NAUTILUS_BREATH);}
     private static final class Status extends Potion {
         private final String name;
         Status(String name,boolean bad,int color){super(bad,color);this.name=name;setRegistryName(UAB.ID,name);setPotionName("potion."+name);}

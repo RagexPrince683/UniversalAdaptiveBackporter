@@ -17,14 +17,14 @@ final class FishBucket extends ItemBucket {
     private final ThreadLocal<Placement> placement=new ThreadLocal<>();
     FishBucket(int kind){super(Blocks.FLOWING_WATER);this.kind=kind;setMaxStackSize(1);setContainerItem(Items.BUCKET);}
     @Override public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand){
-        Class<?> species=kind==4?EntityAxolotl.class:kind==3?EntityPufferfish.class:kind==2?EntityTropicalFish.class:kind==1?EntitySalmon.class:EntityCod.class;
-        if(!MobRegistry.enabled(species)||!Features.enabled(kind==4?"content.axolotl_buckets":"content.fish_buckets"))return new ActionResult<>(EnumActionResult.FAIL,player.getHeldItem(hand));
+        Class<?> species=kind==5?EntityTadpole.class:kind==4?EntityAxolotl.class:kind==3?EntityPufferfish.class:kind==2?EntityTropicalFish.class:kind==1?EntitySalmon.class:EntityCod.class;
+        if(!MobRegistry.enabled(species)||!Features.enabled(kind==5?"entities.enableFrogs":kind==4?"content.axolotl_buckets":"content.fish_buckets"))return new ActionResult<>(EnumActionResult.FAIL,player.getHeldItem(hand));
         ItemStack original=player.getHeldItem(hand).copy();Placement attempt=new Placement();placement.set(attempt);
         try{
             ActionResult<ItemStack> result=super.onItemRightClick(world,player,hand);
             if(attempt.pos!=null&&!world.isRemote&&!world.provider.doesWaterVaporize()){
-                EntityLiving animal=kind==4?new EntityAxolotl(world):kind==3?new EntityPufferfish(world):kind==2?new EntityTropicalFish(world):kind==1?new EntitySalmon(world):new EntityCod(world);
-                NBTTagCompound tag=original.hasTagCompound()?original.getTagCompound():new NBTTagCompound();if(animal instanceof EntityFish)((EntityFish)animal).readBucket(tag);else((EntityAxolotl)animal).readBucket(tag);
+                EntityLiving animal=kind==5?new EntityTadpole(world):kind==4?new EntityAxolotl(world):kind==3?new EntityPufferfish(world):kind==2?new EntityTropicalFish(world):kind==1?new EntitySalmon(world):new EntityCod(world);
+                NBTTagCompound tag=original.hasTagCompound()?original.getTagCompound():new NBTTagCompound();if(animal instanceof EntityFish)((EntityFish)animal).readBucket(tag);else if(animal instanceof EntityAxolotl)((EntityAxolotl)animal).readBucket(tag);else((EntityTadpole)animal).readBucket(tag);
                 if(original.hasDisplayName())animal.setCustomNameTag(original.getDisplayName());animal.setPosition(attempt.pos.getX()+.5,attempt.pos.getY()+.2,attempt.pos.getZ()+.5);
                 if(!world.spawnEntity(animal))return new ActionResult<>(EnumActionResult.FAIL,original);
             }

@@ -1,0 +1,76 @@
+# Перезапись ванильных имен (vanilla overrides)
+tile.clayHardenedStained.black.name=Чёрная керамика
+tile.clayHardenedStained.red.name=Красная керамика
+tile.clayHardenedStained.green.name=Зелёная керамика
+tile.clayHardenedStained.brown.name=Коричневая керамика
+tile.clayHardenedStained.blue.name=Синяя керамика
+tile.clayHardenedStained.purple.name=Фиолетовая керамика
+tile.clayHardenedStained.cyan.name=Бирюзовая керамика
+tile.clayHardenedStained.silver.name=Светло-серая керамика
+tile.clayHardenedStained.gray.name=Серая керамика
+tile.clayHardenedStained.pink.name=Розовая керамика
+tile.clayHardenedStained.lime.name=Лаймовая керамика
+tile.clayHardenedStained.yellow.name=Жёлтая керамика
+tile.clayHardenedStained.lightBlue.name=Светло-синяя керамика
+tile.clayHardenedStained.magenta.name=Пурпурная керамика
+tile.clayHardenedStained.orange.name=Оранжевая керамика
+tile.clayHardenedStained.white.name=Белая керамика
+tile.clayHardened.name=Керамика
+
+tile.monsterStoneEgg.stone.name=Заражённый камень
+tile.monsterStoneEgg.cobble.name=Заражённый булыжник
+tile.monsterStoneEgg.brick.name=Заражённые каменные кирпичи
+tile.monsterStoneEgg.mossybrick.name=Заражённые замшелые каменные кирпичи
+tile.monsterStoneEgg.crackedbrick.name=Заражённые потрескавшиеся каменные кирпичи
+tile.monsterStoneEgg.chiseledbrick.name=Заражённые резные каменные кирпичи
+
+tile.log.name=Древесина
+tile.log.oak.name=Дубовая древесина
+tile.log.spruce.name=Еловая древесина
+tile.log.birch.name=Берёзовая древесина
+tile.log.jungle.name=Древесина тропического дерева
+tile.log.acacia.name=Акациевая древесина
+tile.log.big_oak.name=Древесина тёмного дуба
+tile.wood.oak.name=Дубовые доски
+tile.wood.spruce.name=Еловые доски
+tile.wood.birch.name=Берёзовые доски
+tile.wood.jungle.name=Доски тропического дерева
+tile.wood.acacia.name=Акациевые доски
+tile.wood.big_oak.name=Доски тёмного дуба
+tile.woodSlab.oak.name=Дубовая плита
+tile.woodSlab.spruce.name=Еловая плита
+tile.woodSlab.birch.name=Берёзовая плита
+tile.woodSlab.jungle.name=Плита из досок тропического дерева
+tile.woodSlab.acacia.name=Акациевая плита
+tile.woodSlab.big_oak.name=Плита из досок тёмного дуба
+tile.stairsWood.name=Дубовые ступеньки
+tile.stairsWoodSpruce.name=Еловые ступеньки
+tile.stairsWoodBirch.name=Берёзовые ступеньки
+tile.stairsWoodJungle.name=Ступеньки из досок тропического дерева
+tile.stairsWoodAcacia.name=Акациевые ступеньки
+tile.stairsWoodDarkOak.name=Ступеньки из досок тёмного дуба
+tile.stoneSlab.stone.name=Гладкая каменная плита
+tile.stoneSlab.wood.name=Окаменевшая дубовая плита
+
+tile.doublePlant.grass.name=Двойная высокая трава
+tile.quartzBlock.lines.name=Кварцевый пилон
+tile.mobSpawner.name=Спаунер
+tile.stoneMoss.name=Замшелый булыжник
+tile.sandStone.smooth.name=Резной песчаник
+tile.sandStone.chiseled.name=Декоративный песчаник
+tile.netherBrick.name=Адские кирпичи
+tile.daylightDetector.name=Датчик дневного света
+
+tile.etfuturum.oak_pressure_plate.name=Дубовая нажимная плита
+tile.etfuturum.oak_button.name=Дубовая кнопка
+
+item.redstone.name=Красная пыль
+item.melon.name=Ломтик арбуза
+item.fish.cod.raw.name=Сырая треска
+item.fish.cod.cooked.name=Жареная треска
+
+
+item.bed.name=Красная кровать
+tile.bed.name=Красная кровать
+tile.fence.name=Забор из дуба
+tile.trapdoor.name=Дубовый люк

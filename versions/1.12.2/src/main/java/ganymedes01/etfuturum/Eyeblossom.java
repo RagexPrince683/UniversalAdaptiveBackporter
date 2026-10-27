@@ -15,5 +15,6 @@ public final class Eyeblossom extends BlockBush {
     @Override public int getMetaFromState(IBlockState state){return state.getValue(OPEN)?1:0;}
     @Override public int damageDropped(IBlockState state){return getMetaFromState(state);}
     @Override public void getSubBlocks(CreativeTabs tab,NonNullList<ItemStack> items){items.add(new ItemStack(this,1,0));items.add(new ItemStack(this,1,1));}
+    @Override public void onEntityCollision(World world,BlockPos pos,IBlockState state,net.minecraft.entity.Entity entity){if(!world.isRemote&&entity instanceof ganymedes01.etfuturum.entities.EntityBee&&state.getValue(OPEN))((net.minecraft.entity.EntityLivingBase)entity).addPotionEffect(new net.minecraft.potion.PotionEffect(net.minecraft.init.MobEffects.POISON,25));}
     @Override public void updateTick(World world,BlockPos pos,IBlockState state,java.util.Random random){super.updateTick(world,pos,state,random);if(!world.isRemote&&world.getBlockState(pos).getBlock()==this&&world.provider.hasSkyLight()){long time=Math.floorMod(world.getWorldTime(),24000L);world.setBlockState(pos,state.withProperty(OPEN,time>=13000&&time<23000),2);}}
 }

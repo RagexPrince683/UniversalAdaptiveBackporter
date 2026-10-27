@@ -354,3 +354,77 @@
 - Port piglins/brutes, hoglins/zoglins and striders, native model renderers, bartering, group anger, breeding, conversion and saddle/boost interaction. Preserve equipment and entity state during conversion; keep strider movement server-owned with native rider input and a separate lava spawning path.
 - Add charged crossbows with saved arrow ammunition, quick charge, multishot, piercing and tipped/spectral effects. Add treasure-only Soul Speed, native movement modifiers and soul-sand slowdown cancellation. Disabled prerequisites omit acquisition paths instead of substituting ingredients.
 - Retain configured aquatic spawn-entry identity between native selection and eligibility queries, allowing actual natural spawning while preserving population admission.
+
+
+2026-10-26 06:55 — Port functional content, archaeology and remaining compact creature families to Forge 1.12.2
+
+- Add flowers and native dye crafting, suspicious stew, candles, targets, creative light blocks, decorative copper, lightning rods, lava/potion cauldrons, dripstone, brushable blocks and decorated pots. Preserve native redstone, potion/item NBT, tool permissions, saved inventory identities and observer updates; keep hidden archaeology loot out of client updates. Consolidate copper waxing, scraping and oxidation across native shapes and doors.
+- Add the maintained released loot tables, pottery designs, ancient crops and sniffer eggs. Retain source acquisition weights in native dungeon/structure loot, require actual enabled materials, and preserve brush progress, plant halves, hatching progress and saved item metadata.
+- Port cats, pandas, wandering traders, trader llamas, allays, sniffers, armadillos, brown mooshrooms, bogged, parched, pillagers, ravagers and breezes, including their maintained interactions, AI, genetics, equipment, saved state and native renderers. Add wolf armor and wind-charge interactions. Village raids use persisted world state and native 1.12.2 evokers/vindicators.
+- Add sculk sensors/shriekers, the Warden, Darkness and Swift Sneak. Preserve wool occlusion, player warning cooldowns, native redstone and lifecycle indexing; catalyst spreading remains intentionally absent as in the maintained implementation.
+- Complete Creaking Hearts, bound Creakings, resin and eyeblossoms; natural pale trees can contain hearts. Add copper chests, bounded loaded-chest sorting, copper golem oxidation/statues and revival. Chest and statue rendering retains the maintained geometry and metadata.
+- Port frog pregnancy, frogspawn, bucketed tadpole maturation and froglights. Add camels/camel husks, happy ghasts, dried-ghast hydration and nautilus variants. Use native multiple-passenger lists and persistence instead of auxiliary seat entities, retain server ownership of movement and native rider input, and preserve harness colors, body armor, dash cooldowns and flight homes. Breath of the Nautilus pauses oxygen consumption without refilling air.
+- Register modern sounds on both sides and acquire the released audio into a checked content-addressed client cache during startup. Keep network/file acquisition out of playback and rendering. Adapt native entity/equipment layers, item metadata models and contained-water rendering to the destination engine.
+
+
+2026-10-26 08:15 — Port bees, foxes, goats and cosmetic smithing to Forge 1.12.2
+
+- Preserve the maintained goat ramming/jumping AI, screaming variants, horn ownership and eight instruments. Port fox hunting, sleeping, trusted players, berry gathering, food effects, breeding and carried-item rendering; use native rabbit/polar-bear/fish targets and native item ownership.
+- Add native bee flight/pollination, crop growth, stinging and saved three-occupant hives/nests. Retain honey comparators, smoke tags, Silk Touch bee/honey data and native placement. Release saved occupants only after successful entity admission, and update their home when a hive is relocated. Eligible native and modern tree growth can populate nests without replacing distant terrain.
+- Port the public block/item/biome tag helpers, metadata references and deprecated bee-plant adapter to a canonical inheritance index with coherent reverse-query invalidation. Discover modded flowers/crops after registration and preserve the bee growth extension point.
+- Replace hardcoded smithing output selection with the maintained recipe API, preserving two-input addon recipes and full equipment NBT. Add all eighteen armor-trim patterns and eleven materials, native armor-layer/inventory overlays, tooltips and seven-diamond template copying with exact enabled substrates. Add independent template rolls to the corresponding native treasure/elder-guardian tables without replacing their existing pools.
+- Preserve allay/sniffer item ownership when entity admission rejects a delivery. Add the maintained honey-drip appearance and held-item light-block markers/selection, and adapt filled hive and tooting horn models to native item overrides.
+
+
+2026-10-26 15:34 — Port saved structures, finite encounters and record playback to Forge 1.12.2
+
+- Add native saved bastion, trail-ruin, Ancient City and Trial Chamber assemblies with released palettes/processors, deterministic native terrain admission and native-structure reservations. Persist completed population chunks so carving, loot and bound mobs are not repeated; refuse existing saved terrain and never request neighbor chunks during template placement. Preserve native woodland mansions and fortresses.
+- Add maintained outpost towers and saved surrounding allay cages, tents, logs and targets, with native pillager ownership, banners and loot. Extend the locate command to eligible new structure families without generating their terrain.
+- Port finite Trial Spawner configurations, normal/ominous encounters, outstanding-mob persistence, reward queues and cooldowns. Add per-player vault history, matching keys and saved ejection queues. Keep server encounters authoritative while the native client supplies block models and spawner previews.
+- Correct Trial Spawner floor selection on both targets: raised chamber/dungeon spawners now search nearby supported heights instead of requiring the surrounding floor to be level with the spawner block. Preserve collision, liquid, loaded-chunk, finite-wave and accepted-spawn checks.
+- Add all nine maintained music discs, fragment crafting, native jukebox playback/comparator values, treasure pools and the existing returned-fireball/chicken-jockey acquisition rules. Adapt flattened structural states, colored beds, skulls, potted plants and released client geometry to native 1.12.2 state and tile data. Prevent ores, delayed geodes and later vegetation from overwriting reserved structures.
+
+
+2026-10-26 16:34 — Port native vehicles, wood signs and portable storage controls
+
+- Add the maintained boat materials, chest boats and bamboo rafts using native 1.12.2 paddle packets, movement validation and passenger lists. Preserve vehicle/material/name/inventory data across native portal transfers; keep chest-boat inventory ownership through retirement of the old entity. Add material-correct recipes and dispenser placement, retaining historical item identities and avoiding duplicate creative entries for native boats.
+- Retain configurable boat speed, land glide, second seats, rider ID/class filters, optional underwater buoyancy, fall-breaking distance and free view rotation at native owners. Keep client steering hooks separate from dedicated-server code. Correct the catalog so custom boat controls are not removed as vanilla-supplied settings on 1.12.2.
+- Add eleven native wood-sign families with standing/wall placement, text components, saved data and native sign-editing packets. Send the placed block before opening its editor so the client selects the correct tile renderer and wood texture. Preserve native permission/ownership checks and the maintained registry identities.
+- Add undyed shulker boxes through native opening, inventory, collision, loot and item handlers. Preserve the original recipe identity when changing shell-and-chest crafting to the undyed output, and keep dyeing/washing inventory data intact. Apply maintained storage bans to native GUI slots, hoppers and item capabilities; port native shulker dye/water interactions and the configurable client tooltip limit.
+- Add maintained boat/raft, chest, sign and portable-box rendering. Reuse native inventory screens and container packets, including inventory-key opening from a ridden chest boat. Existing native dyed boxes and ordinary boats retain their registry identities.
+
+
+2026-10-26 20:38 — Port client lighting, ambience, menus and native plant rendering
+
+- Add native float-based lightmap calculation with independently configurable warm block light, hue-preserving gamma, night-vision color floors and End ambient color. Retain Forge provider color hooks and native calculation when the additions are disabled or the provider is incompatible.
+- Add deterministic End sky flashes, matching light/fog changes, delayed positional sound and the public client flash API. Preserve custom sky renderers and restore renderer state. Add maintained Nether ambience, biome music/moods, fading loops, spores and ash, plus the additional cave sounds.
+- Add shape-bounded block-breaking particles while preserving block-provided effects, maintained sound distances, the five later note-block instruments, native book page-turning and successful bonemeal sounds. Apply the maintained block-sound adaptations at native sound-type boundaries.
+- Add the four-mode F3/F4 selector through native server commands, the maintained texture/language override pack, and loading displays driven by native progress and received client chunks. Retain other Forge loading-screen handlers.
+- Correct standing wood-sign editor transforms. Accept maintained flowers, roots, fungi, saplings and azaleas through native flower-pot interactions and saved tile data; render their additional plant while retaining native pot geometry, drops and permissions.
+
+
+2026-10-26 20:38 — Port native movement, sleeping and compatibility hooks
+
+- Add configurable item buoyancy, momentum preservation, netherite/debris fire resistance and native liquid-current adaptations. Retain existing third-party immunity, current item ownership, historical fireproof-item identity and custom flammability settings. Scale actual native current contributions, including their inlined axis constants.
+- Add maintained horse flotation, jump-assisted climbing and projectile block callbacks at native movement owners. Allow configured ascending Elytra takeoff through native client requests and server equipment/state validation. Preserve native behavior when these additions are disabled.
+- Add the saved sleeping-player percentage rule using current per-world player counts, spectator exclusion, fully asleep checks and native night/weather handling. Keep threshold rounding, a one-sleeper minimum and values above one hundred disabling night skipping.
+- Synchronize server-owned damage direction through the maintained packet identity, applying only finite values to the current client connection on its game thread. Classify the camera preference as client-owned. Add raw-item ore tags and Nether sponge drying, preserving native absorption and recipe identities.
+- Retain the fake tile inventory API at the native hopper boundary, squid ink/blindness controls and half-block step-height normalization. Classify verified native zombie/golem combat and embedded-arrow collision retention independently of their General grouping; keep the additional step normalization configurable.
+
+
+2026-10-26 22:04 — Complete native optional ore, storage and legacy settings adapters
+
+- Add canonical public raw-ore and metadata-indexed deepslate mappings. Resolve real optional ore/ingot prerequisites and blacklist entries, preserve maintained metal slots and special ore identities, and forward native harvest levels, drops, experience and smelting. Keep missing materials unavailable and retain foreign copper support when UAB copper is disabled.
+- Add optional Iron Chests barrel and shulker upgrades using native inventories, item handlers, server containers and saved item data. Preserve their different tier-number contracts and all maintained upgrade metadata, names, locks, loot, colors and contents. Retain capacity independently of acquisition settings or optional-mod presence; add maintained tier textures, crystal previews, wide inventory layouts and optional returned shells.
+- Extend native Mending selection to equipped Baubles while retaining native XP costs, repair ratios and Baubles synchronization. Keep the integration optional.
+- Add maintained rose/old-gravel and prismarine recipes, the historical daylight-detector identity and native End-portal pick item. Apply the red-sandstone family prerequisite to its additional shapes.
+- Add alternate husk/stray spawning and optional natural End shulkers, preserving configured spawn parameters and native structure persistence. Classify verified native skin layers, grass inventory tinting and fence/wall connections without replacing their native owners.
+
+- Supply native loot-table entry resources for every maintained structure reward table, so saved native containers reach the released-loot adapter through Forge loading. Keep optional ore color registration in client initialization after native item colors exist.
+
+- Synchronize storage tiers in native chunk and tile updates, with bounded crystal previews, while native container packets own the open inventory. Send the authoritative block and tier before opening larger windows, including immediately after an upgrade. Forward optional ore harvest-tool policies exactly, including native null-tool and negative-level rules.
+
+2026-10-26 23:13 — Guard native raw-ore harvests during fluid destruction
+
+- Skip empty harvests and blocks without an item form before querying Forge 1.12.2's OreDictionary. Water destroying these blocks, including during immediate spring-generation updates, no longer aborts the integrated server with an invalid-stack exception.
+- Resolve raw-ore mappings only when a nonempty matching block drop can be converted. Preserve other drops, silk touch, fortune, metadata, copied tags and optional ore blacklists; ignore empty or null drop entries without replacing them. Keep vanilla fluid propagation, notifications, scheduling and solidification unchanged.

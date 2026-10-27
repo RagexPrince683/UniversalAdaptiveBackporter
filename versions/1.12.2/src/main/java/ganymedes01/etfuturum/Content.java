@@ -82,6 +82,18 @@ public final class Content {
         if (wallFeature != null) { add(shape + "_wall", wallFeature, new NativeWall(base.getBlock())); SHAPE_BASES.put(shape + "_wall", base); }
     }
     public static void define() {
+        OreCompatibility.define();
+        IronStorage.define();
+        add("rose","tweaks.enableOldRoses",new ModernFlower(false));
+        add("old_gravel","tweaks.enableOldGravel",new BlockGravel(){@Override public Item getItemDropped(net.minecraft.block.state.IBlockState state,java.util.Random random,int fortune){return Item.getItemFromBlock(this);}}).setHardness(.6F);
+        add("daylight_detector","blocksitems.enableOldBaseDaylightSensor",new LegacyDaylightDetector()).setCreativeTab(null);
+        String[] tracks={"relic","pigstep","otherside","precipice","creator_music_box","creator","tears","lava_chicken","5"};String[] trackFlags={"content.archaeology","blocksitems.enablePigstep","blocksitems.enableOtherside","blocksitems.enablePrecipice","blocksitems.enableCreatorMusicBox","blocksitems.enableCreator","blocksitems.enableTears","blocksitems.enableLavaChicken","blocksitems.enable5"};for(int i=0;i<tracks.length;i++)add((tracks[i].equals("5")?"five":tracks[i])+"_record",trackFlags[i],new ModernRecord(tracks[i]));
+        add("trial_spawner","world.enableTrialChambers",new TrialSpawnerBlock());
+        add("vault","world.enableTrialChambers",new VaultBlock());
+        simple("world.enableTrialChambers","trial_key","ominous_trial_key");
+        simple("blocksitems.enable5","disc_fragment_5");
+        GameRegistry.registerTileEntity(TrialSpawnerTile.class,new ResourceLocation(UAB.ID,"trial_spawner"));
+        GameRegistry.registerTileEntity(VaultTile.class,new ResourceLocation(UAB.ID,"vault"));
         String copper = "blocksitems.enableCopper", netherite = "blocksitems.enableNetherite";
         add("copper_ore", copper, new OreBlock("raw_copper", 1, 1));
         add("ancient_debris", netherite, new Block(Material.ROCK).setHardness(30).setResistance(1200)).setHarvestLevel("pickaxe", 3);
@@ -116,7 +128,7 @@ public final class Content {
             block(name).setHardness(hardness).setHarvestLevel("pickaxe", 0);
         }
         Block[] ores = {Blocks.COAL_ORE, Blocks.IRON_ORE, Blocks.GOLD_ORE, Blocks.REDSTONE_ORE, Blocks.LAPIS_ORE, Blocks.DIAMOND_ORE, Blocks.EMERALD_ORE, block("copper_ore")};
-        for (Block ore : ores) add("deepslate_" + ore.getRegistryName().getPath(), "blocksitems.enableDeepslateOres", ore == Blocks.REDSTONE_ORE ? new DeepslateRedstoneOre() : new DeepslateOre(ore));
+        for (Block ore : ores){String name="deepslate_"+ore.getRegistryName().getPath();add(name,"blocksitems.enableDeepslateOres",ore==Blocks.REDSTONE_ORE?new DeepslateRedstoneOre():new DeepslateOre(ore));requires(name,"blocksitems.enableDeepslate");}
         stone("blocksitems.enableTuff", "tuff", "polished_tuff", "tuff_bricks", "chiseled_tuff", "chiseled_tuff_bricks");
         stone("blocksitems.enableCalcite", "calcite");
         block("calcite").setHardness(.75F).setResistance(.75F);
@@ -167,7 +179,7 @@ public final class Content {
             add(name + "_banner_pattern", "blocksitems.enableBanners", new BannerPatternItem(pattern));
         }
         add("smithing_table", "blocksitems.enableSmithingTable", new SmithingBlock());
-        simple("content.template_smithing", "netherite_upgrade_smithing_template");
+        add("netherite_upgrade_smithing_template","content.template_smithing",new ganymedes01.etfuturum.items.ItemSmithingTemplate("netherite_upgrade"));
         add("sweet_berry_bush", "blocksitems.enableSweetBerryBushes", new BerryBush());
         add("sweet_berries", "blocksitems.enableSweetBerryBushes", new PlantableFood(2, .1F, "sweet_berry_bush"));
         add("bamboo", "content.bamboo_plants", new BambooBlock()).setCreativeTab(null);
@@ -292,8 +304,13 @@ public final class Content {
         shapes("nether_brick", Blocks.NETHER_BRICK.getDefaultState(), null, null, wallFlag);
         shapes("sandstone", Blocks.SANDSTONE.getDefaultState(), null, null, wallFlag);
         shapes("red_sandstone", Blocks.RED_SANDSTONE.getDefaultState(), null, null, wallFlag);
+        for(String name:new String[]{"smooth_red_sandstone","smooth_red_sandstone_slab","smooth_red_sandstone_double_slab","smooth_red_sandstone_stairs","cut_red_sandstone_slab","cut_red_sandstone_double_slab","red_sandstone_wall"})if(BLOCKS.containsKey(name))requires(name,"blocksitems.enableRedSandstone");
         shapes("end_stone_bricks", Blocks.END_BRICKS.getDefaultState(), slabFlag, stairFlag, wallFlag);
         ModernContent.define();
+        add("shulker_box","blocksitems.enableShulkerBoxes",new UndyedShulkerBox());
+        GameRegistry.registerTileEntity(UndyedShulkerTile.class,new ResourceLocation(UAB.ID,"shulker_box"));
+        BoatContent.define();
+        WoodSigns.define();
         GameRegistry.registerTileEntity(BarrelTile.class, new ResourceLocation(UAB.ID, "barrel"));
         GameRegistry.registerTileEntity(CookingTile.Smoker.class, new ResourceLocation(UAB.ID, "smoker"));
         GameRegistry.registerTileEntity(CookingTile.BlastFurnace.class, new ResourceLocation(UAB.ID, "blast_furnace"));
@@ -308,6 +325,7 @@ public final class Content {
     }
     @SubscribeEvent public static void items(RegistryEvent.Register<Item> event) {
         for (Map.Entry<String, Block> entry : BLOCKS.entrySet()) {
+            if(entry.getValue() instanceof WoodSigns.Sign)continue;
             if(entry.getValue() instanceof AncientCrop || entry.getValue() instanceof FilledCauldron || entry.getValue() instanceof SoulFire)continue;
             if (entry.getValue() instanceof WoodDoor || ITEMS.containsKey(entry.getKey())) continue;
             if(entry.getValue() instanceof BambooBlock||entry.getValue() instanceof BambooShoot||entry.getValue() instanceof CaveVines)continue;
@@ -318,7 +336,10 @@ public final class Content {
             if (entry.getValue() instanceof NativeSlab) {
                 NativeSlab slab = (NativeSlab) entry.getValue();
                 item = new ItemSlab(slab, slab.single, slab.doubled) { @Override public int getItemBurnTime(ItemStack stack) { return fungus ? 0 : super.getItemBurnTime(stack); } };
-            } else if(entry.getValue() instanceof Eyeblossom)item=new ItemBlock(entry.getValue()){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&1;}};
+            } else if(entry.getValue() instanceof ModdedOreBlock){ModdedOreBlock modded=(ModdedOreBlock)entry.getValue();item=new ItemBlock(modded){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&15;}@Override public String getTranslationKey(ItemStack stack){return "tile.etfuturum."+modded.variant(stack.getMetadata()).replace("compat/","").replace('/','.');}};
+            } else if(entry.getValue() instanceof CopperStatue)item=new ItemBlock(entry.getValue()){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&7;}};
+            else if(entry.getValue() instanceof BeeHiveBlock)item=new ItemBlock(entry.getValue()){{addPropertyOverride(new ResourceLocation("honey"),(stack,world,entity)->stack.hasTagCompound()&&stack.getTagCompound().getCompoundTag("BlockEntityTag").getInteger("honeyLevel")==5?1:0);}};
+            else if(entry.getValue() instanceof Eyeblossom)item=new ItemBlock(entry.getValue()){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&1;}};
             else if(entry.getValue() instanceof LightBlock)item=new ItemBlock(entry.getValue()){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&15;}};
             else if(entry.getValue() instanceof GlowLichen)item=new GlowLichen.LichenItem(entry.getValue());
             else if(entry.getValue() instanceof SeaPickle || entry.getValue() instanceof CoralPlant || entry.getValue() instanceof Seagrass)item=new AquaticItem(entry.getValue());

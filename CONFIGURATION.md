@@ -12,7 +12,7 @@ Migration creates an adjacent `.uab.bak` copy before importing, leaves original 
 
 ## Categories and feature families
 
-The shared catalog attributes features from the Bountiful Update through Mounts of Mayhem (1.21.11), plus General. Attribution describes the feature requirement, not whether its target implementation is complete. The 1.12.2 port currently implements a subset of the catalog. Minor updates have distinct categories where needed, including iron nuggets in 1.11.1, 1.16.2, 1.20.5, 1.21.4, 1.21.6, 1.21.7 and 1.21.9. Empty update categories are not displayed. Mixed families remain under their earliest named feature update, with component dates in the shared catalog. For example, prismarine starts in 1.8 but includes 1.13 stairs/slabs and 1.14 walls. Basalt includes 1.17 smooth basalt; tuff includes 1.21 decorations. On 1.12.2, wholly native controls are omitted from freshly generated configuration and vanilla prerequisites cannot be disabled by an old backport switch. Mixed families keep controls for their remaining additions.
+The shared catalog attributes features from the Bountiful Update through Mounts of Mayhem (1.21.11), plus General. Attribution describes the feature requirement, not whether its target implementation is complete. The 1.12.2 target uses native platform features and adapters for the maintained content; concrete engine limitations remain documented in the content and mob catalogs. Minor updates have distinct categories where needed, including iron nuggets in 1.11.1, 1.16.2, 1.20.5, 1.21.4, 1.21.6, 1.21.7 and 1.21.9. Empty update categories are not displayed. Mixed families remain under their earliest named feature update, with component dates in the shared catalog. For example, prismarine starts in 1.8 but includes 1.13 stairs/slabs and 1.14 walls. Basalt includes 1.17 smooth basalt; tuff includes 1.21 decorations. On 1.12.2, wholly native controls are omitted from freshly generated configuration and vanilla prerequisites cannot be disabled by an old backport switch. Mixed families keep controls for their remaining additions. General fixes can also have verified native availability without inventing a first-release attribution. For example, native zombie/golem combat and embedded-arrow collision retention need no duplicate hook on 1.12.2, while half-block step normalization remains a configurable adaptation.
 
 Corrected category locations migrate automatically. The first such migration preserves the exact original file as `uab.cfg.catalog-v2.bak`; this backup is never overwritten. An explicit value already at the corrected location takes precedence. Otherwise the old value moves, and a feature previously suppressed by its old update's parent switch remains disabled after moving. Unrelated settings are retained.
 
@@ -75,3 +75,19 @@ The catalog contains **372 distinct feature switches**, counting shared legacy a
 | 1.21.11 | 6 |
 
 Woodland mansions have an Exploration Update generation control. Trails & Tales groups Archaeology, Brushes, Trail ruins, Decorated pots, Armor trims and Netherite upgrade templates separately. Trail ruins require Archaeology/Brushes; trimming and template upgrades require the Smithing Table. Turning off Netherite upgrade templates restores built-in two-input upgrades. Existing scripted two-input recipes remain available with the template slot empty. Acquisition/generation switches retain saved items, decorations, trim data and registered identities.
+
+
+## Sleeping percentage
+
+On 1.12.2, `update_1_17.sleeping_player_percentage.enabled` adds the saved `playersSleepingPercentage` game rule. `/gamerule playersSleepingPercentage 50` requires half of the current non-spectator players, rounded upward, to be fully asleep. At least one sleeper is required; values above 100 prevent skipping. The default 100 retains the usual all-player threshold. Native daylight-cycle and weather rules still apply.
+
+
+## Native optional integrations
+
+On 1.12.2, modded raw/deepslate ore paths require the real ore and relevant ingot from the installed mod. Blacklists accept ore-dictionary names or mod IDs. The public raw-ore and deepslate mappings are the same mappings used for harvesting and generation. Missing prerequisites leave those paths unavailable.
+
+Iron Chests compatibility adds the maintained barrel and shulker upgrades. Upgrade-item settings select UAB upgrade items; when those items are disabled, compatible native Iron Chests upgrades can be used directly. Returning a shulker upgrade to its matching Iron Chests item returns a shell when configured. Existing upgraded inventories retain their saved capacity when acquisition or integration settings are disabled, including after removing Iron Chests. Native dyed shulker identities and item NBT remain intact.
+
+Baubles Mending extends native equipment selection and leaves XP cost and repair ratios with the native experience-orb code. Without Baubles, native equipment repair is unchanged.
+
+The optional old husk/stray spawning rules remove their sky requirement in eligible biomes and retain configurable spawn weights. Natural End shulkers remain opt-in; structure shulkers retain their native persistence. Native skin overlay layers, grass item tinting and compatible fence/wall connections do not need legacy replacements on 1.12.2.

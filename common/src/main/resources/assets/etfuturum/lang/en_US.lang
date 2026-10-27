@@ -3818,3 +3818,8 @@ uab.config.update_1_8.silk_mushroom=Silk Mushroom
 uab.config.update_1_8.silk_mushroom.enabled=Enabled
 uab.config.general.shulker_bans=Shulker Bans
 uab.config.general.shulker_bans.value=Shulker Bans
+
+etfuturum.raid.approaching=A raid is approaching the village!
+etfuturum.raid.victory=Raid defeated! The village celebrates your victory.
+
+uab.loading.chunks=Received chunks: %s / %s

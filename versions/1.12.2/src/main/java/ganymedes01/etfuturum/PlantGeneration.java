@@ -12,7 +12,7 @@ import net.minecraftforge.common.BiomeDictionary;
 /** Native, new-chunk decoration: no neighbor generation or edits inside saved structures. */
 final class PlantGeneration {
     private final boolean bamboo=Features.enabled("world.bambooWorldgen");
-    private static boolean reserved(World world,BlockPos from,BlockPos to){StructureBoundingBox area=new StructureBoundingBox(from,to);return StructureReservations.vanilla(world,area)||OceanStructures.reserved(world,area)||OceanTreasure.reserved(world,area);}
+    private static boolean reserved(World world,BlockPos from,BlockPos to){StructureBoundingBox area=new StructureBoundingBox(from,to);return ModernStructures.reserved(world,area)||StructureReservations.vanilla(world,area)||OceanStructures.reserved(world,area)||OceanTreasure.reserved(world,area);}
     void generate(World world,Random random,int cx,int cz){
         Biome biome=world.getBiome(new BlockPos((cx<<4)+8,0,(cz<<4)+8));
         if(bamboo&&Content.available("bamboo")&&BiomeDictionary.hasType(biome,BiomeDictionary.Type.JUNGLE)){

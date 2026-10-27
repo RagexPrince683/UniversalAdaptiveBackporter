@@ -36,6 +36,7 @@ public final class WorldGeneration implements IWorldGenerator {
 
     @Override public void generate(Random ignored, int cx, int cz, World world, IChunkGenerator generator, IChunkProvider provider) {
         if (world.isRemote) return;
+        ModernStructures.populate(world,cx,cz);
         Random random = GenerationSeeds.chunk(world.getSeed(), cx, cz, 0x554142L);
         if (world.provider.getDimension() == 0) {
             if (Content.available("copper_ore")) veins(world, random, cx, cz, "copper_ore", copper, 8, 4, 80, Blocks.STONE, false);
@@ -75,7 +76,7 @@ public final class WorldGeneration implements IWorldGenerator {
                         BlockPos neighbor = p.offset(direction);
                         if (!world.isBlockLoaded(neighbor) || world.isAirBlock(neighbor)) { valid = false; break; }
                     }
-                    if (valid) world.setBlockState(p, Content.block(name).getDefaultState(), 18);
+                    if (valid&&!ModernStructures.occupied(world,p)) world.setBlockState(p, Content.block(name).getDefaultState(), 18);
                 }
                 p = p.offset(EnumFacing.values()[random.nextInt(6)]);
             }

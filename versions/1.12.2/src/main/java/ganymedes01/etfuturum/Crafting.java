@@ -17,6 +17,7 @@ import net.minecraftforge.oredict.*;
 public final class Crafting {
     private Crafting() { }
     private static boolean enabled(ItemStack stack) {
+        if(stack.getItem() instanceof VariantItem&&!((VariantItem)stack.getItem()).available(stack.getMetadata()))return false;
         ResourceLocation id = stack.getItem().getRegistryName();
         return !id.getNamespace().equals(UAB.ID) || Content.available(id.getPath());
     }
@@ -114,6 +115,7 @@ public final class Crafting {
         }
     }
     public static void initialize() {
+        BoatContent.initialize();
         for (Map.Entry<String, Block> entry : Content.BLOCKS.entrySet()) {
             String name = entry.getKey(); if (!Content.available(name) || name.endsWith("_double_slab")) continue;
             String ore = name.endsWith("_log") || name.endsWith("_stem") ? "logWood" : name.endsWith("_planks") ? "plankWood" : name.endsWith("_leaves") ? "treeLeaves" : entry.getValue() instanceof ModernSapling ? "treeSapling" : name.endsWith("_fence") ? "fenceWood" : name.endsWith("_fence_gate") ? "fenceGateWood" : entry.getValue().getDefaultState().getMaterial() == net.minecraft.block.material.Material.WOOD && name.endsWith("_slab") ? "slabWood" : null;
@@ -133,19 +135,21 @@ public final class Crafting {
         smelt("cobbled_deepslate", Content.stack("deepslate"), .1F);
         smelt("deepslate_bricks", Content.stack("cracked_deepslate_bricks"), .1F);
         smelt("deepslate_tiles", Content.stack("cracked_deepslate_tiles"), .1F);
-        for (Map.Entry<String, Block> entry : Content.BLOCKS.entrySet()) if (entry.getValue() instanceof DeepslateOre && Content.available(entry.getKey())) {
-            Block base = ((DeepslateOre) entry.getValue()).base;
-            ItemStack input = new ItemStack(base), output = FurnaceRecipes.instance().getSmeltingResult(input);
-            if (!output.isEmpty()) GameRegistry.addSmelting(Content.stack(entry.getKey()), output.copy(), FurnaceRecipes.instance().getSmeltingExperience(output));
-        }
+
         smelt("polished_blackstone_bricks", Content.stack("cracked_polished_blackstone_bricks"), .1F);
         if (Content.available("smooth_stone")) GameRegistry.addSmelting(Blocks.STONE, Content.stack("smooth_stone"), .1F);
         if (Content.available("smooth_sandstone")) GameRegistry.addSmelting(new ItemStack(Blocks.SANDSTONE), Content.stack("smooth_sandstone"), .1F);
         if (Content.available("smooth_red_sandstone")) GameRegistry.addSmelting(new ItemStack(Blocks.RED_SANDSTONE), Content.stack("smooth_red_sandstone"), .1F);
         if (Content.available("smooth_quartz")) GameRegistry.addSmelting(new ItemStack(Blocks.QUARTZ_BLOCK), Content.stack("smooth_quartz"), .1F);
-        for (String ore : new String[]{"copper", "iron", "gold"}) if (Content.available("raw_" + ore)) OreDictionary.registerOre("rawOre" + Character.toUpperCase(ore.charAt(0)) + ore.substring(1), Content.stack("raw_" + ore));
+        for (String ore : new String[]{"copper", "iron", "gold"}) if (Content.available("raw_" + ore)){String suffix=Character.toUpperCase(ore.charAt(0))+ore.substring(1);OreDictionary.registerOre("rawOre"+suffix,Content.stack("raw_"+ore));if(Features.enabled("functions.registerRawItemAsOre"))OreDictionary.registerOre("ore"+suffix,Content.stack("raw_"+ore));}
+        for(Item disc:Content.ITEMS.values())if(disc instanceof ModernRecord&&Content.available(disc.getRegistryName().getPath()))OreDictionary.registerOre("record",disc);
         if (Content.available("copper_ingot")) OreDictionary.registerOre("ingotCopper", Content.stack("copper_ingot"));
+        if(Content.available("netherite_ingot"))OreDictionary.registerOre("ingotNetherite",Content.stack("netherite_ingot"));
+        if(Content.available("ancient_debris"))OreDictionary.registerOre("oreDebris",Content.stack("ancient_debris"));
+        if(Content.available("netherite_scrap"))OreDictionary.registerOre("scrapDebris",Content.stack("netherite_scrap"));
+        if(Content.available("netherite_block"))OreDictionary.registerOre("blockNetherite",Content.stack("netherite_block"));
         StonecuttingRecipes.initialize(); Composting.initialize();
+        ganymedes01.etfuturum.recipes.SmithingTableRecipes.init();
     }
     private static void smelt(String input, ItemStack output, float experience) { if (Content.available(input) && enabled(output)) GameRegistry.addSmelting(Content.stack(input), output, experience); }
 }

@@ -98,9 +98,18 @@ public class TileEntityTrialSpawner extends TileEntity {
 			int px = xCoord + worldObj.rand.nextInt(9) - 4, pz = zCoord + worldObj.rand.nextInt(9) - 4;
 			if (!worldObj.blockExists(px - 1, yCoord + 3, pz - 1) || !worldObj.blockExists(px + 1, yCoord, pz + 1)) continue;
 			EntityLiving mob = createMob(config, px, yCoord + 1, pz);
-			if (!worldObj.getCollidingBoundingBoxes(mob, mob.boundingBox).isEmpty() || !worldObj.checkNoEntityCollision(mob.boundingBox) || worldObj.isAnyLiquid(mob.boundingBox) || !worldObj.getBlock(px, yCoord, pz).isOpaqueCube()) continue;
-			if (mob instanceof EntityCreature creature) creature.setHomeArea(xCoord, yCoord, zCoord, 16);
-			if (worldObj.spawnEntityInWorld(mob)) { sound("spawn_mob"); active.add(mob.getUniqueID()); entityIds.put(mob.getUniqueID(), mob.getEntityId()); lastPositions.put(mob.getUniqueID(), new int[]{px, yCoord + 1, pz}); spawned++; } break;
+            int spawnY = 0;
+            // Released chamber floors and dungeon floors sit below a raised spawner block.
+            for (int offset : new int[]{0, -1, 1, -2}) {
+                int y = yCoord + 1 + offset;
+                if (y < 2 || !worldObj.blockExists(px - 1, y - 1, pz - 1) || !worldObj.blockExists(px + 1, y + 3, pz + 1)) continue;
+                mob.setPosition(px + .5, y, pz + .5);
+                if (worldObj.getBlock(px, y - 1, pz).isOpaqueCube() && worldObj.getCollidingBoundingBoxes(mob, mob.boundingBox).isEmpty() && worldObj.checkNoEntityCollision(mob.boundingBox) && !worldObj.isAnyLiquid(mob.boundingBox)) { spawnY = y; break; }
+            }
+            if (spawnY == 0) continue;
+            if (mob instanceof EntityCreature creature) creature.setHomeArea(xCoord, yCoord, zCoord, 16);
+            if (worldObj.spawnEntityInWorld(mob)) { sound("spawn_mob"); active.add(mob.getUniqueID()); entityIds.put(mob.getUniqueID(), mob.getEntityId()); lastPositions.put(mob.getUniqueID(), new int[]{px, spawnY, pz}); spawned++; } break;
+
 		}
 	}
 	private EntityLiving createMob(JsonObject config, int x, int y, int z) {

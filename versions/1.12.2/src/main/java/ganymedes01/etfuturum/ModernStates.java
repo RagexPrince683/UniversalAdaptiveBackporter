@@ -14,6 +14,35 @@ final class ModernStates {
     static IBlockState read(NBTTagCompound entry) {
         String original = entry.getString("Name"), name = original.replace("minecraft:", "");
         IBlockState state = null;
+        if(!Content.BLOCKS.containsKey(name)&&name.endsWith("_brick_stairs")&&Content.BLOCKS.containsKey(name.replace("_brick_stairs","_bricks_stairs")))name=name.replace("_brick_stairs","_bricks_stairs");
+        if(!Content.BLOCKS.containsKey(name)&&name.endsWith("_tile_stairs")&&Content.BLOCKS.containsKey(name.replace("_tile_stairs","_tiles_stairs")))name=name.replace("_tile_stairs","_tiles_stairs");
+        if(name.equals("iron_chain"))name="chain";
+        if(name.equals("note_block"))name="noteblock";
+        if(name.equals("dead_bush"))name="deadbush";
+        if(name.equals("oak_button"))name="wooden_button";
+        if(name.equals("oak_pressure_plate"))name="wooden_pressure_plate";
+        if(name.equals("cobweb"))name="web";
+        if(name.equals("carved_pumpkin"))name="pumpkin";
+        if(name.equals("light_gray_glazed_terracotta"))name="silver_glazed_terracotta";
+        if(name.equals("coarse_dirt"))state=Blocks.DIRT.getStateFromMeta(1);
+        if(name.equals("podzol"))state=Blocks.DIRT.getStateFromMeta(2);
+        if(name.equals("skeleton_skull")||name.equals("skeleton_wall_skull"))state=Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING,name.equals("skeleton_skull")?net.minecraft.util.EnumFacing.UP:net.minecraft.util.EnumFacing.byName(entry.getCompoundTag("Properties").getString("facing")));
+        if(name.equals("redstone_wall_torch"))name="redstone_torch";
+        if(name.equals("redstone_torch"))state=(entry.getCompoundTag("Properties").getString("lit").equals("false")?Blocks.UNLIT_REDSTONE_TORCH:Blocks.REDSTONE_TORCH).getDefaultState();
+        if(name.equals("repeater"))state=(entry.getCompoundTag("Properties").getBoolean("powered")||entry.getCompoundTag("Properties").getString("powered").equals("true")?Blocks.POWERED_REPEATER:Blocks.UNPOWERED_REPEATER).getDefaultState();
+        if(name.equals("comparator"))state=(entry.getCompoundTag("Properties").getString("powered").equals("true")?Blocks.POWERED_COMPARATOR:Blocks.UNPOWERED_COMPARATOR).getDefaultState();
+        if(name.equals("cave_air")||name.equals("void_air"))name="air";
+        if(name.equals("spawner"))name="mob_spawner";
+        if(name.equals("terracotta"))name="hardened_clay";
+        if(name.equals("water_cauldron"))name="cauldron";
+        if(name.equals("wall_torch"))name="torch";
+        if(name.equals("soul_wall_torch"))name="soul_torch";
+        if(name.equals("short_grass"))state=Blocks.TALLGRASS.getStateFromMeta(1);
+        if(name.equals("fern"))state=Blocks.TALLGRASS.getStateFromMeta(2);
+        if(name.equals("dandelion"))state=Blocks.YELLOW_FLOWER.getDefaultState();
+        String[] flowers={"poppy","blue_orchid","allium","azure_bluet","red_tulip","orange_tulip","white_tulip","pink_tulip","oxeye_daisy"};for(int i=0;i<flowers.length;i++)if(name.equals(flowers[i]))state=Blocks.RED_FLOWER.getStateFromMeta(i);
+        for(net.minecraft.item.EnumDyeColor color:net.minecraft.item.EnumDyeColor.values()){String prefix=(color==net.minecraft.item.EnumDyeColor.SILVER?"light_gray":color.getName())+"_";if(name.equals(prefix+"bed"))state=Blocks.BED.getDefaultState();if(name.equals(prefix+"terracotta"))state=Blocks.STAINED_HARDENED_CLAY.getStateFromMeta(color.getMetadata());if(name.equals(prefix+"wool"))state=Blocks.WOOL.getStateFromMeta(color.getMetadata());if(name.equals(prefix+"concrete"))state=Blocks.CONCRETE.getStateFromMeta(color.getMetadata());if(name.equals(prefix+"concrete_powder"))state=Blocks.CONCRETE_POWDER.getStateFromMeta(color.getMetadata());if(name.equals(prefix+"stained_glass"))state=Blocks.STAINED_GLASS.getStateFromMeta(color.getMetadata());if(name.equals(prefix+"stained_glass_pane"))state=Blocks.STAINED_GLASS_PANE.getStateFromMeta(color.getMetadata());if(name.equals(prefix+"carpet"))state=Blocks.CARPET.getStateFromMeta(color.getMetadata());if(name.equals(prefix+"banner"))state=Blocks.STANDING_BANNER.getDefaultState();if(name.equals(prefix+"wall_banner"))state=Blocks.WALL_BANNER.getDefaultState();}
+        String[] slabNames={"stone_slab","sandstone_slab","petrified_oak_slab","cobblestone_slab","brick_slab","stone_brick_slab","nether_brick_slab","quartz_slab"};for(int i=0;i<slabNames.length;i++)if(name.equals(slabNames[i])&&!Content.BLOCKS.containsKey(name)){String type=entry.getCompoundTag("Properties").getString("type");state=(type.equals("double")?Blocks.DOUBLE_STONE_SLAB:Blocks.STONE_SLAB).getStateFromMeta(i+(type.equals("top")?8:0));}
         if (name.equals("structure_block")) return Blocks.AIR.getDefaultState();
         if (name.equals("grass_block")) name = "grass";
         if (name.equals("oak_fence")) name = "fence";
@@ -31,6 +60,8 @@ final class ModernStates {
         if (name.equals("light_blue_terracotta")) state = Blocks.STAINED_HARDENED_CLAY.getStateFromMeta(3);
         for (BlockPlanks.EnumType tree : BlockPlanks.EnumType.values()) {
             if (name.equals(tree.getName() + "_planks")) state = Blocks.PLANKS.getDefaultState().withProperty(BlockPlanks.VARIANT, tree);
+            if(name.equals(tree.getName()+"_leaves"))state=(tree.getMetadata()<4?Blocks.LEAVES:Blocks.LEAVES2).getStateFromMeta(tree.getMetadata()%4|4);
+            if(name.equals(tree.getName()+"_sapling"))state=Blocks.SAPLING.getStateFromMeta(tree.getMetadata());
             if (name.equals(tree.getName() + "_log")) state = tree.getMetadata() < 4 ? Blocks.LOG.getDefaultState().withProperty(BlockOldLog.VARIANT, tree) : Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, tree);
             if (name.equals(tree.getName() + "_slab")) {
                 String type = entry.getCompoundTag("Properties").getString("type");
@@ -62,6 +93,15 @@ final class ModernStates {
             if (property != null) state = apply(state, property, properties.getString(key));
         }
         return state;
+    }
+    static IBlockState structure(String identifier,Map<String,String> original,int rotation){
+        String name=identifier.isEmpty()?"minecraft:air":identifier;Map<String,String> properties=new HashMap<>(original);int bracket=name.indexOf('[');if(bracket>=0){if(!name.endsWith("]"))throw new IllegalArgumentException("Malformed structure state "+name);for(String entry:name.substring(bracket+1,name.length()-1).split(",")){String[] pair=entry.split("=",2);if(pair.length!=2)throw new IllegalArgumentException("Malformed structure property "+entry);properties.put(pair[0],pair[1]);}name=name.substring(0,bracket);}
+        if(name.equals("minecraft:jigsaw")||name.equals("minecraft:structure_void")||name.equals("minecraft:campfire")||name.equals("minecraft:soul_campfire")||name.equals("minecraft:grindstone"))return Blocks.AIR.getDefaultState();
+        if(name.equals("minecraft:powder_snow"))return Blocks.SNOW.getDefaultState();
+        if(name.equals("minecraft:lectern"))return Blocks.BOOKSHELF.getDefaultState();
+        if(name.startsWith("minecraft:potted_"))return Blocks.FLOWER_POT.getDefaultState();
+        if(name.equals("minecraft:damaged_anvil"))return Blocks.ANVIL.getDefaultState().withProperty(BlockAnvil.DAMAGE,2).withProperty(BlockAnvil.FACING,net.minecraft.util.EnumFacing.byName(properties.getOrDefault("facing","north"))).withRotation(net.minecraft.util.Rotation.values()[rotation&3]);
+        NBTTagCompound entry=new NBTTagCompound(),props=new NBTTagCompound();entry.setString("Name",name);for(Map.Entry<String,String> property:properties.entrySet())props.setString(property.getKey(),property.getValue());entry.setTag("Properties",props);IBlockState state=read(entry);return state==null?null:state.withRotation(net.minecraft.util.Rotation.values()[rotation&3]);
     }
     private static <T extends Comparable<T>> IBlockState apply(IBlockState state, IProperty<T> property, String value) {
         com.google.common.base.Optional<T> parsed = property.parseValue(value);

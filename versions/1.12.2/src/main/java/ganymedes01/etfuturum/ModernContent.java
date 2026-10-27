@@ -18,6 +18,21 @@ final class ModernContent {
         Content.add("wither_rose","blocksitems.enableWitherRose",new ModernFlower(true));
         for(EnumDyeColor color:new EnumDyeColor[]{EnumDyeColor.WHITE,EnumDyeColor.BLUE,EnumDyeColor.BROWN,EnumDyeColor.BLACK})Content.add(color.getName()+"_dye","blocksitems.enableNewDyes",new ModernDye(color));
         Content.add("suspicious_stew","blocksitems.enableSuspiciousStew",new SuspiciousStew());
+        Content.add("beehive","entities.enableBees",new BeeHiveBlock(false));
+        Content.add("bee_nest","entities.enableBees",new BeeHiveBlock(true));
+        GameRegistry.registerTileEntity(ganymedes01.etfuturum.tileentities.TileEntityBeeHive.class,new ResourceLocation(UAB.ID,"hive"));
+        Content.add("goat_horn","entities.enableGoats",new ganymedes01.etfuturum.items.ItemGoatHorn());
+        Content.add("harness","content.harnesses",new VariantItem("white_harness","orange_harness","magenta_harness","light_blue_harness","yellow_harness","lime_harness","pink_harness","gray_harness","light_gray_harness","cyan_harness","purple_harness","blue_harness","brown_harness","green_harness","red_harness","black_harness"));
+        Content.add("nautilus_armor","content.nautilus_armor",new VariantItem("copper_nautilus_armor","golden_nautilus_armor","iron_nautilus_armor","diamond_nautilus_armor","netherite_nautilus_armor"));
+        Content.add("dried_ghast","content.dried_ghasts",new DriedGhast());
+        GameRegistry.registerTileEntity(DriedGhastTile.class,new ResourceLocation(UAB.ID,"dried_ghast"));
+        Content.add("frogspawn","entities.enableFrogs",new Frogspawn());
+        Content.add("tadpole_bucket","entities.enableFrogs",new FishBucket(5));
+        for(String light:new String[]{"ochre_froglight","pearlescent_froglight","verdant_froglight"})Content.add(light,"entities.enableFrogs",new BlockRotatedPillar(Material.GLASS){{setDefaultState(blockState.getBaseState().withProperty(AXIS,EnumFacing.Axis.Y));setHardness(.3F);setLightLevel(1);}});
+        Content.add("copper_chest","content.copper_chests",new CopperChestBlock());
+        Content.add("copper_golem_statue","content.copper_golem_statues",new CopperStatue());
+        GameRegistry.registerTileEntity(CopperChestTile.class,new ResourceLocation(UAB.ID,"copper_chest"));
+        GameRegistry.registerTileEntity(CopperStatueTile.class,new ResourceLocation(UAB.ID,"copper_statue"));
         Content.add("eyeblossom","experiments.enablePaleGarden",new Eyeblossom());
         Content.add("creaking_heart","experiments.enablePaleGarden",new CreakingHeart());
         Content.add("resin_clump","experiments.enablePaleGarden",new ResinClump());
@@ -68,7 +83,7 @@ final class ModernContent {
         String[] spearNames={"wooden","stone","copper","iron","golden","diamond","netherite"};Item.ToolMaterial[] materials={Item.ToolMaterial.WOOD,Item.ToolMaterial.STONE,net.minecraftforge.common.util.EnumHelper.addToolMaterial("UAB_COPPER_SPEAR",1,190,4,1,13),Item.ToolMaterial.IRON,Item.ToolMaterial.GOLD,Item.ToolMaterial.DIAMOND,Content.NETHERITE};for(int i=0;i<spearNames.length;i++){String name=spearNames[i]+"_spear";Content.add(name,"content.spears",new SpearItem(materials[i]));if(i==6)Content.requires(name,"blocksitems.enableNetherite");if(i==2)Content.requires(name,"blocksitems.enableCopper");}
         Content.add("ominous_bottle","content.ominous_bottles",new OminousBottle());
         for(String sherd:SHERDS)Content.add(sherd+"_pottery_sherd","content.archaeology",new Item());
-        for(String trim:TRIMS)Content.add(trim+"_armor_trim_smithing_template","content.armor_trims",new Item());
+        for(String trim:TRIMS)Content.add(trim+"_armor_trim_smithing_template","content.armor_trims",new ganymedes01.etfuturum.items.ItemSmithingTemplate(trim));
         Content.add("brush","content.brushes",new BrushItem());
         Content.add("suspicious_sand","content.archaeology",new BrushableBlock(Blocks.SAND));
         Content.add("suspicious_gravel","content.archaeology",new BrushableBlock(Blocks.GRAVEL));

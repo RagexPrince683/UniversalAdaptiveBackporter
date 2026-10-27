@@ -35,3 +35,8 @@ spawners/ominous/trial_chamber/key
 spawners/trial_chamber/consumables
 spawners/trial_chamber/items_to_drop_when_ominous
 spawners/trial_chamber/key
+chests/bastion_bridge
+chests/bastion_hoglin_stable
+chests/bastion_other
+chests/bastion_treasure
+chests/pillager_outpost

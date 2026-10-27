@@ -1,0 +1,1 @@
+{"parent": "minecraft:block/cube_bottom_top", "textures": {"side": "metalbarrels:blocks/darksteel_barrel_side", "bottom": "metalbarrels:blocks/darksteel_barrel_bottom", "top": "metalbarrels:blocks/darksteel_barrel_top"}}

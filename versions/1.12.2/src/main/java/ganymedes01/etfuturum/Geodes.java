@@ -69,7 +69,7 @@ public final class Geodes {
         IBlockState outerState = material(outer), middleState = material(middle);
         if (!enabled || world.isRemote || outerState == null || middleState == null || !loaded(world, origin)) return false;
         StructureBoundingBox area = new StructureBoundingBox(origin.add(-16, -16, -16), origin.add(16, 16, 16));
-        if (StructureReservations.vanilla(world, area) || OceanStructures.reserved(world, area) || OceanTreasure.reserved(world, area)) return false;
+        if (ModernStructures.reserved(world,area) || StructureReservations.vanilla(world, area) || OceanStructures.reserved(world, area) || OceanTreasure.reserved(world, area)) return false;
         int points = 3 + random.nextInt(2); GeodeNoise noise = new GeodeNoise(random);
         BlockPos[] centers = new BlockPos[points]; int[] offsets = new int[points]; int invalid = 0;
         double wall = points / 6D, filling = 1 / Math.sqrt(1.7), inner = 1 / Math.sqrt(2.2 + wall), middle = 1 / Math.sqrt(3.2 + wall), outer = 1 / Math.sqrt(4.2 + wall);

@@ -1,0 +1,70 @@
+# vanilla overrides
+tile.clayHardenedStained.black.name=Schwarze Keramik
+tile.clayHardenedStained.red.name=Rote Keramik
+tile.clayHardenedStained.green.name=Grüne Keramik
+tile.clayHardenedStained.brown.name=Braune Keramik
+tile.clayHardenedStained.blue.name=Blaue Keramik
+tile.clayHardenedStained.purple.name=Violette Keramik
+tile.clayHardenedStained.cyan.name=Türkise Keramik
+tile.clayHardenedStained.silver.name=Hellgraue Keramik
+tile.clayHardenedStained.gray.name=Graue Keramik
+tile.clayHardenedStained.pink.name=Rosa Keramik
+tile.clayHardenedStained.lime.name=Hellgrüne Keramik
+tile.clayHardenedStained.yellow.name=Gelbe Keramik
+tile.clayHardenedStained.lightBlue.name=Hellblaue Keramik
+tile.clayHardenedStained.magenta.name=Magenta Keramik
+tile.clayHardenedStained.orange.name=Orange Keramik
+tile.clayHardenedStained.white.name=Weiße Keramik
+tile.clayHardened.name=Keramik
+
+tile.monsterStoneEgg.stone.name=Befallener Stein
+tile.monsterStoneEgg.cobble.name=Befallener Bruchstein
+tile.monsterStoneEgg.brick.name=Befallene Steinziegel
+tile.monsterStoneEgg.mossybrick.name=Befallene bemooste Steinziegel
+tile.monsterStoneEgg.crackedbrick.name=Befallene rissige Steinziegel
+tile.monsterStoneEgg.chiseledbrick.name=Befallener gemeißelte Steinziegel
+
+tile.log.name=Stamm
+tile.log.oak.name=Eichenstamm
+tile.log.spruce.name=Fichtenstamm
+tile.log.birch.name=Birkenstamm
+tile.log.jungle.name=Tropenbaumstamm
+tile.log.acacia.name=Akazienstamm
+tile.log.big_oak.name=Schwarzeichenstamm
+tile.wood.oak.name=Eichenholzbretter
+tile.wood.spruce.name=Fichtenholzbretter
+tile.wood.birch.name=Birkenholzbretter
+tile.wood.jungle.name=Tropenholzbretter
+tile.wood.acacia.name=Akazienholzbretter
+tile.wood.big_oak.name=Schwarzeichenholzbretter
+tile.woodSlab.oak.name=Eichenholzstufe
+tile.woodSlab.spruce.name=Fichtenholzstufe
+tile.woodSlab.birch.name=Birkenholzstufe
+tile.woodSlab.jungle.name=Tropenholzstufe
+tile.woodSlab.acacia.name=Akazienholzstufe
+tile.woodSlab.big_oak.name=Schwarzeichenholzstufe
+tile.stairsWood.name=Eichenholzholztreppe
+tile.stairsWoodSpruce.name=Fichtenholztreppe
+tile.stairsWoodBirch.name=Birkenholztreppe
+tile.stairsWoodJungle.name=Tropenholztreppe
+tile.stairsWoodAcacia.name=Akazienholztreppe
+tile.stairsWoodDarkOak.name=Schwarzeichenholztreppe
+tile.stoneSlab.stone.name=Glatte Steinstufe
+tile.stoneSlab.wood.name=Versteinerte Eichenholzstufe
+
+tile.doublePlant.grass.name=Hohes Gras
+tile.quartzBlock.lines.name=Quarzsäule
+tile.mobSpawner.name=Spawner
+tile.stoneMoss.name=Bemooster Bruchstein
+tile.sandStone.smooth.name=Geschnittener Sandstein
+tile.netherBrick.name=Netherziegel
+tile.daylightDetector.name=Tageslichtsensor
+
+item.redstone.name=Redstone-Staub
+item.melon.name=Melonenscheibe
+
+
+item.bed.name=Rotes Bett
+tile.bed.name=Rotes Bett
+tile.fence.name=Eichenholzzaun
+tile.trapdoor.name=Eichenholzfalltür

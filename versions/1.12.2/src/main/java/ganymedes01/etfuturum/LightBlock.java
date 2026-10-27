@@ -24,6 +24,8 @@ public final class LightBlock extends Block {
     @Override public boolean isOpaqueCube(IBlockState state){return false;}
     @Override public boolean isFullCube(IBlockState state){return false;}
     @Override public AxisAlignedBB getCollisionBoundingBox(IBlockState state,IBlockAccess world,BlockPos pos){return NULL_AABB;}
+    @Override public boolean canCollideCheck(IBlockState state,boolean liquid){return UAB.proxy.holdingLight();}
+    @Override public void randomDisplayTick(IBlockState state,World world,BlockPos pos,java.util.Random random){if(UAB.proxy.holdingLight())UAB.proxy.lightMarker(world,pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5,state.getValue(LEVEL));}
     @Override public boolean isReplaceable(IBlockAccess world,BlockPos pos){return true;}
     @Override public IBlockState getStateForPlacement(World world,BlockPos pos,EnumFacing side,float x,float y,float z,int meta,EntityLivingBase placer){return getStateFromMeta(meta);}
     @Override public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer player,EnumHand hand,EnumFacing side,float x,float y,float z){if(player.getHeldItem(hand).getItem()!=Item.getItemFromBlock(this)||!player.canPlayerEdit(pos,side,player.getHeldItem(hand)))return false;if(!world.isRemote)world.setBlockState(pos,state.withProperty(LEVEL,(state.getValue(LEVEL)+1)&15),3);return true;}

@@ -10,6 +10,14 @@ public final class FeatureCatalogTest {
     }
     public static void main(String[] args) {
         check(FeatureVersions.compare("1.12.2", "1.9") > 0, "numeric version ordering");
+        check(FeatureRegistry.option("mixins", "stepHeightFix").classification("1.12.2") == FeatureVersions.Classification.ADAPTED, "native collision still retains the custom half-block step normalization");
+        check(FeatureRegistry.option("mixins", "stepHeightFix").classification("1.7.10") != FeatureVersions.Classification.NATIVE, "legacy target still needs the step fix");
+        check(FeatureRegistry.option("mixins", "arrowFallingFix").classification("1.12.2") == FeatureVersions.Classification.NATIVE, "native embedded arrows already retain collision when metadata changes");
+        check(FeatureRegistry.option("mixins", "modernZombieBehavior").classification("1.12.2") == FeatureVersions.Classification.NATIVE, "native zombies already target and attack iron golems");
+        check(FeatureRegistry.option("functions", "enableAttackedAtYawFix").side.equals("client"), "damage camera preference stays client-owned");
+        check(FeatureRegistry.option("functions", "enablePlayerSkinOverlay").classification("1.12.2") == FeatureVersions.Classification.NATIVE, "native player models own the skin overlay layers");
+        check(FeatureRegistry.option("mixins", "fenceWallConnectFix").classification("1.12.2") == FeatureVersions.Classification.NATIVE, "native block face shapes connect compatible modded fences and walls");
+        check(FeatureRegistry.option("mixins", "colorGrassBlockItemSides").classification("1.12.2") == FeatureVersions.Classification.NATIVE, "native baked grass models include tinted inventory sides");
         check(FeatureVersions.compare("1.16", "1.16.0") == 0, "missing patch equals zero");
         check(FeatureVersions.compare("1.21.9", "1.21.11") < 0, "patch ordering");
         check(FeatureRegistry.option("blocksitems", "enableIronNugget").vanillaIntroduction().equals("1.11.1"), "iron nuggets patch introduction");
@@ -35,6 +43,8 @@ public final class FeatureCatalogTest {
         check(FeatureRegistry.option("functions", "enableRecipeForTotem").category.startsWith("general."), "custom recipes belong to General");
         check(FeatureRegistry.option("modcompat", "baublesMending").classification("1.12.2") == FeatureVersions.Classification.ADAPTED, "vanilla Mending does not supply Baubles integration");
         Set<String> aliases = new HashSet<>();
+        check(!FeatureVersions.nativeFeature(FeatureRegistry.option("blocksitems","newBoatSpeed"),"1.12.2"),"custom boat speed is not supplied by native rowing");
+        check(!FeatureVersions.nativeFeature(FeatureRegistry.option("blocksitems","newBoatEntityBlacklistAsWhitelist"),"1.12.2"),"custom rider whitelist remains configurable on native boats");
         int features = 0, nativeFeatures = 0;
         Set<String> identities = new HashSet<>();
         for (FeatureRegistry.Option option : FeatureRegistry.options()) {

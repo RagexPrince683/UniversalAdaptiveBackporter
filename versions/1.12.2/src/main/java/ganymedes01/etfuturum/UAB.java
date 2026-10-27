@@ -18,7 +18,14 @@ public final class UAB {
     @Mod.EventHandler public void preInit(FMLPreInitializationEvent event) {
         UabConfiguration.open(event.getModConfigurationDirectory(), event.getSide().isClient(), "1.12.2");
         for(ganymedes01.etfuturum.configuration.FeatureRegistry.Option option:ganymedes01.etfuturum.configuration.FeatureRegistry.options())if(option.feature)Features.enabled(option.alias);
+        BoatSettings.initialize();
+        ItemPhysics.initialize();
+        DamageDirection.initialize();
+        ModernBlockSounds.initialize();
+        StorageRules.initialize();
         Content.define();
+        ModernStructures.initialize();
+        TagDefaults.initialize();
         OceanBiomes.initialize();
         SurfaceBiomes.initialize();
         NetherBiomes.initialize();
@@ -34,6 +41,12 @@ public final class UAB {
         proxy.init();
     }
     @Mod.EventHandler public void postInit(FMLPostInitializationEvent event) {
+        StorageRules.resolve();
+        OreCompatibility.initialize();
+        IronStorage.initialize();
+        LegacySpawns.initialize();
+        MendingCompatibility.initialize();
+        TagDefaults.dynamic();
         UabConfiguration.get().finish();
         ConnectionSettings.capture();
     }

@@ -17,16 +17,17 @@ import net.minecraftforge.fml.common.registry.*;
 
 @Mod.EventBusSubscriber(modid = UAB.ID)
 public final class MobRegistry {
-    public static EnumCreatureType FISH, DROWNED, DOLPHINS, AXOLOTLS, GLOW_SQUID,STRIDERS;
+    public static EnumCreatureType FISH, DROWNED, DOLPHINS, AXOLOTLS, GLOW_SQUID,STRIDERS,NAUTILUS;
     public static EntityLiving.SpawnPlacementType LAVA;
     private static int turtleWeight;
+    private static Biome.SpawnListEntry mangroveFrogs;
     private static final Map<Class<?>, String> FEATURES = new LinkedHashMap<>();
     private static final Map<String, Class<? extends EntityLiving>> SPECIES = new LinkedHashMap<>();
     private static final Map<String, int[]> EGGS = new LinkedHashMap<>();
     private static final Map<Class<? extends EntityLiving>,Biome.SpawnListEntry> NATURAL=new LinkedHashMap<>();
     private MobRegistry() { }
     private static void add(String name, Class<? extends EntityLiving> type, int number, int primary, int secondary) {
-        SPECIES.put(name, type); FEATURES.put(type, name.equals("creaking") ? "experiments.enablePaleGarden" : name.equals("brown_mooshroom") ? "entities.enableBrownMooshroom" : name.equals("drowned") || name.equals("phantom") ? "entities.enable" + Character.toUpperCase(name.charAt(0)) + name.substring(1) + "Spawning" : "mobs." + name);
+        SPECIES.put(name, type); FEATURES.put(type, name.equals("fox") ? "entities.enableFoxes" : name.equals("bee") ? "entities.enableBees" : name.equals("goat") ? "entities.enableGoats" : (name.equals("frog")||name.equals("tadpole")) ? "entities.enableFrogs" : name.equals("creaking") ? "experiments.enablePaleGarden" : name.equals("brown_mooshroom") ? "entities.enableBrownMooshroom" : name.equals("drowned") || name.equals("phantom") ? "entities.enable" + Character.toUpperCase(name.charAt(0)) + name.substring(1) + "Spawning" : "mobs." + name);
         EGGS.put(name, new int[]{number, primary, secondary});
         Features.enabled(FEATURES.get(type));
     }
@@ -43,12 +44,19 @@ public final class MobRegistry {
         add("piglin",EntityPiglin.class,26,0x995F40,0xF9F3A4);add("piglin_brute",EntityPiglinBrute.class,27,0x592A10,0xF9F3A4);add("hoglin",EntityHoglin.class,28,0xC66E55,0x5F6464);add("zoglin",EntityZoglin.class,29,0xC66E55,0xE6E6E6);add("strider",EntityStrider.class,30,0x9C3436,0x4D494D);
         add("cat",EntityCat.class,57,0xEFC88E,0x957256);add("panda",EntityPanda.class,58,0xE7E7E7,0x1B1B22);
         add("trader_llama",EntityTraderLlama.class,60,0xEAA430,0x456296);add("wandering_trader",EntityWanderingTrader.class,61,0x456296,0xEAA430);
+        add("fox",EntityFox.class,22,0xD5B69F,0xCC6920);
+        add("bee",EntityBee.class,21,0xEDC343,0x43241B);
+        add("goat",EntityGoat.class,24,0xA5947C,0x55493E);
+        add("camel",EntityCamel.class,64,0xF5B86A,0x8D6135);add("camel_husk",EntityCamelHusk.class,65,0xC8AB77,0x5F513B);add("happy_ghast",EntityHappyGhast.class,69,0xF1F1F1,0xA6A6A6);add("nautilus",EntityNautilus.class,70,0xC9A579,0x694D39);add("zombie_nautilus",EntityZombieNautilus.class,71,0x759B75,0x544C36);
+        add("frog",EntityFrog.class,32,0xD07444,0xFFC77C);add("tadpole",EntityTadpole.class,33,0x6D533D,0x160A00);
+        add("copper_golem",EntityCopperGolem.class,68,0xB86643,0xE3A278);
         add("creaking",EntityCreaking.class,31,0x5C584D,0xF9D147);
         add("warden",EntityWarden.class,63,0x0F4649,0x39D6E0);
         add("allay",EntityAllay.class,62,0x22BCF3,0x78F0FF);add("sniffer",EntitySniffer.class,66,0x871E0F,0x25AB70);add("armadillo",EntityArmadillo.class,67,0xAD716D,0x824E46);
         add("bogged",EntityBogged.class,53,0x8A9C72,0x314D1B);add("parched",EntityParched.class,54,0xC4AD7A,0x695D3E);add("breeze",EntityBreeze.class,56,0xAF94DF,0xA0B8E1);
         add("pillager",EntityPillager.class,46,0x532F36,0x959B9B);add("ravager",EntityRavager.class,51,0x757470,0x5B5049);
         add("brown_mooshroom",EntityBrownMooshroom.class,12,0x9B704B,0xB7B7B7);
+        NAUTILUS=EnumHelper.addCreatureType("EFR_NAUTILUS",EntityNautilus.class,UabConfiguration.get().integer("entities","nautilusPopulation",5,0,1000),Material.WATER,true,false);
         STRIDERS=EnumHelper.addCreatureType("EFR_STRIDER",EntityStrider.class,15,Material.LAVA,true,true);
         LAVA=EnumHelper.addEnum(EntityLiving.SpawnPlacementType.class,"EFR_LAVA",new Class<?>[0]);EntitySpawnPlacementRegistry.setPlacementType(EntityStrider.class,LAVA);
         FISH = EnumHelper.addCreatureType("EFR_FISH", EntityFish.class, UabConfiguration.get().integer("entities", "fishPopulation", 20, 0, 1000), Material.WATER, true, false);
@@ -61,12 +69,15 @@ public final class MobRegistry {
         SpawnSettings.initialize();
         // WorldServer selects an entry, then validates List.contains(entry) on a second query.
         // The configured entries must retain identity across both native calls.
-        NATURAL.clear();natural(EntityCat.class,3,1,2);natural(EntityPanda.class,2,1,2);natural(EntityArmadillo.class,6,2,3);natural(EntityBogged.class,15,1,3);natural(EntityParched.class,15,1,3);natural(EntityCod.class,15,3,6);natural(EntitySalmon.class,15,1,5);natural(EntityTropicalFish.class,25,4,8);natural(EntityPufferfish.class,5,1,3);
+        NATURAL.clear();natural(EntityFox.class,8,2,4);natural(EntityGoat.class,5,1,3);natural(EntityCamel.class,1,1,1);natural(EntityCamelHusk.class,1,1,1);natural(EntityNautilus.class,5,1,2);natural(EntityZombieNautilus.class,1,1,1);natural(EntityFrog.class,10,2,5);mangroveFrogs=SpawnSettings.entry(EntityFrog.class,1,2,5);natural(EntityCat.class,3,1,2);natural(EntityPanda.class,2,1,2);natural(EntityArmadillo.class,6,2,3);natural(EntityBogged.class,15,1,3);natural(EntityParched.class,15,1,3);natural(EntityCod.class,15,3,6);natural(EntitySalmon.class,15,1,5);natural(EntityTropicalFish.class,25,4,8);natural(EntityPufferfish.class,5,1,3);
         natural(EntityPiglin.class,15,2,4);natural(EntityStrider.class,60,1,2);NetherBiomes.spawns();
         natural(EntityDrowned.class,1,1,2);natural(EntityDolphin.class,2,1,5);natural(EntityTurtle.class,turtleWeight,2,5);natural(EntityAxolotl.class,1,1,3);natural(EntityGlowSquid.class,1,2,4);
-        for (Class<? extends EntityLiving> type : SPECIES.values()) if (EntityFish.class.isAssignableFrom(type) || type == EntityDrowned.class || type == EntityDolphin.class || type==EntityAxolotl.class || type==EntityGlowSquid.class) EntitySpawnPlacementRegistry.setPlacementType(type, EntityLiving.SpawnPlacementType.IN_WATER);
+        for (Class<? extends EntityLiving> type : SPECIES.values()) if (EntityFish.class.isAssignableFrom(type) || type == EntityDrowned.class || type == EntityDolphin.class || type==EntityAxolotl.class || type==EntityGlowSquid.class || EntityNautilus.class.isAssignableFrom(type)) EntitySpawnPlacementRegistry.setPlacementType(type, EntityLiving.SpawnPlacementType.IN_WATER);
     }
     @SubscribeEvent public static void register(RegistryEvent.Register<EntityEntry> event) {
+        event.getRegistry().register(EntityEntryBuilder.create().entity(EntityItemUninflammable.class).id(new ResourceLocation(UAB.ID,"fireproof_item"),15).name("fireproof_item").tracker(64,1,true).build());
+        event.getRegistry().register(EntityEntryBuilder.create().entity(EntityNewBoat.class).id(new ResourceLocation(UAB.ID,"new_boat"),13).name("new_boat").tracker(64,1,true).build());
+        event.getRegistry().register(EntityEntryBuilder.create().entity(EntityNewBoatWithChest.class).id(new ResourceLocation(UAB.ID,"chest_boat"),19).name("chest_boat").tracker(64,1,true).build());
         for (Map.Entry<String, Class<? extends EntityLiving>> entry : SPECIES.entrySet()) {
             int[] properties = EGGS.get(entry.getKey());
             event.getRegistry().register(EntityEntryBuilder.create().entity(entry.getValue()).id(new ResourceLocation(UAB.ID, entry.getKey()), properties[0]).name(entry.getKey()).tracker(80, 3, true).egg(properties[1], properties[2]).build());
@@ -77,10 +88,13 @@ public final class MobRegistry {
         event.getRegistry().register(EntityEntryBuilder.create().entity(EntityFallingDripstone.class).id(new ResourceLocation(UAB.ID,"falling_dripstone"),18).name("falling_dripstone").tracker(64,1,true).build());
     }
     @SubscribeEvent public static void potentialSpawns(WorldEvent.PotentialSpawns event) {
+        if(event.getType()==EnumCreatureType.MONSTER&&UndergroundStructures.containsCity(event.getWorld(),event.getPos().getX(),event.getPos().getY(),event.getPos().getZ())){event.getList().clear();return;}
+        if(event.getType()==EnumCreatureType.MONSTER&&Features.enabled("entities.enableOutposts")&&event.getWorld().provider.getDimension()==0&&RaidProgress.get(event.getWorld()).isOutpost(event.getPos().getX(),event.getPos().getZ())&&event.getWorld().isBlockLoaded(event.getPos())&&event.getPos().getY()>=event.getWorld().getTopSolidOrLiquidBlock(event.getPos()).getY()-12){event.getList().clear();if(enabled(EntityPillager.class))ganymedes01.etfuturum.configuration.SpawnSettings.add(event.getList(),EntityPillager.class,1,1,3);return;}
+
         if(event.getType()==STRIDERS){event.getList().clear();if(event.getWorld().provider.isNether())append(event.getList(),EntityStrider.class);return;}
         if(event.getType()==EnumCreatureType.MONSTER&&event.getWorld().getBiome(event.getPos())==net.minecraft.init.Biomes.HELL){for(Biome.SpawnListEntry entry:event.getList())if(entry.entityClass==net.minecraft.entity.monster.EntityBlaze.class||entry.entityClass==net.minecraft.entity.monster.EntityWitherSkeleton.class)return;append(event.getList(),EntityPiglin.class);return;}
-        if(event.getWorld().provider.getDimension()==0){Biome habitat=event.getWorld().getBiome(event.getPos());if(event.getType()==EnumCreatureType.MONSTER){if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SWAMP))append(event.getList(),EntityBogged.class);if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SANDY)&&!BiomeDictionary.hasType(habitat,BiomeDictionary.Type.COLD))append(event.getList(),EntityParched.class);}else if(event.getType()==EnumCreatureType.CREATURE){if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SWAMP)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.PLAINS)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SANDY)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.CONIFEROUS))append(event.getList(),EntityCat.class);if(Content.available("bamboo")&&BiomeDictionary.hasType(habitat,BiomeDictionary.Type.JUNGLE))append(event.getList(),EntityPanda.class);if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SAVANNA)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.MESA))append(event.getList(),EntityArmadillo.class);}}
-        if (event.getType() != FISH && event.getType() != DROWNED && event.getType()!=DOLPHINS && event.getType()!=AXOLOTLS && event.getType()!=GLOW_SQUID && event.getType()!=EnumCreatureType.CREATURE) return;
+        if(event.getWorld().provider.getDimension()==0){Biome habitat=event.getWorld().getBiome(event.getPos());if(event.getType()==EnumCreatureType.CREATURE&&BiomeDictionary.hasType(habitat,BiomeDictionary.Type.CONIFEROUS))append(event.getList(),EntityFox.class);if(event.getType()==EnumCreatureType.MONSTER){if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SWAMP))append(event.getList(),EntityBogged.class);if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SANDY)&&!BiomeDictionary.hasType(habitat,BiomeDictionary.Type.COLD)){append(event.getList(),EntityParched.class);append(event.getList(),EntityCamelHusk.class);}}else if(event.getType()==EnumCreatureType.CREATURE){if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.MOUNTAIN)&&(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.COLD)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SNOWY)||habitat.getRegistryName().getPath().equals("stony_peaks")))append(event.getList(),EntityGoat.class);if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SANDY)&&!BiomeDictionary.hasType(habitat,BiomeDictionary.Type.COLD))append(event.getList(),EntityCamel.class);if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SWAMP)){if(habitat.getRegistryName()!=null&&habitat.getRegistryName().toString().equals("etfuturum:mangrove_swamp")){if(mangroveFrogs!=null&&!event.getList().contains(mangroveFrogs))event.getList().add(mangroveFrogs);}else append(event.getList(),EntityFrog.class);}if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SWAMP)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.PLAINS)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SANDY)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.CONIFEROUS))append(event.getList(),EntityCat.class);if(Content.available("bamboo")&&BiomeDictionary.hasType(habitat,BiomeDictionary.Type.JUNGLE))append(event.getList(),EntityPanda.class);if(BiomeDictionary.hasType(habitat,BiomeDictionary.Type.SAVANNA)||BiomeDictionary.hasType(habitat,BiomeDictionary.Type.MESA))append(event.getList(),EntityArmadillo.class);}}
+        if (event.getType() != FISH && event.getType() != DROWNED && event.getType()!=DOLPHINS && event.getType()!=AXOLOTLS && event.getType()!=GLOW_SQUID && event.getType()!=NAUTILUS && event.getType()!=EnumCreatureType.CREATURE) return;
         if(event.getType()!=EnumCreatureType.CREATURE)event.getList().clear();
         if (event.getWorld().provider.getDimension() != 0) return;
         Biome biome = event.getWorld().getBiome(event.getPos());
@@ -88,6 +102,7 @@ public final class MobRegistry {
         if(event.getType()==EnumCreatureType.CREATURE){if(Features.enabled("entities.enableAquaticSpawning")&&BiomeDictionary.hasType(biome,BiomeDictionary.Type.BEACH)&&!BiomeDictionary.hasType(biome,BiomeDictionary.Type.COLD))append(event.getList(),EntityTurtle.class);return;}
         if (event.getType() == DROWNED) { if (ocean || river) append(event.getList(), EntityDrowned.class); return; }
         if (!Features.enabled("entities.enableAquaticSpawning")) return;
+        if(event.getType()==NAUTILUS){if(ocean&&Features.enabled("entities.enableModernPassiveSpawning")){append(event.getList(),EntityNautilus.class);append(event.getList(),EntityZombieNautilus.class);}return;}
         if(event.getType()==DOLPHINS){if(ocean&&!BiomeDictionary.hasType(biome,BiomeDictionary.Type.SNOWY))append(event.getList(),EntityDolphin.class);return;}
         if(event.getType()==AXOLOTLS){append(event.getList(),EntityAxolotl.class);return;}
         if(event.getType()==GLOW_SQUID){append(event.getList(),EntityGlowSquid.class);return;}

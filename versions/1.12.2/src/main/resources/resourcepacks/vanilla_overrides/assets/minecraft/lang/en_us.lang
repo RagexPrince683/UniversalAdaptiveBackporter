@@ -1,0 +1,83 @@
+# vanilla overrides
+tile.clayHardenedStained.black.name=Black Terracotta
+tile.clayHardenedStained.red.name=Red Terracotta
+tile.clayHardenedStained.green.name=Green Terracotta
+tile.clayHardenedStained.brown.name=Brown Terracotta
+tile.clayHardenedStained.blue.name=Blue Terracotta
+tile.clayHardenedStained.purple.name=Purple Terracotta
+tile.clayHardenedStained.cyan.name=Cyan Terracotta
+tile.clayHardenedStained.silver.name=Light Gray Terracotta
+tile.clayHardenedStained.gray.name=Gray Terracotta
+tile.clayHardenedStained.pink.name=Pink Terracotta
+tile.clayHardenedStained.lime.name=Lime Terracotta
+tile.clayHardenedStained.yellow.name=Yellow Terracotta
+tile.clayHardenedStained.lightBlue.name=Light Blue Terracotta
+tile.clayHardenedStained.magenta.name=Magenta Terracotta
+tile.clayHardenedStained.orange.name=Orange Terracotta
+tile.clayHardenedStained.white.name=White Terracotta
+tile.clayHardened.name=Terracotta
+
+tile.monsterStoneEgg.stone.name=Infested Stone
+tile.monsterStoneEgg.cobble.name=Infested Cobblestone
+tile.monsterStoneEgg.brick.name=Infested Stone Bricks
+tile.monsterStoneEgg.mossybrick.name=Infested Mossy Stone Bricks
+tile.monsterStoneEgg.crackedbrick.name=Infested Cracked Stone Bricks
+tile.monsterStoneEgg.chiseledbrick.name=Infested Chiseled Stone Bricks
+
+tile.log.name=Log
+tile.log.oak.name=Oak Log
+tile.log.spruce.name=Spruce Log
+tile.log.birch.name=Birch Log
+tile.log.jungle.name=Jungle Log
+tile.log.acacia.name=Acacia Log
+tile.log.big_oak.name=Dark Oak Log
+tile.wood.oak.name=Oak Planks
+tile.wood.spruce.name=Spruce Planks
+tile.wood.birch.name=Birch Planks
+tile.wood.jungle.name=Jungle Planks
+tile.wood.acacia.name=Acacia Planks
+tile.wood.big_oak.name=Dark Oak Planks
+tile.woodSlab.oak.name=Oak Slab
+tile.woodSlab.spruce.name=Spruce Slab
+tile.woodSlab.birch.name=Birch Slab
+tile.woodSlab.jungle.name=Jungle Slab
+tile.woodSlab.acacia.name=Acacia Slab
+tile.woodSlab.big_oak.name=Dark Oak Slab
+tile.stairsWood.name=Oak Stairs
+tile.stairsWoodSpruce.name=Spruce Stairs
+tile.stairsWoodBirch.name=Birch Stairs
+tile.stairsWoodJungle.name=Jungle Stairs
+tile.stairsWoodAcacia.name=Acacia Stairs
+tile.stairsWoodDarkOak.name=Dark Oak Stairs
+tile.stoneSlab.stone.name=Smooth Stone Slab
+tile.stoneSlab.wood.name=Petrified Oak Slab
+
+tile.doublePlant.grass.name=Tall Grass
+tile.quartzBlock.lines.name=Quartz Pillar
+tile.mobSpawner.name=Spawner
+tile.stoneMoss.name=Mossy Cobblestone
+tile.sandStone.smooth.name=Cut Sandstone
+tile.netherBrick.name=Nether Bricks
+tile.daylightDetector.name=Daylight Detector
+
+item.redstone.name=Redstone Dust
+item.melon.name=Melon Slice
+item.fish.cod.raw.name=Raw Cod
+item.fish.cod.cooked.name=Cooked Cod
+item.seeds.name=Wheat Seeds
+
+#These keys only enable if their respective item is enabled EG Red Bed only if colored beds are enabled, and Oak Boat only if new boats are enabled and replaceOldBoats is not true
+
+#These two have to exist as a new EFR key, because in 1.7.10 stone and wood pressure plates and buttons share the same key.
+tile.etfuturum.oak_pressure_plate.name=Oak Pressure Plate
+tile.etfuturum.oak_button.name=Oak Button
+
+item.bed.name=Red Bed
+tile.bed.name=Red Bed
+item.sign.name=Oak Sign
+tile.sign.name=Oak Sign
+item.doorWood.name=Oak Door
+tile.doorWood.name=Oak Door
+tile.fence.name=Oak Fence
+tile.fenceGate.name=Oak Fence Gate
+tile.trapdoor.name=Oak Trapdoor

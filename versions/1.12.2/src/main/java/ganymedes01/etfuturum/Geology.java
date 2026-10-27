@@ -22,15 +22,7 @@ final class Geology {
     private final boolean whitelist = UabConfiguration.get().bool("world", "deepslateLayerDimensionBlacklistAsWhitelist", false);
     private final int[] dimensions = UabConfiguration.get().property("world", "deepslateLayerDimensionBlacklist", new int[]{-1, 1}, Property.Type.INTEGER).getIntList();
     private final int[] fullHeight = UabConfiguration.get().property("world", "replaceAllStoneWithDeepslateDimensionWhitelist", new int[0], Property.Type.INTEGER).getIntList();
-    private final Map<Block, Block> ores = new IdentityHashMap<>();
-    Geology() {
-        for (Block block : Content.BLOCKS.values()) if (block instanceof DeepslateOre && Content.available(block.getRegistryName().getPath())) {
-            Block base = ((DeepslateOre) block).base;
-            if (base.getRegistryName().getNamespace().equals(UAB.ID) && !Content.available(base.getRegistryName().getPath())) continue;
-            ores.put(base, block);
-        }
-        if (ores.containsKey(Blocks.REDSTONE_ORE)) ores.put(Blocks.LIT_REDSTONE_ORE, ores.get(Blocks.REDSTONE_ORE));
-    }
+    Geology() { }
     private static boolean contains(int[] values, int value) { for (int candidate : values) if (candidate == value) return true; return false; }
     void generate(World world, Random random, int cx, int cz) {
         boolean flat = world.getWorldInfo().getTerrainType() == WorldType.FLAT;
@@ -50,13 +42,14 @@ final class Geology {
     }
     private void replace(World world, BlockPos pos, Block stone) {
         IBlockState current = world.getBlockState(pos); Block block = current.getBlock();
-        if (block.hasTileEntity(current)) return;
-        Block replacement = ores.get(block);
+        if (block.hasTileEntity(current)||ModernStructures.occupied(world,pos)||ganymedes01.etfuturum.api.tags.helpers.BlockTags.hasTag(block,block.getMetaFromState(current),"minecraft:deepslate_ore_replaceables")) return;
+        ganymedes01.etfuturum.api.blocksanditems.utils.BlockMetaPair mapped=ganymedes01.etfuturum.api.DeepslateOreRegistry.getOre(block,block.getMetaFromState(current));
+        IBlockState replacement=mapped==null?null:mapped.get()==Content.block("deepslate")?stone.getDefaultState():mapped.get().getStateFromMeta(mapped.getMeta());
         if (replacement == null) {
-            if (block == Blocks.STONE && (stones || current.getValue(BlockStone.VARIANT) == BlockStone.EnumType.STONE) || block == Blocks.DIRT && dirt) replacement = stone;
-            else if (block == Blocks.COBBLESTONE && cobble && Content.available("cobbled_deepslate")) replacement = Content.block("cobbled_deepslate");
+            if (block == Blocks.STONE && (stones || current.getValue(BlockStone.VARIANT) == BlockStone.EnumType.STONE) || block == Blocks.DIRT && dirt) replacement = stone.getDefaultState();
+            else if (block == Blocks.COBBLESTONE && cobble && Content.available("cobbled_deepslate")) replacement = Content.block("cobbled_deepslate").getDefaultState();
         }
-        if (replacement != null) world.setBlockState(pos, replacement.getDefaultState(), 18);
+        if (replacement != null) world.setBlockState(pos, replacement, 18);
     }
     private void cluster(World world, Random random, int cx, int cz, int size, Block stone) {
         if (size <= 0) return;

@@ -45,11 +45,11 @@ public final class SurfaceBiomes {
             // The complete native tree footprint must already be loaded; never generate its neighbors.
             BlockPos pos=world.getHeight(center.add(random.nextInt(9)-4,0,random.nextInt(9)-4));if(world.getBiome(pos)!=biome)continue;
             net.minecraft.world.gen.structure.StructureBoundingBox area=new net.minecraft.world.gen.structure.StructureBoundingBox(pos.add(-8,-6,-8),pos.add(8,15,8));
-            if(!world.isAreaLoaded(pos.add(-8,-6,-8),pos.add(8,15,8))||StructureReservations.vanilla(world,area)||OceanStructures.reserved(world,area)||OceanTreasure.reserved(world,area))continue;
+            if(!world.isAreaLoaded(pos.add(-8,-6,-8),pos.add(8,15,8))||ModernStructures.reserved(world,area)||StructureReservations.vanilla(world,area)||OceanStructures.reserved(world,area)||OceanTreasure.reserved(world,area))continue;
             if(land.kind==Kind.CHERRY||land.kind==Kind.MANGROVE||land.kind==Kind.PALE){ModernTreeGenerator.generate(world,random,pos,land.kind==Kind.CHERRY?"cherry":land.kind==Kind.MANGROVE?"mangrove":"pale_oak",false);}
             else land.tree.generate(world,random,pos);
         }
-        if(land.kind==Kind.PALE&&Content.available("pale_moss_block"))for(int i=0;i<64;i++){BlockPos pos=world.getHeight(new BlockPos((cx<<4)+random.nextInt(16),0,(cz<<4)+random.nextInt(16))).down();if(world.getBiome(pos)!=biome||world.getTileEntity(pos)!=null)continue;Block old=world.getBlockState(pos).getBlock();if(old!=Blocks.GRASS&&old!=Blocks.DIRT)continue;world.setBlockState(pos,Content.block("pale_moss_block").getDefaultState(),18);if(world.isAirBlock(pos.up())&&random.nextInt(3)==0)world.setBlockState(pos.up(),Content.block(Content.available("eyeblossom")&&random.nextInt(5)==0?"eyeblossom":"pale_moss_carpet").getDefaultState(),18);}
+        if(land.kind==Kind.PALE&&Content.available("pale_moss_block"))for(int i=0;i<64;i++){BlockPos pos=world.getHeight(new BlockPos((cx<<4)+random.nextInt(16),0,(cz<<4)+random.nextInt(16))).down();if(world.getBiome(pos)!=biome||world.getTileEntity(pos)!=null||ModernStructures.occupied(world,pos))continue;Block old=world.getBlockState(pos).getBlock();if(old!=Blocks.GRASS&&old!=Blocks.DIRT)continue;world.setBlockState(pos,Content.block("pale_moss_block").getDefaultState(),18);if(world.isAirBlock(pos.up())&&random.nextInt(3)==0)world.setBlockState(pos.up(),Content.block(Content.available("eyeblossom")&&random.nextInt(5)==0?"eyeblossom":"pale_moss_carpet").getDefaultState(),18);}
     }
     private static final class Land extends Biome {
         final Kind kind;final boolean generate;final BiomeManager.BiomeType climate;final BiomeDictionary.Type[] tags;final WorldGenAbstractTree tree;

@@ -22,7 +22,9 @@ public final class FeatureVersions {
         if (!option.origin.equals("general")) version(option.origin);
         if (!option.nativeSince.equals("never")) {
             version(option.nativeSince);
-            if (option.origin.equals("general") || compare(option.nativeSince, option.origin) < 0) throw new IllegalArgumentException("Native availability precedes introduction: " + option.alias);
+            // General also contains fixes whose first release is unspecified. Their verified native
+            // availability is independent of that player-facing grouping.
+            if (!option.origin.equals("general") && compare(option.nativeSince, option.origin) < 0) throw new IllegalArgumentException("Native availability precedes introduction: " + option.alias);
         }
         String first = null, last = null;
         for (String introduction : option.components.values()) {

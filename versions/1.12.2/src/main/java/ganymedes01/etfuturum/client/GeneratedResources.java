@@ -28,16 +28,23 @@ final class GeneratedResources implements IResourcePack {
             File file = ModernAssets.prepare(Minecraft.getMinecraft().gameDir);
             List<IResourcePack> packs = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "defaultResourcePacks", "field_110449_ao");
             GeneratedResources pack = new GeneratedResources(file);
-            packs.add(pack);
+            VanillaOverrides overrides=new VanillaOverrides();
+            packs.add(overrides);packs.add(pack);
             // Forge retains the startup refresh list before pre-initialization runs.
             List<IResourcePack> startup = ReflectionHelper.getPrivateValue(net.minecraftforge.fml.client.FMLClientHandler.class, net.minecraftforge.fml.client.FMLClientHandler.instance(), "resourcePackList");
-            if (startup != packs) startup.add(pack);
+            if (startup != packs) {startup.add(overrides);startup.add(pack);}
             // The first reload already populated the per-domain managers before pre-init.
+            ((net.minecraft.client.resources.SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).reloadResourcePack(overrides);
             ((net.minecraft.client.resources.SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).reloadResourcePack(pack);
             Minecraft.getMinecraft().getLanguageManager().onResourceManagerReload(Minecraft.getMinecraft().getResourceManager());
         } catch (Exception failure) { throw new IllegalStateException("UAB could not prepare its Minecraft 1.21.11 resources; supply -Duab.assets=<client jar> for offline use", failure); }
     }
     private static String assetName(String name) {
+        if(name.equals("mangrove_oak_boat"))return "mangrove_boat";
+        if(name.startsWith("item_sign_"))return name.substring(10)+"_sign";
+        if(name.startsWith("wall_sign_"))return name.substring(10)+"_wall_sign";
+        if(name.startsWith("sign_"))return name.substring(5)+"_sign";
+        if(name.endsWith("_record"))return "music_disc_"+(name.equals("five_record")?"5":name.substring(0,name.length()-7));
         if(name.endsWith("_underwater"))return name.substring(0,name.length()-11);
         if (name.endsWith("_double_slab")) return name.replace("_double_slab", "_slab");
         if (name.endsWith("_bricks_stairs")) return name.replace("_bricks_stairs", "_brick_stairs");
@@ -48,6 +55,8 @@ final class GeneratedResources implements IResourcePack {
         return name;
     }
     private String modernTexture(String path) {
+        if(path.equals("textures/entity/ghast/ghastling.png"))path="textures/entity/ghast/happy_ghast_baby.png";
+        if(path.equals("textures/mob_effect/nautilus_breath.png"))path="textures/mob_effect/breath_of_the_nautilus.png";
         if (path.equals("textures/models/armor/netherite_layer_1.png")) path = "textures/entity/equipment/humanoid/netherite.png";
         if (path.equals("textures/models/armor/netherite_layer_2.png")) path = "textures/entity/equipment/humanoid_leggings/netherite.png";
         if(path.equals("textures/models/armor/turtle_layer_1.png"))path="textures/entity/equipment/humanoid/turtle_scute.png";
@@ -68,7 +77,7 @@ final class GeneratedResources implements IResourcePack {
             JsonObject modern = read("lang/" + language + ".json"); if (modern == null) modern = read("lang/en_us.json");
             if (modern != null) {
                 for (Map.Entry<String, Block> block : Content.BLOCKS.entrySet()) appendName(merged, existing, modern, block.getValue().getTranslationKey() + ".name", "block.minecraft." + assetName(block.getKey()));
-                for (Map.Entry<String, net.minecraft.item.Item> item : Content.ITEMS.entrySet()) appendName(merged, existing, modern, item.getValue().getTranslationKey() + ".name", "item.minecraft." + assetName(item.getKey()));
+                for (Map.Entry<String, net.minecraft.item.Item> item : Content.ITEMS.entrySet()){appendName(merged, existing, modern, item.getValue().getTranslationKey() + ".name", "item.minecraft." + assetName(item.getKey()));if(item.getValue() instanceof ModernRecord){String track=((ModernRecord)item.getValue()).track;appendName(merged,existing,modern,"item.record."+track+".desc","jukebox_song.minecraft."+track);}if(item.getValue() instanceof VariantItem)for(String variant:((VariantItem)item.getValue()).variants)appendName(merged,existing,modern,"item.etfuturum."+variant+".name","item.minecraft."+variant);}
             }
             cached = merged.toString().getBytes(StandardCharsets.UTF_8); generated.put(path, cached); return new ByteArrayInputStream(cached);
         } catch (IOException failure) { throw new IllegalStateException("Cannot adapt UAB language " + path, failure); }
@@ -142,9 +151,14 @@ final class GeneratedResources implements IResourcePack {
     private static String variantKey(Map<String, String> values) { List<String> parts = new ArrayList<>(); values.forEach((key, value) -> parts.add(key + "=" + value)); return parts.isEmpty() ? "normal" : String.join(",", parts); }
     private static JsonObject model(String name) { JsonObject model = new JsonObject(); model.addProperty("model", "etfuturum:" + name); return model; }
     private JsonObject blockstates(String name, Block block) {
+        if(name.equals("raw_adamantium_block"))return read("blockstates/"+name+".json");
+        if(block instanceof BarrelBlock&&!name.equals("barrel"))return read("blockstates/"+name+".json");
+        if(block instanceof ModdedOreBlock){JsonObject result=new JsonObject(),variants=new JsonObject();for(int meta=0;meta<16;meta++)variants.add("variant="+meta,model(((ModdedOreBlock)block).variant(meta)));result.add("variants",variants);return result;}
+        if(name.equals("rose")||name.equals("old_gravel")||block instanceof LegacyDaylightDetector){JsonObject result=new JsonObject(),variants=new JsonObject();variants.add("normal",model(name));result.add("variants",variants);return result;}
         if(block instanceof MossCarpet){JsonObject variants=new JsonObject(),result=new JsonObject();variants.add("normal",model(assetName(name)));result.add("variants",variants);return result;}
         JsonObject released = read("blockstates/" + assetName(name) + ".json");
         if (released != null && released.has("multipart")) {
+            if(name.equals("resin_clump")){JsonObject adapted=new JsonObject();JsonArray faces=new JsonArray();for(JsonElement element:released.getAsJsonArray("multipart")){JsonObject face=rewrite(element,"").getAsJsonObject();if(face.getAsJsonObject("apply").has("x")&&face.getAsJsonObject("apply").get("x").getAsInt()==90)continue;if(face.has("when")){JsonObject condition=face.getAsJsonObject("when");if(condition.has("down")&&condition.get("down").getAsString().equals("true"))continue;condition.remove("down");}faces.add(face);}adapted.add("multipart",faces);return adapted;}
             if (!(block instanceof BlockWall)) return rewrite(released, "").getAsJsonObject();
             JsonArray pieces = new JsonArray();
             for (JsonElement piece : released.getAsJsonArray("multipart")) {
@@ -181,6 +195,7 @@ final class GeneratedResources implements IResourcePack {
                     if (!entry.getKey().isEmpty()) for (String part : entry.getKey().split(",")) {
                         String[] property = part.split("=", 2);
                         String nativeValue = values.get(property[0]);
+                        if(block instanceof BeeHiveBlock&&property[0].equals("honey_level"))nativeValue=state.getValue(BeeHiveBlock.FULL)?"5":"0";
                         if(block instanceof AquaticPlant&&property[0].equals("waterlogged"))nativeValue=String.valueOf(((AquaticPlant)block).submerged);
                         if (block instanceof BlockSlab && property[0].equals("type")) nativeValue = ((BlockSlab) block).isDouble() ? "double" : state.getValue(BlockSlab.HALF).getName();
                         if (nativeValue != null && !nativeValue.equals(property[1]) || nativeValue == null && (property[0].equals("waterlogged") || property[0].equals("hanging")) && !property[1].equals("false")) match = false;
@@ -201,9 +216,16 @@ final class GeneratedResources implements IResourcePack {
         if ((!path.startsWith("models/block/") && !path.startsWith("models/item/")) || !path.endsWith(".json")) return null;
         boolean item = path.startsWith("models/item/");
         String name = path.substring(item ? 12 : 13, path.length() - 5);
-        if(item&&name.equals("decorated_pot")){JsonObject pot=new JsonObject();pot.addProperty("parent","builtin/entity");return pot;}
+        if(name.equals("raw_adamantium")||name.equals("raw_adamantium_block")){JsonObject own=read((item?"models/item/":"models/block/")+name+".json");if(own!=null)return own;}
+        if(name.endsWith("_barrel")||name.endsWith("_barrel_open")){JsonObject own=read((item?"models/item/":"models/block/")+name+".json");if(own!=null)return own;}
+        if(item&&(name.equals("barrel_upgrade")||name.equals("shulker_box_upgrade"))){JsonObject own=read("models/item/"+name+".json");if(own!=null)return own;}
+        if(item&&(name.startsWith("shulker_")||name.startsWith("barrel_"))&&name.endsWith("_upgrade")){JsonObject own=read("models/item/"+name+".json");if(own!=null)return own;}
+        if(item&&VariantItem.model(name)!=null){JsonObject variant=new JsonObject(),textures=new JsonObject();variant.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","etfuturum:items/"+VariantItem.model(name));variant.add("textures",textures);return variant;}
+        if(item&&(name.equals("shulker_box")||name.equals("decorated_pot")||name.equals("copper_chest")||name.equals("copper_golem_statue"))){JsonObject pot=new JsonObject();pot.addProperty("parent","builtin/entity");return pot;}
         if(item&&(name.equals("eyeblossom")||name.equals("open_eyeblossom"))){JsonObject flower=new JsonObject(),textures=new JsonObject();flower.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","etfuturum:blocks/"+(name.equals("eyeblossom")?"closed_eyeblossom":name));flower.add("textures",textures);return flower;}
-        if(item&&(name.equals("light")||name.matches("light_[0-9]{2}"))){JsonObject light=new JsonObject(),textures=new JsonObject();light.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","etfuturum:items/"+(name.equals("light")?"light_15":name));light.add("textures",textures);return light;}
+        if(item&&(name.equals("light")||name.matches("light_[0-9]{2}"))){JsonObject light=new JsonObject(),textures=new JsonObject();light.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","etfuturum:items/"+(name.equals("light")?"light_00":name));light.add("textures",textures);return light;}
+        if(item&&(name.equals("beehive")||name.equals("bee_nest"))){JsonObject hive=new JsonObject(),entry=new JsonObject(),predicate=new JsonObject();hive.addProperty("parent","etfuturum:block/"+name+"_empty");predicate.addProperty("honey",1);entry.add("predicate",predicate);entry.addProperty("model","etfuturum:block/"+name+"_honey");JsonArray overrides=new JsonArray();overrides.add(entry);hive.add("overrides",overrides);return hive;}
+        if(item&&name.equals("goat_horn")){JsonObject horn=rewrite(read("models/item/goat_horn.json"),"").getAsJsonObject(),entry=new JsonObject(),predicate=new JsonObject();predicate.addProperty("tooting",1);entry.add("predicate",predicate);entry.addProperty("model","etfuturum:item/tooting_goat_horn");JsonArray overrides=new JsonArray();overrides.add(entry);horn.add("overrides",overrides);return horn;}
         if(item&&name.equals("crossbow")){
             JsonObject base=rewrite(read("models/item/crossbow.json"),"").getAsJsonObject();JsonArray overrides=new JsonArray();
             for(int stage=0;stage<4;stage++){JsonObject entry=new JsonObject(),predicate=new JsonObject();if(stage<3){predicate.addProperty("pulling",1);if(stage>0)predicate.addProperty("pull",stage==1?.58:.9);entry.addProperty("model","etfuturum:item/crossbow_pulling_"+stage);}else{predicate.addProperty("charged",1);entry.addProperty("model","etfuturum:item/crossbow_arrow");}entry.add("predicate",predicate);overrides.add(entry);}base.add("overrides",overrides);return base;
@@ -215,6 +237,10 @@ final class GeneratedResources implements IResourcePack {
                 JsonObject parent = new JsonObject(); parent.addProperty("parent", reference(itemModel.get("model").getAsString(), false, false)); return parent;
             }
         }
+        if(name.equals("rose")||name.equals("old_gravel")||name.equals("daylight_detector")){JsonObject own=new JsonObject(),textures=new JsonObject();if(name.equals("daylight_detector"))own.addProperty("parent","minecraft:block/daylight_detector");else if(name.equals("rose")){own.addProperty("parent",item?"minecraft:item/generated":"minecraft:block/cross");textures.addProperty(item?"layer0":"cross","etfuturum:blocks/flower_rose");}else{own.addProperty("parent",item?"etfuturum:block/old_gravel":"minecraft:block/cube_all");if(!item)textures.addProperty("all","etfuturum:blocks/old_gravel");}if(textures.size()>0)own.add("textures",textures);return own;}
+        if(Content.BLOCKS.get(name) instanceof ModdedOreBlock){JsonObject alias=new JsonObject();alias.addProperty("parent","etfuturum:block/"+((ModdedOreBlock)Content.BLOCKS.get(name)).variant(0));return alias;}
+        String specialTexture=SpecialOres.texture(name);if(specialTexture!=null){JsonObject ore=new JsonObject(),textures=new JsonObject();ore.addProperty("parent",item?"etfuturum:block/"+name:"minecraft:block/cube_all");if(!item){textures.addProperty("all",specialTexture);ore.add("textures",textures);JsonObject cube=new JsonObject(),faces=new JsonObject();JsonArray from=new JsonArray(),to=new JsonArray(),elements=new JsonArray();for(int axis=0;axis<3;axis++){from.add(0);to.add(16);}cube.add("from",from);cube.add("to",to);for(String face:new String[]{"down","up","north","south","west","east"}){JsonObject side=new JsonObject();side.addProperty("texture","#all");side.addProperty("cullface",face);side.addProperty("tintindex",0);faces.add(face,side);}cube.add("faces",faces);elements.add(cube);ore.add("elements",elements);}return ore;}
+        if(OreCompatibility.blockModel(name)){JsonObject ore=new JsonObject(),textures=new JsonObject();ore.addProperty("parent",item?"etfuturum:block/"+name:"minecraft:block/cube_all");if(!item){textures.addProperty("all","etfuturum:blocks/"+name);ore.add("textures",textures);}return ore;}
         JsonObject released = read((item ? "models/item/" : "models/block/") + assetName(name) + ".json");
         if (released != null) return rewrite(released, "");
         JsonObject result = new JsonObject(), textures = new JsonObject();

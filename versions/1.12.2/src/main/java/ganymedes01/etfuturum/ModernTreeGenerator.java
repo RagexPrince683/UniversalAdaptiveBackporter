@@ -21,7 +21,7 @@ final class ModernTreeGenerator {
         ModernTreeGenerator generator = new ModernTreeGenerator(world, random, tree);
         boolean valid = tree.equals("cherry") ? generator.cherry(pos) : tree.equals("mangrove") ? generator.mangrove(pos) : tree.equals("pale_oak") && generator.paleOak(pos);
         if(valid&&!notify&&tree.equals("pale_oak")&&Content.available("creaking_heart")&&random.nextInt(10)==0){int height=0;while(height<32&&generator.plan.containsKey(pos.up(height))&&generator.plan.get(pos.up(height)).getBlock()==Content.block("pale_oak_log"))height++;if(height>=4)generator.plan.put(pos.up(height-3),Content.block("creaking_heart").getDefaultState());}
-        return valid && generator.apply(notify);
+        boolean applied=valid&&generator.apply(notify);if(applied){if(notify){BeeNests.beginSapling(world,pos,random);try{BeeNests.afterTree(world,random,pos);}finally{BeeNests.endSapling();}}else BeeNests.afterTree(world,random,pos);}return applied;
     }
     private void log(BlockPos pos, EnumFacing.Axis axis) { plan.put(pos, Content.block(tree + "_log").getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.fromFacingAxis(axis))); }
     private void leaf(BlockPos pos) { if (!plan.containsKey(pos)) plan.put(pos, Content.block(tree + "_leaves").getDefaultState()); }
