@@ -5,6 +5,10 @@
   "package": "ganymedes01.etfuturum.mixins",
   "mixins": [
     "HandshakeModListMixin",
+    "BundleInventoryMixin",
+    "SnowPrecipitationMixin",
+    "AnchorRespawnMixin",
+    "AnchorSpawnPointMixin",
     "ServerStatusMixin",
     "MapDataMixin",
     "ItemMapMixin",
@@ -19,6 +23,13 @@
     "MountRidingMixin",
     "LightningAttractionMixin",
     "LightningStrikeMixin",
+    "HoneyPistonStructureMixin",
+    "HoneyPistonMovementMixin",
+    "MaceLivingArmorMixin",
+    "MacePlayerArmorMixin",
+    "MaceCriticalMixin",
+    "MaceMobAttackMixin",
+    "MaceBookTradesMixin",
     "SoulFireMixin",
     "BrushableFallingMixin",
     "RaidMembershipMixin",
@@ -62,12 +73,20 @@
     "TieredShulkerOpenMixin",
     "HuskSpawningMixin",
     "StraySpawningMixin",
-    "NaturalShulkerMixin"
+    "NaturalShulkerMixin",
+    "SpringAnimalDataMixin",
+    "SpringAnimalBreedingMixin",
+    "SpringSheepMixin",
+    "SpringCactusMixin",
+    "SpringEggMixin",
+    "SpringChickenEggsMixin",
+    "SpringWolfSoundsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
+    "ContainedWaterRenderingMixin",
     "SwiftSneakMixin",
     "ArmorTrimLayerMixin",
     "ArmorTrimIconMixin",
@@ -82,6 +101,11 @@
     "DownloadTerrainMixin",
     "LoadingProgressMixin",
     "ElytraTakeoffClientMixin",
-    "EndPortalItemMixin"
+    "EndPortalItemMixin",
+    "SpringCowTextureMixin",
+    "SpringPigTextureMixin",
+    "SpringChickenTextureMixin",
+    "SpringWolfTextureMixin",
+    "SpringLeavesMixin"
   ]
 }

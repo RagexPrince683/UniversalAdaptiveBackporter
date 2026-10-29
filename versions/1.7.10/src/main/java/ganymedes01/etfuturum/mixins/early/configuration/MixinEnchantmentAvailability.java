@@ -1,8 +1,6 @@
 package ganymedes01.etfuturum.mixins.early.configuration;
 
 import ganymedes01.etfuturum.ModEnchantments;
-import ganymedes01.etfuturum.configuration.ContentAvailability;
-import ganymedes01.etfuturum.configuration.configs.ConfigEnchantsPotions;
 import net.minecraft.enchantment.*;
 import net.minecraft.item.ItemStack;
 import java.util.Map;
@@ -21,12 +19,7 @@ public class MixinEnchantmentAvailability {
 		result.values().removeIf(data -> !enabled(data.enchantmentobj));
 	}
 	private static boolean enabled(Enchantment enchantment) {
-		if (enchantment == ModEnchantments.mending) return ConfigEnchantsPotions.enableMending;
-		if (enchantment == ModEnchantments.frostWalker) return ConfigEnchantsPotions.enableFrostWalker;
-		if (enchantment == ModEnchantments.swiftSneak) return ConfigEnchantsPotions.enableSwiftSneak;
-		if (enchantment == ModEnchantments.soulSpeed) return ConfigEnchantsPotions.enableSoulSpeed;
-		if (enchantment == ModEnchantments.quickCharge || enchantment == ModEnchantments.multishot || enchantment == ModEnchantments.piercing) return ContentAvailability.enabled("crossbows");
-		if (enchantment == ModEnchantments.loyalty || enchantment == ModEnchantments.impaling || enchantment == ModEnchantments.riptide || enchantment == ModEnchantments.channeling) return ContentAvailability.enabled("tridents");
-		return true;
+		if (enchantment == ModEnchantments.windBurst) return false; // Ominous-vault treasure, never table rolls (including books).
+		return ModEnchantments.available(enchantment);
 	}
 }

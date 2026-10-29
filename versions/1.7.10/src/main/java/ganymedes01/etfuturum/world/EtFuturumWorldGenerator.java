@@ -179,9 +179,13 @@ public class EtFuturumWorldGenerator implements IWorldGenerator {
 
 	@Override
 	public void generate(Random rand, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
+		ganymedes01.etfuturum.world.nether.structure.MapGenBastion.populateExternal(world, chunkGenerator, chunkX, chunkZ);
 		if (!isFlatWorld(chunkGenerator) || world.getWorldInfo().getGeneratorOptions().contains("decoration")) {
 			ganymedes01.etfuturum.world.structure.underground.UndergroundStructures.populate(world, chunkGenerator, chunkX, chunkZ);
 			ganymedes01.etfuturum.world.structure.surface.SurfaceStructures.populate(world, chunkGenerator, chunkX, chunkZ);
+			ganymedes01.etfuturum.world.structure.surface.Igloos.generate(world, chunkX, chunkZ);
+            ganymedes01.etfuturum.world.structure.surface.RuinedPortals.generate(world,chunkX,chunkZ);
+            ganymedes01.etfuturum.SpringPlants.generate(world,chunkX,chunkZ);
 			MobSpawning.seagrass(world, rand, chunkX, chunkZ);
 			ganymedes01.etfuturum.world.generate.decorate.OceanPlants.generate(world, rand, chunkX, chunkZ);
 			ganymedes01.etfuturum.world.structure.OceanTreasure.generate(world, chunkX, chunkZ);

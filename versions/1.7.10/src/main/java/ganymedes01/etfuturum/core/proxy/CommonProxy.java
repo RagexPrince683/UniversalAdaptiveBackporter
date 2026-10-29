@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommonProxy implements IGuiHandler {
+	public void spearLunge(EntityPlayer player) { }
 
 	public void handleClientPacket(IMessage packet, MessageContext context) {
 	}
@@ -76,9 +77,13 @@ public class CommonProxy implements IGuiHandler {
 		GameRegistry.registerTileEntity(ganymedes01.etfuturum.tileentities.TileEntityDecoratedPot.class, "etfuturum.decorated_pot");
 		GameRegistry.registerTileEntity(ganymedes01.etfuturum.tileentities.TileEntityBrushable.class, "etfuturum.brushable");
 		GameRegistry.registerTileEntity(ganymedes01.etfuturum.tileentities.TileEntityConduit.class, Utils.getUnlocalisedName("conduit"));
+		GameRegistry.registerTileEntity(TileEntityCampfire.class, Utils.getUnlocalisedName("campfire"));
 		{
 			ganymedes01.etfuturum.world.structure.MonumentSpawning.init();
 			ModEntityList.registerEntity(EntityGuardian.class, "guardian", 34, EtFuturum.instance, 80, 3, true, 0x5A8272, 0xF17D30);
+			ModEntityList.registerEntity(EntityElderGuardian.class, "elder_guardian", 76, EtFuturum.instance, 80, 3, true, 0xCECCBA, 0x747693);
+			ModEntityList.registerEntity(EntityParrot.class, "parrot", 77, EtFuturum.instance, 80, 1, true, 0x0DA70B, 0xFF0000);
+			ganymedes01.etfuturum.configuration.SpawnSettings.addSpawn(EntityParrot.class, 40, 1, 2, EnumCreatureType.creature, BiomeDictionary.getBiomesForType(Type.JUNGLE));
 		}
 		{
 			ModEntityList.registerEntity(EntityFrog.class, "frog", 32, EtFuturum.instance, 80, 3, true, 0xD07444, 0xFFC77C);
@@ -301,6 +306,8 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		if(ID==14)return world.getTileEntity(x,y,z) instanceof ganymedes01.etfuturum.tileentities.TileEntityCrafter tile?new ganymedes01.etfuturum.inventory.ContainerCrafter(player.inventory,tile):null;
+		if(ID==13)return world.getTileEntity(x,y,z) instanceof ganymedes01.etfuturum.tileentities.TileEntityLectern tile?new ganymedes01.etfuturum.inventory.ContainerLectern(tile):null;
 		if (ID == GUIIDs.LLAMA) return world.getEntityByID(x) instanceof EntityLlama llama && llama.isUseableByPlayer(player) ? new ContainerLlama(player.inventory, llama) : null;
 		if (ID >= GUIIDs.STONECUTTER && ID <= GUIIDs.CARTOGRAPHY_TABLE) {
 			ModBlocks table = ID == GUIIDs.STONECUTTER ? ModBlocks.STONECUTTER : ID == GUIIDs.LOOM ? ModBlocks.LOOM : ModBlocks.CARTOGRAPHY_TABLE;
@@ -308,7 +315,8 @@ public class CommonProxy implements IGuiHandler {
 					|| player.getDistanceSq(x + .5, y + .5, z + .5) > 64) return null;
 		}
 		return switch (ID) {
-			case GUIIDs.STONECUTTER -> new ContainerStonecutter(player.inventory, world, x, y, z);
+			case 12 -> new ganymedes01.etfuturum.inventory.ContainerGrindstone(player.inventory, world, x, y, z);
+            case GUIIDs.STONECUTTER -> new ContainerStonecutter(player.inventory, world, x, y, z);
 			case GUIIDs.LOOM -> new ContainerLoom(player.inventory, world, x, y, z);
 			case GUIIDs.CARTOGRAPHY_TABLE -> new ContainerCartography(player.inventory, world, x, y, z);
 			case GUIIDs.ENCHANTING_TABLE -> new ContainerEnchantment(player.inventory, world, x, y, z);
@@ -333,9 +341,12 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		if(ID==14)return world.getTileEntity(x,y,z) instanceof ganymedes01.etfuturum.tileentities.TileEntityCrafter tile?new ganymedes01.etfuturum.client.gui.inventory.CrafterGui(new ganymedes01.etfuturum.inventory.ContainerCrafter(player.inventory,tile)):null;
+		if(ID==13)return world.getTileEntity(x,y,z) instanceof ganymedes01.etfuturum.tileentities.TileEntityLectern tile?new ganymedes01.etfuturum.client.gui.inventory.LecternGui(new ganymedes01.etfuturum.inventory.ContainerLectern(tile)):null;
 		if (ID == GUIIDs.LLAMA) return world.getEntityByID(x) instanceof EntityLlama llama && llama.hasChest() ? new GuiLlama(new ContainerLlama(player.inventory, llama)) : null;
 		return switch (ID) {
-			case GUIIDs.STONECUTTER -> new GuiWorkstation(new ContainerStonecutter(player.inventory, world, x, y, z));
+			case 12 -> new GuiWorkstation(new ganymedes01.etfuturum.inventory.ContainerGrindstone(player.inventory, world, x, y, z));
+            case GUIIDs.STONECUTTER -> new GuiWorkstation(new ContainerStonecutter(player.inventory, world, x, y, z));
 			case GUIIDs.LOOM -> new GuiWorkstation(new ContainerLoom(player.inventory, world, x, y, z));
 			case GUIIDs.CARTOGRAPHY_TABLE -> new GuiWorkstation(new ContainerCartography(player.inventory, world, x, y, z));
 			case GUIIDs.ENCHANTING_TABLE -> new GuiEnchantment(player.inventory, world, null);

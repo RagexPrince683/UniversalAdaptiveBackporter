@@ -20,6 +20,7 @@ public final class SmithingTableRecipes {
     public static void init(){
         if(!Content.available("netherite_ingot"))return;
         for(String gear:new String[]{"sword","pickaxe","axe","shovel","hoe","helmet","chestplate","leggings","boots"})if(Content.available("netherite_"+gear))INSTANCE.addUpgrade(Content.stack("netherite_"+gear),new ItemStack(Item.getByNameOrId("minecraft:diamond_"+gear),1,OreDictionary.WILDCARD_VALUE));
+        if(Content.available("netherite_horse_armor"))INSTANCE.addUpgrade(Content.stack("netherite_horse_armor"),new ItemStack(Items.DIAMOND_HORSE_ARMOR));
         if(Content.available("netherite_spear")&&Content.available("diamond_spear"))INSTANCE.addUpgrade(Content.stack("netherite_spear"),new ItemStack(Content.item("diamond_spear"),1,OreDictionary.WILDCARD_VALUE));
         if(Content.available("nautilus_armor"))INSTANCE.addUpgrade(new ItemStack(Content.item("nautilus_armor"),1,4),new ItemStack(Content.item("nautilus_armor"),1,3));
     }

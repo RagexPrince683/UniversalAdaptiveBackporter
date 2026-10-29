@@ -22,9 +22,13 @@ public class MapGenEndCity extends MapGenStructure {
 	private static final int SEPARATION = 11;
 	private static final int SALT = 10387313;
 
-	private final ChunkProviderEFREnd chunkProvider;
+	private final EndCityTerrain chunkProvider;
 
 	public MapGenEndCity(ChunkProviderEFREnd chunkProvider) {
+		this((EndCityTerrain) chunkProvider);
+	}
+
+	public MapGenEndCity(EndCityTerrain chunkProvider) {
 		this.chunkProvider = chunkProvider;
 	}
 
@@ -43,6 +47,10 @@ public class MapGenEndCity extends MapGenStructure {
 	 * Checks spacing grid, island presence, and ground height.
 	 */
 	public static boolean isValidCityAt(ChunkProviderEFREnd chunkProvider, int chunkX, int chunkZ, long worldSeed) {
+		return isValidCityAt((EndCityTerrain) chunkProvider, chunkX, chunkZ, worldSeed);
+	}
+
+	public static boolean isValidCityAt(EndCityTerrain chunkProvider, int chunkX, int chunkZ, long worldSeed) {
 		int cx = chunkX;
 		int cz = chunkZ;
 
@@ -72,7 +80,7 @@ public class MapGenEndCity extends MapGenStructure {
 		int rotation = structRand.nextInt(4);
 
 		int groundHeight = getGroundHeight(chunkProvider, cx, cz, rotation);
-		return groundHeight >= 60;
+		return groundHeight >= chunkProvider.minimumCityHeight();
 	}
 
 	@Override
@@ -85,6 +93,10 @@ public class MapGenEndCity extends MapGenStructure {
 	 * Evaluates exactly 4 corners matching the first room footprint like vanilla 1.9+.
 	 */
 	public static int getGroundHeight(ChunkProviderEFREnd chunkProvider, int chunkX, int chunkZ, int rotation) {
+		return getGroundHeight((EndCityTerrain) chunkProvider, chunkX, chunkZ, rotation);
+	}
+
+	public static int getGroundHeight(EndCityTerrain chunkProvider, int chunkX, int chunkZ, int rotation) {
 		Block[] blocks = new Block[32768];
 		chunkProvider.setBlocksInChunk(chunkX, chunkZ, blocks);
 		
@@ -130,11 +142,19 @@ public class MapGenEndCity extends MapGenStructure {
 	public static class Start extends StructureStart {
 		
 		private boolean isCreated;
+		private boolean protectExistingTerrain;
+		private final java.util.Set<Long> populated = new java.util.HashSet<>();
+		void protectExistingTerrain() { protectExistingTerrain = true; }
 
 		public Start() {}
 
 		public Start(World world, ChunkProviderEFREnd provider, Random rand, int chunkX, int chunkZ) {
+			this(world, (EndCityTerrain) provider, rand, chunkX, chunkZ);
+		}
+
+		public Start(World world, EndCityTerrain provider, Random rand, int chunkX, int chunkZ) {
 			super(chunkX, chunkZ);
+			protectExistingTerrain = !(provider instanceof ChunkProviderEFREnd);
 
 			// Determine rotation (based on world seed + position for determinism)
 			Random structRand = new Random(
@@ -142,7 +162,7 @@ public class MapGenEndCity extends MapGenStructure {
 			int rotation = structRand.nextInt(4);
 
 			int groundHeight = getGroundHeight(provider, chunkX, chunkZ, rotation);
-			if (groundHeight < 60) {
+			if (groundHeight < provider.minimumCityHeight()) {
 				// Fallback safety (should be caught by canSpawnStructureAtCoords)
 				this.isCreated = false;
 				this.boundingBox = new net.minecraft.world.gen.structure.StructureBoundingBox();
@@ -163,6 +183,50 @@ public class MapGenEndCity extends MapGenStructure {
 		@Override
 		public boolean isSizeableStructure() {
 			return this.isCreated;
+		}
+
+		@Override
+		public void func_143022_a(net.minecraft.nbt.NBTTagCompound tag) {
+			super.func_143022_a(tag);
+			tag.setBoolean("UABCreated", isCreated);
+			tag.setBoolean("UABProtectTerrain", protectExistingTerrain);
+			net.minecraft.nbt.NBTTagList chunks = new net.minecraft.nbt.NBTTagList();
+			for (long chunk : populated) {
+				net.minecraft.nbt.NBTTagCompound entry = new net.minecraft.nbt.NBTTagCompound();
+				entry.setLong("Chunk", chunk);
+				chunks.appendTag(entry);
+			}
+			tag.setTag("UABPopulated", chunks);
+		}
+
+		@Override
+		public void func_143017_b(net.minecraft.nbt.NBTTagCompound tag) {
+			super.func_143017_b(tag);
+			// Older saved starts predate this flag, but retain their assembled pieces.
+			isCreated = tag.hasKey("UABCreated") ? tag.getBoolean("UABCreated") : !components.isEmpty();
+			protectExistingTerrain = tag.getBoolean("UABProtectTerrain");
+			populated.clear();
+			net.minecraft.nbt.NBTTagList chunks = tag.getTagList("UABPopulated", 10);
+			for (int i = 0; i < chunks.tagCount(); i++) populated.add(chunks.getCompoundTagAt(i).getLong("Chunk"));
+		}
+
+		@Override
+		public void generateStructure(World world, Random random, net.minecraft.world.gen.structure.StructureBoundingBox box) {
+			if (!protectExistingTerrain) {
+				super.generateStructure(world, random, box);
+				return;
+			}
+			long population = net.minecraft.world.ChunkCoordIntPair.chunkXZ2Int((box.minX - 8) >> 4, (box.minZ - 8) >> 4);
+			if (populated.contains(population)) return;
+			// Native population boxes straddle four chunks. Clip each section separately
+			// so continuing a saved city can never modify an old neighboring chunk.
+			for (int x = box.minX >> 4; x <= box.maxX >> 4; x++) for (int z = box.minZ >> 4; z <= box.maxZ >> 4; z++) {
+				if (EndCityGenerationBridge.savedChunk(world, x, z)) continue;
+				super.generateStructure(world, random, new net.minecraft.world.gen.structure.StructureBoundingBox(
+						Math.max(box.minX, x * 16), box.minY, Math.max(box.minZ, z * 16),
+						Math.min(box.maxX, x * 16 + 15), box.maxY, Math.min(box.maxZ, z * 16 + 15)));
+			}
+			populated.add(population);
 		}
 	}
 }

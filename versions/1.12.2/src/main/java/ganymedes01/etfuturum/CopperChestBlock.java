@@ -13,7 +13,9 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.*;
 public final class CopperChestBlock extends Block {
     public static final PropertyDirection FACING=BlockHorizontal.FACING;
-    CopperChestBlock(){super(Material.IRON);setHardness(2.5F);setDefaultState(blockState.getBaseState().withProperty(FACING,EnumFacing.SOUTH));}
+    public final int stage;public final boolean waxed;
+    CopperChestBlock(){this(0,false);}
+    CopperChestBlock(int stage,boolean waxed){super(Material.IRON);this.stage=stage;this.waxed=waxed;setTickRandomly(!waxed);setHardness(2.5F);setDefaultState(blockState.getBaseState().withProperty(FACING,EnumFacing.SOUTH));}
     @Override protected BlockStateContainer createBlockState(){return new BlockStateContainer(this,FACING);}
     @Override public IBlockState getStateFromMeta(int meta){return getDefaultState().withProperty(FACING,EnumFacing.byHorizontalIndex(meta&3));}
     @Override public int getMetaFromState(IBlockState state){return state.getValue(FACING).getHorizontalIndex();}
@@ -26,11 +28,12 @@ public final class CopperChestBlock extends Block {
     @Override public boolean isOpaqueCube(IBlockState state){return false;}
     @Override public boolean isFullCube(IBlockState state){return false;}
     @Override public AxisAlignedBB getBoundingBox(IBlockState state,IBlockAccess world,BlockPos pos){return new AxisAlignedBB(.0625,0,.0625,.9375,.875,.9375);}
-    @Override public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer player,EnumHand hand,EnumFacing side,float x,float y,float z){if(!world.isRemote&&!world.getBlockState(pos.up()).isNormalCube()&&world.getTileEntity(pos) instanceof CopperChestTile)player.displayGUIChest((CopperChestTile)world.getTileEntity(pos));return true;}
+    @Override public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer player,EnumHand hand,EnumFacing side,float x,float y,float z){if(CopperAging.use(world,pos,state,player,hand,side))return true;if(!world.isRemote&&!world.getBlockState(pos.up()).isNormalCube()&&world.getTileEntity(pos) instanceof CopperChestTile)player.displayGUIChest((CopperChestTile)world.getTileEntity(pos));return true;}
     @Override public void onBlockPlacedBy(World world,BlockPos pos,IBlockState state,EntityLivingBase placer,ItemStack stack){if(stack.hasDisplayName()&&world.getTileEntity(pos) instanceof CopperChestTile)((CopperChestTile)world.getTileEntity(pos)).setCustomName(stack.getDisplayName());}
     @Override public boolean eventReceived(IBlockState state,World world,BlockPos pos,int id,int value){TileEntity tile=world.getTileEntity(pos);return tile!=null&&tile.receiveClientEvent(id,value);}
     @Override public boolean hasComparatorInputOverride(IBlockState state){return true;}
     @Override public int getComparatorInputOverride(IBlockState state,World world,BlockPos pos){return Container.calcRedstone(world.getTileEntity(pos));}
-    @Override public void breakBlock(World world,BlockPos pos,IBlockState state){if(world.getTileEntity(pos) instanceof IInventory)InventoryHelper.dropInventoryItems(world,pos,(IInventory)world.getTileEntity(pos));super.breakBlock(world,pos,state);}
+    @Override public void randomTick(World world,BlockPos pos,IBlockState state,java.util.Random random){CopperAging.tick(world,pos,state,random);}
+    @Override public void breakBlock(World world,BlockPos pos,IBlockState state){if(world.getBlockState(pos).getBlock() instanceof CopperChestBlock)return;if(world.getTileEntity(pos) instanceof IInventory)InventoryHelper.dropInventoryItems(world,pos,(IInventory)world.getTileEntity(pos));super.breakBlock(world,pos,state);}
     @Override public int damageDropped(IBlockState state){return 0;}
 }

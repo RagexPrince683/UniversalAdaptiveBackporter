@@ -9,7 +9,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.*;
 
-public final class LanternBlock extends Block {
+public class LanternBlock extends Block {
     public static final PropertyBool HANGING = PropertyBool.create("hanging");
     LanternBlock() { super(Material.IRON); setHardness(3.5F); setResistance(3.5F); setHarvestLevel("pickaxe", 0); setLightOpacity(0); setSoundType(SoundType.METAL); setDefaultState(blockState.getBaseState().withProperty(HANGING, false)); }
     @Override protected BlockStateContainer createBlockState() { return new BlockStateContainer(this, HANGING); }

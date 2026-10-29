@@ -3823,3 +3823,153 @@ etfuturum.raid.approaching=A raid is approaching the village!
 etfuturum.raid.victory=Raid defeated! The village celebrates your victory.
 
 uab.loading.chunks=Received chunks: %s / %s
+
+entity.etfuturum.elder_guardian.name=Elder Guardian
+entity.etfuturum.parrot.name=Parrot
+tile.etfuturum.campfire.name=Campfire
+tile.etfuturum.soul_campfire.name=Soul Campfire
+
+item.etfuturum.mace.name=Mace
+enchantment.density=Density
+enchantment.breach=Breach
+enchantment.wind_burst=Wind Burst
+
+tile.etfuturum.grindstone.name=Grindstone
+tile.etfuturum.bell.name=Bell
+tile.etfuturum.chiseled_bookshelf.name=Chiseled Bookshelf
+item.etfuturum.spyglass.name=Spyglass
+gui.etfuturum.grindstone.inputs=Repair and disenchant
+
+item.etfuturum.oak_hanging_sign.name=Oak Hanging Sign
+item.etfuturum.spruce_hanging_sign.name=Spruce Hanging Sign
+item.etfuturum.birch_hanging_sign.name=Birch Hanging Sign
+item.etfuturum.jungle_hanging_sign.name=Jungle Hanging Sign
+item.etfuturum.acacia_hanging_sign.name=Acacia Hanging Sign
+item.etfuturum.dark_oak_hanging_sign.name=Dark Oak Hanging Sign
+item.etfuturum.crimson_hanging_sign.name=Crimson Hanging Sign
+item.etfuturum.warped_hanging_sign.name=Warped Hanging Sign
+item.etfuturum.mangrove_hanging_sign.name=Mangrove Hanging Sign
+item.etfuturum.cherry_hanging_sign.name=Cherry Hanging Sign
+item.etfuturum.bamboo_hanging_sign.name=Bamboo Hanging Sign
+item.etfuturum.pale_oak_hanging_sign.name=Pale Oak Hanging Sign
+
+tile.etfuturum.copper_lantern.name=Copper Lantern
+tile.etfuturum.waxed_copper_lantern.name=Waxed Copper Lantern
+tile.etfuturum.exposed_copper_lantern.name=Exposed Copper Lantern
+tile.etfuturum.waxed_exposed_copper_lantern.name=Waxed Exposed Copper Lantern
+tile.etfuturum.weathered_copper_lantern.name=Weathered Copper Lantern
+tile.etfuturum.waxed_weathered_copper_lantern.name=Waxed Weathered Copper Lantern
+tile.etfuturum.oxidized_copper_lantern.name=Oxidized Copper Lantern
+tile.etfuturum.waxed_oxidized_copper_lantern.name=Waxed Oxidized Copper Lantern
+tile.etfuturum.copper_chain.name=Copper Chain
+tile.etfuturum.waxed_copper_chain.name=Waxed Copper Chain
+tile.etfuturum.exposed_copper_chain.name=Exposed Copper Chain
+tile.etfuturum.waxed_exposed_copper_chain.name=Waxed Exposed Copper Chain
+tile.etfuturum.weathered_copper_chain.name=Weathered Copper Chain
+tile.etfuturum.waxed_weathered_copper_chain.name=Waxed Weathered Copper Chain
+tile.etfuturum.oxidized_copper_chain.name=Oxidized Copper Chain
+tile.etfuturum.waxed_oxidized_copper_chain.name=Waxed Oxidized Copper Chain
+tile.etfuturum.copper_bars.name=Copper Bars
+tile.etfuturum.waxed_copper_bars.name=Waxed Copper Bars
+tile.etfuturum.exposed_copper_bars.name=Exposed Copper Bars
+tile.etfuturum.waxed_exposed_copper_bars.name=Waxed Exposed Copper Bars
+tile.etfuturum.weathered_copper_bars.name=Weathered Copper Bars
+tile.etfuturum.waxed_weathered_copper_bars.name=Waxed Weathered Copper Bars
+tile.etfuturum.oxidized_copper_bars.name=Oxidized Copper Bars
+tile.etfuturum.waxed_oxidized_copper_bars.name=Waxed Oxidized Copper Bars
+tile.etfuturum.lightning_rod.name=Lightning Rod
+tile.etfuturum.waxed_lightning_rod.name=Waxed Lightning Rod
+tile.etfuturum.exposed_lightning_rod.name=Exposed Lightning Rod
+tile.etfuturum.waxed_exposed_lightning_rod.name=Waxed Exposed Lightning Rod
+tile.etfuturum.weathered_lightning_rod.name=Weathered Lightning Rod
+tile.etfuturum.waxed_weathered_lightning_rod.name=Waxed Weathered Lightning Rod
+tile.etfuturum.oxidized_lightning_rod.name=Oxidized Lightning Rod
+tile.etfuturum.waxed_oxidized_lightning_rod.name=Waxed Oxidized Lightning Rod
+item.etfuturum.copper_nugget.name=Copper Nugget
+item.etfuturum.copper_sword.name=Copper Sword
+item.etfuturum.copper_pickaxe.name=Copper Pickaxe
+item.etfuturum.copper_axe.name=Copper Axe
+item.etfuturum.copper_shovel.name=Copper Shovel
+item.etfuturum.copper_hoe.name=Copper Hoe
+item.etfuturum.copper_helmet.name=Copper Helmet
+item.etfuturum.copper_chestplate.name=Copper Chestplate
+item.etfuturum.copper_leggings.name=Copper Leggings
+item.etfuturum.copper_boots.name=Copper Boots
+item.etfuturum.copper_horse_armor.name=Copper Horse Armor
+item.etfuturum.blue_egg.name=Blue Egg
+item.etfuturum.brown_egg.name=Brown Egg
+tile.etfuturum.bush.name=Bush
+tile.etfuturum.firefly_bush.name=Firefly Bush
+tile.etfuturum.short_dry_grass.name=Short Dry Grass
+tile.etfuturum.tall_dry_grass.name=Tall Dry Grass
+tile.etfuturum.cactus_flower.name=Cactus Flower
+tile.etfuturum.wildflowers.name=Wildflowers
+tile.etfuturum.leaf_litter.name=Leaf Litter
+tile.etfuturum.copper_torch.name=Copper Torch
+tile.etfuturum.oak_shelf.name=Oak Shelf
+tile.etfuturum.spruce_shelf.name=Spruce Shelf
+tile.etfuturum.birch_shelf.name=Birch Shelf
+tile.etfuturum.jungle_shelf.name=Jungle Shelf
+tile.etfuturum.acacia_shelf.name=Acacia Shelf
+tile.etfuturum.dark_oak_shelf.name=Dark Oak Shelf
+tile.etfuturum.crimson_shelf.name=Crimson Shelf
+tile.etfuturum.warped_shelf.name=Warped Shelf
+tile.etfuturum.mangrove_shelf.name=Mangrove Shelf
+tile.etfuturum.cherry_shelf.name=Cherry Shelf
+tile.etfuturum.bamboo_shelf.name=Bamboo Shelf
+tile.etfuturum.pale_oak_shelf.name=Pale Oak Shelf
+
+tile.etfuturum.waxed_copper_chest.name=Waxed Copper Chest
+tile.etfuturum.exposed_copper_chest.name=Exposed Copper Chest
+tile.etfuturum.waxed_exposed_copper_chest.name=Waxed Exposed Copper Chest
+tile.etfuturum.weathered_copper_chest.name=Weathered Copper Chest
+tile.etfuturum.waxed_weathered_copper_chest.name=Waxed Weathered Copper Chest
+tile.etfuturum.oxidized_copper_chest.name=Oxidized Copper Chest
+tile.etfuturum.waxed_oxidized_copper_chest.name=Waxed Oxidized Copper Chest
+
+tile.etfuturum.calibrated_sculk_sensor.name=Calibrated Sculk Sensor
+
+tile.etfuturum.lodestone.name=Lodestone
+item.etfuturum.lodestone_compass.name=Lodestone Compass
+item.etfuturum.recovery_compass.name=Recovery Compass
+tile.etfuturum.lectern.name=Lectern
+container.lectern=Lectern
+gui.lectern.take=Take Book
+tile.etfuturum.rooted_dirt.name=Rooted Dirt
+tile.etfuturum.hanging_roots.name=Hanging Roots
+item.etfuturum.shield.name=Shield
+
+enchantment.lunge=Lunge
+item.etfuturum.netherite_horse_armor.name=Netherite Horse Armor
+
+tile.etfuturum.crafter.name=Crafter
+container.crafter=Crafter
+
+item.etfuturum.bundle.name=Bundle
+item.etfuturum.bundle.weight=Weight: %s/%s
+item.etfuturum.white_bundle.name=White Bundle
+item.etfuturum.orange_bundle.name=Orange Bundle
+item.etfuturum.magenta_bundle.name=Magenta Bundle
+item.etfuturum.light_blue_bundle.name=Light Blue Bundle
+item.etfuturum.yellow_bundle.name=Yellow Bundle
+item.etfuturum.lime_bundle.name=Lime Bundle
+item.etfuturum.pink_bundle.name=Pink Bundle
+item.etfuturum.gray_bundle.name=Gray Bundle
+item.etfuturum.light_gray_bundle.name=Light Gray Bundle
+item.etfuturum.cyan_bundle.name=Cyan Bundle
+item.etfuturum.purple_bundle.name=Purple Bundle
+item.etfuturum.blue_bundle.name=Blue Bundle
+item.etfuturum.brown_bundle.name=Brown Bundle
+item.etfuturum.green_bundle.name=Green Bundle
+item.etfuturum.red_bundle.name=Red Bundle
+item.etfuturum.black_bundle.name=Black Bundle
+
+tile.etfuturum.scaffolding.name=Scaffolding
+
+tile.etfuturum.powder_snow.name=Powder Snow
+tile.etfuturum.powder_snow_cauldron.name=Powder Snow Cauldron
+item.etfuturum.powder_snow_bucket.name=Powder Snow Bucket
+death.attack.freeze=%1$s froze to death
+
+tile.etfuturum.respawn_anchor.name=Respawn Anchor
+tile.etfuturum.respawn_anchor.set=Respawn point set

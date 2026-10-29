@@ -61,7 +61,8 @@ public class ModRecipes {
 	static final boolean[] modernWoodTypesEnabled = new boolean[5];
 
 	public static void init() {
-		MobRecipes.init();
+		ganymedes01.etfuturum.ModernAdditions.recipes();
+        MobRecipes.init();
 		ExplorationRecipes.init();
 		OceanRecipes.init();
 		ganymedes01.etfuturum.api.utils.RecipeHelper.addRecipe(ModItems.TURTLE_HELMET.newItemStack(), "sss", "s s", 's', ModItems.TURTLE_SCUTE.get());
@@ -1676,8 +1677,12 @@ public class ModRecipes {
 		}
 
 		ItemStack output31 = ModBlocks.HONEY_BLOCK.newItemStack();
+		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModItems.MACE.newItemStack(), "H", "R", 'H', ModBlocks.HEAVY_CORE.get(), 'R', ModItems.BREEZE_ROD.get());
+		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModBlocks.CAMPFIRE.newItemStack(), " S ", "SCS", "LLL", 'S', "stickWood", 'C', new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE), 'L', "logWood");
+		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModBlocks.SOUL_CAMPFIRE.newItemStack(), " S ", "SCS", "LLL", 'S', "stickWood", 'C', Blocks.soul_sand, 'L', "logWood");
 		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output31, "HH", "HH", 'H', ModItems.HONEY_BOTTLE.get());
 		RecipeHelper.addShapelessRecipe(RecipeHelper.Priority.HIGH, ModItems.HONEY_BOTTLE.newItemStack(4), ModBlocks.HONEY_BLOCK.get(), Items.glass_bottle, Items.glass_bottle, Items.glass_bottle, Items.glass_bottle);
+		if (ModItems.HONEY_BOTTLE.isEnabled()) RecipeHelper.addShapelessRecipe(RecipeHelper.Priority.HIGH, new ItemStack(Items.sugar, 3), ModItems.HONEY_BOTTLE.get());
 		ItemStack output30 = ModBlocks.HONEYCOMB_BLOCK.newItemStack();
 		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output30, "HH", "HH", 'H', "materialHoneycomb");
 		ItemStack output29 = ModBlocks.BEEHIVE.newItemStack();

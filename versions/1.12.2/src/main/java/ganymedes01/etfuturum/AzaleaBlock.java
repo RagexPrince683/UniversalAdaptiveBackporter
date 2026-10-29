@@ -12,7 +12,7 @@ import net.minecraftforge.event.terraingen.TerrainGen;
 
 public final class AzaleaBlock extends BlockBush implements IGrowable {
     AzaleaBlock(){super(Material.WOOD);setHardness(0);setSoundType(SoundType.PLANT);}
-    @Override protected boolean canSustainBush(IBlockState state){return super.canSustainBush(state)||state.getMaterial()==Material.CLAY||state.getBlock() instanceof MossBlock;}
+    @Override protected boolean canSustainBush(IBlockState state){return super.canSustainBush(state)||state.getMaterial()==Material.CLAY||state.getBlock() instanceof MossBlock||state.getBlock() instanceof RootedSoils.Soil;}
     @Override public boolean canBlockStay(World world,BlockPos pos,IBlockState state){return canSustainBush(world.getBlockState(pos.down()));}
     @Override public boolean isReplaceable(IBlockAccess world,BlockPos pos){return false;}
     @Override public AxisAlignedBB getBoundingBox(IBlockState state,IBlockAccess world,BlockPos pos){return FULL_BLOCK_AABB;}
@@ -22,10 +22,11 @@ public final class AzaleaBlock extends BlockBush implements IGrowable {
     @Override public void grow(World world,Random random,BlockPos pos,IBlockState state){
         if(world.isRemote||!Content.available("azalea_leaves")||!world.isAreaLoaded(pos.add(-3,0,-3),pos.add(3,9,3))||!TerrainGen.saplingGrowTree(world,random,pos))return;
         IBlockState soil=world.getBlockState(pos.down());world.setBlockToAir(pos);
-        if(soil.getMaterial()==Material.CLAY||soil.getBlock() instanceof MossBlock)world.setBlockState(pos.down(),Blocks.DIRT.getDefaultState(),4);
+        if(soil.getMaterial()==Material.CLAY||soil.getBlock() instanceof MossBlock||soil.getBlock() instanceof RootedSoils.Soil)world.setBlockState(pos.down(),Blocks.DIRT.getDefaultState(),4);
         WorldGenTrees tree=new WorldGenTrees(true,4,Blocks.LOG.getDefaultState(),Blocks.LEAVES.getDefaultState(),false){
             @Override protected void setBlockAndNotifyAdequately(World target,BlockPos at,IBlockState placed){if(placed.getBlock()==Blocks.LEAVES)placed=Content.block(random.nextInt(4)==0?"flowering_azalea_leaves":"azalea_leaves").getDefaultState();super.setBlockAndNotifyAdequately(target,at,placed);}
         };
         if(!tree.generate(world,random,pos)){world.setBlockState(pos.down(),soil,4);world.setBlockState(pos,state,3);}
+        else RootedSoils.tree(world,pos.down());
     }
 }

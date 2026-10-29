@@ -62,6 +62,7 @@ public class BlockSculkCatalyst extends BaseBlock {
 		}
 	}
 
+    @Override public void updateTick(World world,int x,int y,int z,Random random){world.setBlockMetadataWithNotify(x,y,z,0,3);}
 	@Override
 	public boolean hasTileEntity(int metadata) {
 		return true;

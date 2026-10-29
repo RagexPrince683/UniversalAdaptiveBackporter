@@ -37,6 +37,8 @@ public final class WorldGeneration implements IWorldGenerator {
     @Override public void generate(Random ignored, int cx, int cz, World world, IChunkGenerator generator, IChunkProvider provider) {
         if (world.isRemote) return;
         ModernStructures.populate(world,cx,cz);
+        RuinedPortals.generate(world,cx,cz);
+        SpringPlants.generate(world,cx,cz);
         Random random = GenerationSeeds.chunk(world.getSeed(), cx, cz, 0x554142L);
         if (world.provider.getDimension() == 0) {
             if (Content.available("copper_ore")) veins(world, random, cx, cz, "copper_ore", copper, 8, 4, 80, Blocks.STONE, false);

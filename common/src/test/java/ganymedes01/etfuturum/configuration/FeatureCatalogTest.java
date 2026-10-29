@@ -42,6 +42,9 @@ public final class FeatureCatalogTest {
         check(FeatureRegistry.option("entities", "enableSquidInk").origin.equals("1.13"), "ordinary squid ink predates glow squid");
         check(FeatureRegistry.option("functions", "enableRecipeForTotem").category.startsWith("general."), "custom recipes belong to General");
         check(FeatureRegistry.option("modcompat", "baublesMending").classification("1.12.2") == FeatureVersions.Classification.ADAPTED, "vanilla Mending does not supply Baubles integration");
+        FeatureRegistry.Option appearances=FeatureRegistry.option("content","spring_animal_renders");
+        check(Boolean.FALSE.equals(appearances.booleanDefault),"Spring animal appearances are opt-in");
+        check(appearances.side.equals("client")&&appearances.reload.equals("live"),"animal appearance preference is client-owned and can change safely");
         Set<String> aliases = new HashSet<>();
         check(!FeatureVersions.nativeFeature(FeatureRegistry.option("blocksitems","newBoatSpeed"),"1.12.2"),"custom boat speed is not supplied by native rowing");
         check(!FeatureVersions.nativeFeature(FeatureRegistry.option("blocksitems","newBoatEntityBlacklistAsWhitelist"),"1.12.2"),"custom rider whitelist remains configurable on native boats");
@@ -58,7 +61,22 @@ public final class FeatureCatalogTest {
                 if (FeatureVersions.nativeFeature(option, "1.12.2")) nativeFeatures++;
             }
         }
-        check(features == 372, "preserve all 372 current feature identities: " + features);
+        check(features == 397, "preserve the 372 original and twenty-five new feature identities: " + features);
+        for (FeatureRegistry.Option option : FeatureRegistry.options()) if (option.feature) {
+            String update = option.category.substring(0, option.category.indexOf('.'));
+            check(FeatureRegistry.UPDATES.containsKey(update), "every feature has a discoverable update group: " + option.alias);
+        }
+        check(FeatureVersions.nativeFeature(FeatureRegistry.option("content","shields"),"1.12.2"),"native shields have no replacement toggle");
+        check(Boolean.FALSE.equals(FeatureRegistry.option("content","crafters").booleanDefault), "automatic crafters are opt in");
+        check(Boolean.FALSE.equals(FeatureRegistry.option("world","useModernStrongholds").booleanDefault), "modern strongholds are opt in");
+        check(FeatureVersions.nativeFeature(FeatureRegistry.option("mobs","parrot"),"1.12.2"), "native parrots have no replacement toggle");
+        check(FeatureVersions.nativeFeature(FeatureRegistry.option("content","igloos"),"1.12.2"), "native igloos have no replacement toggle");
+        check(!FeatureVersions.nativeFeature(FeatureRegistry.option("content","campfires"),"1.12.2"), "campfires are backported on both targets");
+        check(FeatureRegistry.option("content","maces").dependencies.containsAll(Arrays.asList("content.heavy_cores","content.wind_charges")), "Mace acquisition retains exact ingredient dependencies");
+        check(FeatureRegistry.option("content","netherite_horse_armor").dependencies.contains("blocksitems.enableNetherite"), "horse armor requires its netherite material");
+        check(!FeatureVersions.nativeFeature(FeatureRegistry.option("content","netherite_horse_armor"),"1.12.2"), "netherite horse armor is a backport on both targets");
+        check(FeatureVersions.nativeFeature(FeatureRegistry.option("enchantspotions","lungeID"),"1.12.2"), "native named Lunge needs no numeric ID control");
+        check(FeatureVersions.nativeFeature(FeatureRegistry.option("enchantspotions","densityID"),"1.12.2"), "native named Mace registration needs no legacy numeric ID control");
         System.out.println("UAB shared catalog: " + assertions + " assertions; " + features + " feature switches, " + nativeFeatures + " native to 1.12.2");
     }
 }

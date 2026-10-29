@@ -38,7 +38,12 @@ public final class ClientAtmosphere {
   if(id.equals("minecraft:ambient.cave")){if(biome!=null)replacement="ambient."+biome+".mood";else if(Features.enabled("sounds.caveAmbience"))replacement="ambient.cave";}
   else if(biome!=null&&id.equals("minecraft:music.nether"))replacement="music.nether."+biome;
   if(id.startsWith("minecraft:block.note.")&&Features.enabled("sounds.noteBlockNotes")){Minecraft mc=Minecraft.getMinecraft();if(mc.world!=null){net.minecraft.util.math.BlockPos pos=new net.minecraft.util.math.BlockPos(original.getXPosF(),original.getYPosF(),original.getZPosF());if(mc.world.isBlockLoaded(pos)&&mc.world.getBlockState(pos).getBlock() instanceof net.minecraft.block.BlockNote)replacement=ClientSoundRules.instrument(mc.world.getBlockState(pos.down()).getBlock());}}
-  if(replacement!=null)event.setResultSound(new PositionedSoundRecord(new ResourceLocation(ModernSounds.DOMAIN,replacement),original.getCategory(),original.getVolume(),original.getPitch(),original.canRepeat(),original.getRepeatDelay(),original.getAttenuationType(),original.getXPosF(),original.getYPosF(),original.getZPosF()));
+  if(replacement!=null){
+   // Forge fires PlaySoundEvent before SoundManager resolves the sample. Native
+   // PositionedSound volume/pitch accessors require that sample to exist.
+   original.createAccessor(Minecraft.getMinecraft().getSoundHandler());
+   event.setResultSound(new PositionedSoundRecord(new ResourceLocation(ModernSounds.DOMAIN,replacement),original.getCategory(),original.getVolume(),original.getPitch(),original.canRepeat(),original.getRepeatDelay(),original.getAttenuationType(),original.getXPosF(),original.getYPosF(),original.getZPosF()));
+  }
  }
  @SubscribeEvent public void fog(EntityViewRenderEvent.FogColors event){if(event.getEntity().world.provider instanceof WorldProviderEnd&&Features.enabled("world.endFlashes")){float flash=EndFlashState.INSTANCE.getIntensity((float)event.getRenderPartialTicks());event.setRed(event.getRed()+(172/255F-event.getRed())*flash);event.setGreen(event.getGreen()+(96/255F-event.getGreen())*flash);event.setBlue(event.getBlue()+(205/255F-event.getBlue())*flash);}}
  public static void renderFlash(float partial){Minecraft mc=Minecraft.getMinecraft();if(mc.world==null||!(mc.world.provider instanceof WorldProviderEnd)||mc.world.provider.getSkyRenderer()!=null||!Features.enabled("world.endFlashes"))return;float intensity=EndFlashState.INSTANCE.getIntensity(partial);if(intensity<=.01F)return;

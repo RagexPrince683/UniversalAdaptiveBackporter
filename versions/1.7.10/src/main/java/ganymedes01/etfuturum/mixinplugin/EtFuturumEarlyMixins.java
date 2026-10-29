@@ -41,8 +41,34 @@ public class EtFuturumEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoade
 
 		List<String> mixins = new ArrayList<>();
 		mixins.add("potionids.MixinHandshakeModList");
+		mixins.add("potionids.MixinPotion");
 		mixins.add("configuration.MixinWorldFeatureAcquisition");
 		mixins.add("configuration.MixinEnchantmentAvailability");
+        mixins.add("strongholds.MixinMapGenStronghold");
+        mixins.add("mace.MixinLivingArmor");
+        mixins.add("bundle.BundleInventoryMixin");
+        mixins.add("powdersnow.MixinSnowPrecipitation");
+        mixins.add("respawnanchor.MixinAnchorRespawn");
+        mixins.add("respawnanchor.MixinAnchorSpawnPoint");
+        mixins.add("shield.MixinShieldBlocking");
+        mixins.add("shield.ShieldUseAccess");
+        mixins.add("sculk.MixinCatalystExperience");
+        mixins.add("copper.MixinHorseArmor");
+        mixins.add("spring.MixinAnimalData");
+        mixins.add("spring.MixinCowBreeding");
+mixins.add("spring.MixinPigBreeding");
+mixins.add("spring.MixinChickenBreeding");
+mixins.add("spring.MixinWolfBreeding");
+        mixins.add("spring.MixinSheep");
+        mixins.add("spring.MixinCactus");
+        mixins.add("spring.MixinEgg");
+        mixins.add("spring.MixinChickenEggs");
+        mixins.add("spring.MixinWolfSounds");
+        mixins.add("mace.MixinPlayerArmor");
+        mixins.add("mace.MixinMaceEnchantments");
+        mixins.add("mace.MixinPlayerAttack");
+        mixins.add("mace.MixinMobAttack");
+        mixins.add("mace.MixinDamageEnchantments");
 
 		// Core APIs owned by Et Futurum: metadata-aware tags and nested generation tracking.
 		mixins.add("tags.MixinBlock");
@@ -59,6 +85,15 @@ public class EtFuturumEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoade
 		}
 
 		if (side == MixinEnvironment.Side.CLIENT) {
+            mixins.add("shield.MixinShieldFirstPerson");
+            mixins.add("shield.MixinShieldArmPose");
+			mixins.add("spear.MixinSpearAirClick");
+            mixins.add("copper.MixinHorseArmorTextures");
+            mixins.add("spring.client.MixinLeaves");
+            mixins.add("spring.client.MixinRenderCow");
+            mixins.add("spring.client.MixinRenderPig");
+            mixins.add("spring.client.MixinRenderChicken");
+            mixins.add("spring.client.MixinRenderWolf");
 			if (ConfigSounds.bookPageTurn) mixins.add("sounds.client.MixinGuiButton");
 			if (ConfigWorld.endFlashes || ConfigWorld.modernEndAmbientColor || ConfigWorld.modernBlockLightTint) {
 				mixins.add("endflashes.client.MixinEntityRenderer");

@@ -144,6 +144,7 @@ public class ServerEventHandler {
 	public void onWorldUnload(WorldEvent.Unload event) {
 		if (!event.world.isRemote) {
 			ganymedes01.etfuturum.world.structure.MapGenOceanMonument.unload(event.world);
+			ganymedes01.etfuturum.world.nether.structure.MapGenBastion.unload(event.world);
 			ganymedes01.etfuturum.world.structure.underground.UndergroundStructures.unload(event.world);
 			ganymedes01.etfuturum.world.structure.surface.SurfaceStructures.unload(event.world);
 			ganymedes01.etfuturum.tileentities.TileEntitySculkShrieker.unload(event.world);
@@ -1898,6 +1899,8 @@ public class ServerEventHandler {
 
 	@SubscribeEvent
 	public void loadWorldEvent(WorldEvent.Load event) {
+		if (!event.world.isRemote && event.world.provider.dimensionId == 0)
+			ganymedes01.etfuturum.world.structure.StrongholdDistribution.get(event.world);
 		event.world.addWorldAccess(new EtFuturumWorldListener(event.world));
 
 		if (ConfigMixins.enableDoWeatherCycle) {

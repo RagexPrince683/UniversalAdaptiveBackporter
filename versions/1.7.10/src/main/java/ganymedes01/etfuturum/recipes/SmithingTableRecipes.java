@@ -28,10 +28,12 @@ public class SmithingTableRecipes {
 
 	public static void init() {
 		if (ConfigBlocksItems.enableNetherite) {
+            if(ganymedes01.etfuturum.configuration.ContentAvailability.available(ganymedes01.etfuturum.ModernAdditions.item("netherite_horse_armor")))
+                instance.addUpgrade(new ItemStack(ganymedes01.etfuturum.ModernAdditions.item("netherite_horse_armor")), "ingotNetherite", new ItemStack(Items.diamond_horse_armor));
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_PICKAXE.get()), "ingotNetherite", new ItemStack(Items.diamond_pickaxe, 1, OreDictionary.WILDCARD_VALUE));
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_AXE.get()), "ingotNetherite", new ItemStack(Items.diamond_axe, 1, OreDictionary.WILDCARD_VALUE));
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_SPADE.get()), "ingotNetherite", new ItemStack(Items.diamond_shovel, 1, OreDictionary.WILDCARD_VALUE));
-			SmithingTableRecipes.getInstance().addUpgrade(ModItems.NETHERITE_SPEAR.newItemStack(), "ingotNetherite", new ItemStack(ModItems.DIAMOND_SPEAR.get(), 1, OreDictionary.WILDCARD_VALUE));
+			if (ModItems.NETHERITE_SPEAR.isEnabled() && ModItems.DIAMOND_SPEAR.isEnabled()) SmithingTableRecipes.getInstance().addUpgrade(ModItems.NETHERITE_SPEAR.newItemStack(), "ingotNetherite", new ItemStack(ModItems.DIAMOND_SPEAR.get(), 1, OreDictionary.WILDCARD_VALUE));
 			SmithingTableRecipes.getInstance().addUpgrade(ModItems.NAUTILUS_ARMOR.newItemStack(1, 4), "ingotNetherite", ModItems.NAUTILUS_ARMOR.newItemStack(1, 3));
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_SWORD.get()), "ingotNetherite", new ItemStack(Items.diamond_sword, 1, OreDictionary.WILDCARD_VALUE));
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_HOE.get()), "ingotNetherite", new ItemStack(Items.diamond_hoe, 1, OreDictionary.WILDCARD_VALUE));

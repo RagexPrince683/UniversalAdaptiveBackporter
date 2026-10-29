@@ -21,11 +21,13 @@ public final class UAB {
         BoatSettings.initialize();
         ItemPhysics.initialize();
         DamageDirection.initialize();
+        SpearLunge.initialize();
         ModernBlockSounds.initialize();
         StorageRules.initialize();
         Content.define();
         ModernStructures.initialize();
         TagDefaults.initialize();
+        SculkMechanics.initialize();
         OceanBiomes.initialize();
         SurfaceBiomes.initialize();
         NetherBiomes.initialize();
@@ -46,6 +48,7 @@ public final class UAB {
         IronStorage.initialize();
         LegacySpawns.initialize();
         MendingCompatibility.initialize();
+        HoneyDispenserBehaviors.register();
         TagDefaults.dynamic();
         UabConfiguration.get().finish();
         ConnectionSettings.capture();

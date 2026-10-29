@@ -19,8 +19,26 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import ganymedes01.etfuturum.entities.*;
 
 public final class ClientProxy extends CommonProxy {
+    @Override public Object crafterGui(CrafterContainer container) { return new CrafterGui(container); }
+    @Override public void spearLunge(EntityPlayer player) {
+        Minecraft mc = Minecraft.getMinecraft();
+        net.minecraft.item.ItemStack stack = player.getHeldItemMainhand();
+        if (player == mc.player && mc.currentScreen == null && stack.getItem() instanceof ganymedes01.etfuturum.SpearItem
+                && ModEnchantments.level(ModEnchantments.lunge, stack) > 0) SpearLunge.request();
+    }
+    @SubscribeEvent public void spearAir(net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty event) {
+        if (event.getHand() == net.minecraft.util.EnumHand.MAIN_HAND) spearLunge(event.getEntityPlayer());
+    }
+
     @Override public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
+        CompassView.initialize();
+        MinecraftForge.EVENT_BUS.register(new SpyglassView());
+        MinecraftForge.EVENT_BUS.register(new SpringAnimalView());
+        net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(HangingSigns.HangingTile.class,new HangingSignRenderer());
+        net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(BellBlock.BellTile.class,new BellRenderer());
+        net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(CampfireTile.class,new StorageDisplayRenderer());
+        net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(BookStorage.Storage.class,new StorageDisplayRenderer());
         ShulkerTooltip.limit();
         MinecraftForge.EVENT_BUS.register(new ClientAtmosphere());
         GeneratedResources.install();
@@ -29,6 +47,7 @@ public final class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityNewBoat.class,NewBoatRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityNewBoatWithChest.class,NewBoatRenderer::new);
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(WoodSigns.SignTile.class,new WoodSignRenderer());
+        net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(LecternTile.class,new LecternRenderer());
         MinecraftForge.EVENT_BUS.register(new BoatClientEvents());
 
         RenderingRegistry.registerEntityRenderingHandler(EntityGoat.class,GoatRenderer::new);
@@ -80,12 +99,15 @@ public final class ClientProxy extends CommonProxy {
         if(block instanceof CoralPlant&&!((CoralPlant)block).shape.equals("_wall_fan"))builder.ignore(CoralPlant.FACING);
         return builder.build();
     }
+    @Override public void springState(SpringAnimals.State state,net.minecraftforge.fml.common.network.simpleimpl.MessageContext context){Minecraft mc=Minecraft.getMinecraft();mc.addScheduledTask(()->{if(mc.world!=null&&mc.getConnection()==context.getClientHandler())SpringAnimalView.receive(state);});}
     @Override public void damageDirection(float yaw,net.minecraftforge.fml.common.network.simpleimpl.MessageContext context){Minecraft mc=Minecraft.getMinecraft();mc.addScheduledTask(()->{if(mc.player!=null&&mc.getConnection()==context.getClientHandler()&&Features.enabled("functions.enableAttackedAtYawFix"))mc.player.attackedAtYaw=yaw;});}
     @Override public boolean holdingLight(){EntityPlayer player=Minecraft.getMinecraft().player;return player!=null&&(player.getHeldItemMainhand().getItem()==Content.item("light")||player.getHeldItemOffhand().getItem()==Content.item("light"));}
     @Override public void honeyDrip(World world,double x,double y,double z){Minecraft.getMinecraft().effectRenderer.addEffect(new ganymedes01.etfuturum.client.particle.CustomDripFX(world,x,y,z,ModernSounds.DOMAIN+":block.beehive.drip",0xFF8E6D14,false));}
     @Override public void lightMarker(World world,double x,double y,double z,int level){Minecraft.getMinecraft().effectRenderer.addEffect(new LightMarkerParticle(world,x,y,z,level));}
     @Override public void beeNectar(net.minecraft.world.World world,double x,double y,double z){Minecraft.getMinecraft().effectRenderer.addEffect(new BeeNectarParticle(world,x,y,z));}
     @Override public void init() {
+        net.minecraft.client.renderer.color.BlockColors colors=Minecraft.getMinecraft().getBlockColors();for(String name:SpringPlants.PLANTS){Block plant=Content.block(name);if(plant instanceof SpringPatch&&((SpringPatch)plant).litter){colors.registerBlockColorHandler((state,world,pos,tint)->world!=null&&pos!=null?DryFoliageColors.color(world.getBiome(pos).getTemperature(pos),world.getBiome(pos).getRainfall()):DryFoliageColors.color(.5,1),plant);Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack,tint)->DryFoliageColors.color(.5,1),net.minecraft.item.Item.getItemFromBlock(plant));}else if(plant instanceof SpringPatch||plant instanceof SpringPlant&&(((SpringPlant)plant).kind.equals("bush")||((SpringPlant)plant).kind.equals("firefly_bush"))){colors.registerBlockColorHandler((state,world,pos,tint)->world!=null&&pos!=null?net.minecraft.world.biome.BiomeColorHelper.getGrassColorAtPos(world,pos):0x79c05a,plant);Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack,tint)->0x79c05a,net.minecraft.item.Item.getItemFromBlock(plant));}}
+
         if(net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher.instance.getRenderer(net.minecraft.tileentity.TileEntityFlowerPot.class)==null)net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(net.minecraft.tileentity.TileEntityFlowerPot.class,new FlowerPotRenderer());
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(net.minecraft.tileentity.TileEntityShulkerBox.class,new TieredShulkerRenderer());
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(UndyedShulkerTile.class,new TieredShulkerRenderer());
@@ -93,22 +115,15 @@ public final class ClientProxy extends CommonProxy {
         for(net.minecraft.item.EnumDyeColor color:net.minecraft.item.EnumDyeColor.values()){Block block=BlockShulkerBox.getBlockByColor(color);net.minecraft.item.Item.getItemFromBlock(block).setTileEntityItemStackRenderer(new TieredShulkerStackRenderer(block));}
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(BarrelTile.class,new CrystalStorageRenderer());
         Content.item("trident").setTileEntityItemStackRenderer(new TridentStackRenderer());
-        Content.item("copper_chest").setTileEntityItemStackRenderer(new CopperStackRenderer(false));
+        for(java.util.Map.Entry<String,net.minecraft.block.Block> entry:Content.BLOCKS.entrySet())if(entry.getValue() instanceof CopperChestBlock)Content.item(entry.getKey()).setTileEntityItemStackRenderer(new CopperStackRenderer(false));
         Content.item("copper_golem_statue").setTileEntityItemStackRenderer(new CopperStackRenderer(true));
         Content.item("decorated_pot").setTileEntityItemStackRenderer(new PotStackRenderer());
         Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state,world,pos,tint)->{if(world!=null&&pos!=null&&world.getTileEntity(pos) instanceof PotionCauldronTile)return net.minecraft.potion.PotionUtils.getColor(((PotionCauldronTile)world.getTileEntity(pos)).potion);return 0x3F76E4;},Content.block("potion_cauldron"));
-        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state,world,pos,tint)->world==null||pos==null?0x3F76E4:world.getBiome(pos).getWaterColor(),Content.block("dried_ghast"));
         for(Block block:Content.BLOCKS.values())if(block instanceof SpecialOres.Family){Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state,world,pos,tint)->SpecialOres.color(block,block.getMetaFromState(state)),block);Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack,tint)->SpecialOres.color(block,stack.getMetadata()),net.minecraft.item.Item.getItemFromBlock(block));}
-        for(Block block:Content.BLOCKS.values())if(block instanceof AquaticPlant&&((AquaticPlant)block).submerged||block instanceof BubbleColumn)Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, world, pos, tint) -> world == null || pos == null ? 0x3F76E4 : world.getBiome(pos).getWaterColor(),block);
+        for(Block block:Content.BLOCKS.values())if(block instanceof BubbleColumn)Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, world, pos, tint) -> world == null || pos == null ? 0x3F76E4 : world.getBiome(pos).getWaterColor(),block);
     }
     @SubscribeEvent public void bake(net.minecraftforge.client.event.ModelBakeEvent event) {
         try {
-            net.minecraftforge.client.model.IModel model = net.minecraftforge.client.model.ModelLoaderRegistry.getModel(new ResourceLocation(UAB.ID, "block/contained_water"));
-            net.minecraft.client.renderer.block.model.IBakedModel water = model.bake(model.getDefaultState(), net.minecraft.client.renderer.vertex.DefaultVertexFormats.BLOCK, location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString()));
-        for(Block block:Content.BLOCKS.values())if(block instanceof AquaticPlant&&((AquaticPlant)block).submerged)for (ModelResourceLocation key : new HashSet<>(aquaticMapper(block).putStateModelLocations(block).values())) {
-                event.getModelRegistry().putObject(key, new ContainedWaterModel(event.getModelRegistry().getObject(key), water));
-            }
-            Block dried=Content.block("dried_ghast");for(IBlockState state:dried.getBlockState().getValidStates())if(state.getValue(DriedGhast.WATERLOGGED)){ModelResourceLocation key=new net.minecraft.client.renderer.block.statemap.DefaultStateMapper().putStateModelLocations(dried).get(state);event.getModelRegistry().putObject(key,new ContainedWaterModel(event.getModelRegistry().getObject(key),water));}
             net.minecraftforge.client.model.IModel hand = net.minecraftforge.client.model.ModelLoaderRegistry.getModel(new ResourceLocation(UAB.ID, "item/trident_in_hand"));
             net.minecraft.client.renderer.block.model.IBakedModel held = hand.bake(hand.getDefaultState(), net.minecraft.client.renderer.vertex.DefaultVertexFormats.ITEM, location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString()));
             ModelResourceLocation trident = new ModelResourceLocation(Content.item("trident").getRegistryName(), "inventory");
@@ -129,4 +144,5 @@ public final class ClientProxy extends CommonProxy {
     @Override public boolean storageOpen(net.minecraft.inventory.IInventory inventory){EntityPlayer player=Minecraft.getMinecraft().player;return player!=null&&player.openContainer!=player.inventoryContainer&&!player.openContainer.inventorySlots.isEmpty()&&player.openContainer.inventorySlots.get(0).inventory==inventory;}
     @Override public Object storageGui(net.minecraft.entity.player.EntityPlayer player,net.minecraft.inventory.IInventory inventory){return new StorageGui(player,inventory);}
     @Override public Object workstationGui(WorkstationContainer container) { return new WorkstationGui(container); }
+    @Override public Object lecternGui(LecternContainer container) { return new LecternGui(container); }
 }

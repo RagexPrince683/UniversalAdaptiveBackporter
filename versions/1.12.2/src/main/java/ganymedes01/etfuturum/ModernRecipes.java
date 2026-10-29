@@ -11,9 +11,10 @@ import net.minecraftforge.oredict.*;
 final class ModernRecipes {
     private ModernRecipes() { }
     private static ItemStack count(String name,int count){ItemStack stack=Content.stack(name);stack.setCount(count);return stack;}
-    private static void shapeless(RegistryEvent.Register<IRecipe> event,String name,ItemStack output,Object...input){if(output.isEmpty()||output.getItem().getRegistryName().getNamespace().equals(UAB.ID)&&!Content.available(output.getItem().getRegistryName().getPath()))return;for(Object item:input){Item value=item instanceof Block?Item.getItemFromBlock((Block)item):item instanceof Item?(Item)item:item instanceof ItemStack?((ItemStack)item).getItem():null;if(value!=null&&value.getRegistryName().getNamespace().equals(UAB.ID)&&!Content.available(value.getRegistryName().getPath()))return;}event.getRegistry().register(new ShapelessOreRecipe(new ResourceLocation(UAB.ID,name),output,input).setRegistryName(UAB.ID,name));}
+    static void shapeless(RegistryEvent.Register<IRecipe> event,String name,ItemStack output,Object...input){if(output.isEmpty()||output.getItem().getRegistryName().getNamespace().equals(UAB.ID)&&!Content.available(output.getItem().getRegistryName().getPath()))return;for(Object item:input){Item value=item instanceof Block?Item.getItemFromBlock((Block)item):item instanceof Item?(Item)item:item instanceof ItemStack?((ItemStack)item).getItem():null;if(value!=null&&value.getRegistryName().getNamespace().equals(UAB.ID)&&!Content.available(value.getRegistryName().getPath()))return;}event.getRegistry().register(new ShapelessOreRecipe(new ResourceLocation(UAB.ID,name),output,input).setRegistryName(UAB.ID,name));}
     private static void copyTemplate(RegistryEvent.Register<IRecipe> event,String name,String substrate){if(!Content.available(name))return;ItemStack material=ModernLoot.item("minecraft:"+substrate);if(material.isEmpty())return;Crafting.shaped(event,name+"_copy_"+substrate,count(name,2),"DTD","DBD","DDD",'D',Items.DIAMOND,'T',Content.item(name),'B',material);}
     static void register(RegistryEvent.Register<IRecipe> event){
+        ModernAdditions.recipes(event);
         if(!net.minecraftforge.fml.common.Loader.isModLoaded("dreamcraft"))Crafting.shaped(event,"old_gravel",new ItemStack(Content.block("old_gravel"),4),"DG","GD",'D',new ItemStack(Blocks.DIRT,1,1),'G',Blocks.GRAVEL);
         shapeless(event,"red_dye_from_old_rose",new ItemStack(Items.DYE,1,1),Content.block("rose"));
         Crafting.shaped(event,"rose_bush_from_old_roses",new ItemStack(Blocks.DOUBLE_PLANT,1,4),"RR","RR","RR",'R',Content.block("rose"));
@@ -31,6 +32,13 @@ final class ModernRecipes {
         for(EnumDyeColor color:new EnumDyeColor[]{EnumDyeColor.WHITE,EnumDyeColor.BLUE,EnumDyeColor.BROWN,EnumDyeColor.BLACK}){String name=color.getName()+"_dye";shapeless(event,name,Content.stack(name),new ItemStack(Items.DYE,1,color.getDyeDamage()));if(Content.available(name))OreDictionary.registerOre("dye"+Character.toUpperCase(color.getName().charAt(0))+color.getName().substring(1),Content.stack(name));}
         shapeless(event,"blue_dye_from_cornflower",Content.stack("blue_dye"),Content.block("cornflower"));shapeless(event,"white_dye_from_lily",Content.stack("white_dye"),Content.block("lily_of_the_valley"));shapeless(event,"black_dye_from_rose",Content.stack("black_dye"),Content.block("wither_rose"));
         Crafting.shaped(event,"beehive",Content.stack("beehive"),"PPP","HHH","PPP",'P',"plankWood",'H',Content.item("honeycomb"));
+        Crafting.shaped(event,"honeycomb_block",Content.stack("honeycomb_block"),"HH","HH",'H',Content.item("honeycomb"));
+        Crafting.shaped(event,"mace",Content.stack("mace"),"H","R",'H',Content.block("heavy_core"),'R',Content.item("breeze_rod"));
+        Crafting.shaped(event,"honey_block",Content.stack("honey_block"),"HH","HH",'H',Content.item("honey_bottle"));
+        shapeless(event,"honey_bottles_from_block",count("honey_bottle",4),Content.block("honey_block"),Items.GLASS_BOTTLE,Items.GLASS_BOTTLE,Items.GLASS_BOTTLE,Items.GLASS_BOTTLE);
+        shapeless(event,"sugar_from_honey",new ItemStack(Items.SUGAR,3),Content.item("honey_bottle"));
+        Crafting.shaped(event,"campfire",Content.stack("campfire")," S ","SCS","LLL",'S',"stickWood",'C',new ItemStack(Items.COAL,1,OreDictionary.WILDCARD_VALUE),'L',"logWood");
+        Crafting.shaped(event,"soul_campfire",Content.stack("soul_campfire")," S ","SCS","LLL",'S',"stickWood",'C',Blocks.SOUL_SAND,'L',"logWood");
         Crafting.shaped(event,"target",Content.stack("target")," R ","RHR"," R ",'R',Items.REDSTONE,'H',Blocks.HAY_BLOCK);
         Crafting.shaped(event,"lightning_rod",count("lightning_rod",1),"C","C","C",'C',Content.item("copper_ingot"));
         Crafting.shaped(event,"dripstone_block",Content.stack("dripstone_block"),"DD","DD",'D',Content.block("pointed_dripstone"));

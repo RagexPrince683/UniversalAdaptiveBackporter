@@ -12,8 +12,8 @@ public final class FeatureRegistry {
 	public static final Map<String, String> UPDATES = new LinkedHashMap<>();
 	private static final Map<String, Option> OPTIONS = new LinkedHashMap<>();
 	static {
-		String[] versions = {"1.8", "1.9", "1.10", "1.11", "1.11.1", "1.12", "1.13", "1.14", "1.15", "1.16", "1.16.2", "1.17", "1.18", "1.19", "1.20", "1.20.5", "1.21", "1.21.4", "1.21.6", "1.21.7", "1.21.9", "1.21.11"};
-		String[] names = {"Bountiful Update", "Combat Update", "Frostburn Update", "Exploration Update", "Exploration Update - Iron Nuggets", "World of Color Update", "Update Aquatic", "Village & Pillage", "Buzzy Bees", "Nether Update", "Piglin Brutes", "Caves & Cliffs Part I", "Caves & Cliffs Part II", "The Wild Update", "Trails & Tales", "Armored Paws", "Tricky Trials", "The Garden Awakens", "Chase the Skies", "Lava Chicken", "The Copper Age", "Mounts of Mayhem"};
+		String[] versions = {"1.8", "1.9", "1.10", "1.11", "1.11.1", "1.12", "1.13", "1.14", "1.15", "1.16", "1.16.2", "1.17", "1.18", "1.19", "1.20", "1.20.5", "1.21", "1.21.2", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.9", "1.21.11"};
+		String[] names = {"Bountiful Update", "Combat Update", "Frostburn Update", "Exploration Update", "Exploration Update - Iron Nuggets", "World of Color Update", "Update Aquatic", "Village & Pillage", "Buzzy Bees", "Nether Update", "Piglin Brutes", "Caves & Cliffs Part I", "Caves & Cliffs Part II", "The Wild Update", "Trails & Tales", "Armored Paws", "Tricky Trials", "Bundles of Bravery", "The Garden Awakens", "Spring to Life", "Chase the Skies", "Lava Chicken", "The Copper Age", "Mounts of Mayhem"};
 		for (int i = 0; i < versions.length; i++) UPDATES.put("update_" + versions[i].replace('.', '_'), "Minecraft " + versions[i] + " - " + names[i]);
 		UPDATES.put("general", "General");
 		try (InputStream stream = FeatureRegistry.class.getResourceAsStream("/uab/options.tsv")) {

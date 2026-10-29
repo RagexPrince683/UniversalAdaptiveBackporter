@@ -18,10 +18,14 @@ import java.util.*;
 public final class ReleasedBlockModel {
 	private static final String[] SIDES = {"down", "up", "north", "south", "west", "east"};
 	private final List<Face> faces = new ArrayList<>();
+    private boolean tinted;
 	public final IIcon particle;
 
 	public ReleasedBlockModel(IIconRegister atlas, String name) { this(atlas, name, 0); }
 	public ReleasedBlockModel(IIconRegister atlas, String name, int rotation) {
+		this(atlas, name, rotation, 1);
+	}
+	public ReleasedBlockModel(IIconRegister atlas, String name, int rotation, int facing) {
 		try (Reader reader = new InputStreamReader(Minecraft.getMinecraft().getResourceManager().getResource(
 				new ResourceLocation("etfuturum", "models/block/" + name + ".json")).getInputStream(), StandardCharsets.UTF_8)) {
 			JsonObject model = new JsonParser().parse(reader).getAsJsonObject();
@@ -38,14 +42,33 @@ public final class ReleasedBlockModel {
 					double[][] vertices = vertices(side, from, to);
 					if (element.has("rotation")) rotate(vertices, element.getAsJsonObject("rotation"));
 					for (double[] vertex : vertices) for (int turn = 0; turn < rotation; turn++) { double oldX = vertex[0]; vertex[0] = 1 - vertex[2]; vertex[2] = oldX; }
+					for (double[] vertex : vertices) orient(vertex, facing);
 					int cull = -1;
 					if (definition.has("cullface")) cull = Arrays.asList(SIDES).indexOf(definition.get("cullface").getAsString());
-					float shade = element.has("shade") && !element.get("shade").getAsBoolean() ? 1 : side == 0 ? .5F : side == 1 ? 1 : side < 4 ? .8F : .6F;
-					faces.add(new Face(vertices, uv, definition.has("rotation") ? definition.get("rotation").getAsInt() / 90 : 0,
-							atlas.registerIcon(texture(textures, definition.get("texture").getAsString())), rotateSide(side, rotation), cull < 0 ? -1 : rotateSide(cull, rotation), shade));
+					int orientedSide = orientSide(rotateSide(side, rotation), facing);
+					float shade = element.has("shade") && !element.get("shade").getAsBoolean() ? 1 : orientedSide == 0 ? .5F : orientedSide == 1 ? 1 : orientedSide < 4 ? .8F : .6F;
+					tinted|=definition.has("tintindex");
+                    faces.add(new Face(vertices, uv, definition.has("rotation") ? definition.get("rotation").getAsInt() / 90 : 0,
+							atlas.registerIcon(texture(textures, definition.get("texture").getAsString())), orientedSide, cull < 0 ? -1 : orientSide(rotateSide(cull, rotation), facing), shade,definition.has("tintindex")));
 				}
 			}
 		} catch (IOException exception) { throw new IllegalStateException("Cannot load released block model " + name, exception); }
+	}
+	private static void orient(double[] v, int facing) {
+		double x = v[0], y = v[1], z = v[2];
+		switch (facing) {
+			case 0: v[1] = 1 - y; v[2] = 1 - z; break;
+			case 2: v[1] = z; v[2] = 1 - y; break;
+			case 3: v[1] = 1 - z; v[2] = y; break;
+			case 4: v[0] = 1 - y; v[1] = x; break;
+			case 5: v[0] = y; v[1] = 1 - x; break;
+		}
+	}
+	private static int orientSide(int side, int facing) {
+		ForgeDirection d = ForgeDirection.getOrientation(side);
+		double[] v = {.5 + d.offsetX * .5, .5 + d.offsetY * .5, .5 + d.offsetZ * .5}; orient(v, facing);
+		for (int i = 0; i < 6; i++) { ForgeDirection n = ForgeDirection.getOrientation(i); if (v[0] == .5 + n.offsetX * .5 && v[1] == .5 + n.offsetY * .5 && v[2] == .5 + n.offsetZ * .5) return i; }
+		throw new IllegalArgumentException("Invalid model face");
 	}
 	private static int rotateSide(int side, int rotation) { int[] next = {0, 1, 5, 4, 2, 3}; for (int i = 0; i < rotation; i++) side = next[side]; return side; }
 	private static String texture(JsonObject textures, String key) {
@@ -77,6 +100,7 @@ public final class ReleasedBlockModel {
 	}
 	public void render(Block block, IBlockAccess world, int x, int y, int z, IIcon override) {
 		Tessellator tess = Tessellator.instance;
+        int tint=tinted?(world==null?block.getRenderColor(0):block.colorMultiplier(world,x,y,z)):0xffffff;
 		if (world != null) tess.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
 		for (Face face : faces) {
 			if (world != null && face.cull >= 0) {
@@ -84,7 +108,7 @@ public final class ReleasedBlockModel {
 				if (world.getBlock(x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ).isOpaqueCube()) continue;
 			}
 			if (world == null) { ForgeDirection normal = ForgeDirection.getOrientation(face.side); tess.setNormal(normal.offsetX, normal.offsetY, normal.offsetZ); }
-			tess.setColorOpaque_F(face.shade, face.shade, face.shade);
+			tess.setColorOpaque_F(face.shade*(face.tinted?(tint>>16&255)/255F:1),face.shade*(face.tinted?(tint>>8&255)/255F:1),face.shade*(face.tinted?(tint&255)/255F:1));
 			IIcon icon = override == null ? face.icon : override;
 			for (int i = 0; i < 4; i++) {
 				int uv = (i + face.rotation) & 3;
@@ -99,9 +123,10 @@ public final class ReleasedBlockModel {
 		final IIcon icon;
 		final int side, cull, rotation;
 		final float shade;
-		Face(double[][] vertices, JsonArray uv, int rotation, IIcon icon, int side, int cull, float shade) {
+        final boolean tinted;
+		Face(double[][] vertices, JsonArray uv, int rotation, IIcon icon, int side, int cull, float shade,boolean tinted) {
 			this.vertices = vertices; this.uv = new double[4]; for (int i = 0; i < 4; i++) this.uv[i] = uv.get(i).getAsDouble();
-			this.rotation = rotation; this.icon = icon; this.side = side; this.cull = cull; this.shade = shade;
+			this.rotation = rotation; this.icon = icon; this.side = side; this.cull = cull; this.shade = shade;this.tinted=tinted;
 		}
 	}
 }

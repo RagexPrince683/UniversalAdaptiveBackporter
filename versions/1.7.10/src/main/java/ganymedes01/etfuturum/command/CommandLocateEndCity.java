@@ -1,7 +1,7 @@
 package ganymedes01.etfuturum.command;
 
-import ganymedes01.etfuturum.world.end.dimension.ChunkProviderEFREnd;
 import ganymedes01.etfuturum.world.end.gen.MapGenEndCity;
+import ganymedes01.etfuturum.world.end.gen.EndCityTerrain;
 import net.minecraft.command.*;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.ChatComponentText;
@@ -30,8 +30,10 @@ public class CommandLocateEndCity extends CommandBase {
 	private static ChunkCoordinates nearestCandidate(World world, int x, int z, int radius) {
 		IChunkProvider provider = world.getChunkProvider();
 		if (provider instanceof ChunkProviderServer) provider = ((ChunkProviderServer) provider).currentChunkProvider;
-		if (!(provider instanceof ChunkProviderEFREnd)) return null;
-		ChunkProviderEFREnd end = (ChunkProviderEFREnd) provider;
+		if (!(provider instanceof EndCityTerrain)
+				|| !ganymedes01.etfuturum.world.end.gen.EndCityGenerationBridge.enabled()
+				|| !world.getWorldInfo().isMapFeaturesEnabled()) return null;
+		EndCityTerrain end = (EndCityTerrain) provider;
 		int gx = Math.floorDiv(x >> 4, 20), gz = Math.floorDiv(z >> 4, 20);
 		double best = Double.MAX_VALUE; ChunkCoordinates result = null;
 		for (int dx = -radius; dx <= radius; dx++) for (int dz = -radius; dz <= radius; dz++) {

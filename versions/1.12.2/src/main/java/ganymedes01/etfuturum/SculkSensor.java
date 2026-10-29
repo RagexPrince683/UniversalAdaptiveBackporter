@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.*;
-public final class SculkSensor extends Block {
+public class SculkSensor extends Block {
     public enum Phase implements IStringSerializable {INACTIVE,ACTIVE,COOLDOWN;public String getName(){return name().toLowerCase(java.util.Locale.ROOT);}}
     public static final PropertyEnum<Phase> PHASE=PropertyEnum.create("sculk_sensor_phase",Phase.class);
     SculkSensor(){super(net.minecraft.block.material.Material.ROCK);setHardness(1.5F);setDefaultState(blockState.getBaseState().withProperty(PHASE,Phase.INACTIVE));}
@@ -19,6 +19,8 @@ public final class SculkSensor extends Block {
     @Override public boolean isFullCube(IBlockState state){return false;}
     @Override public AxisAlignedBB getBoundingBox(IBlockState state,IBlockAccess world,BlockPos pos){return new AxisAlignedBB(0,0,0,1,.5,1);}
     @Override public boolean canProvidePower(IBlockState state){return true;}
-    @Override public int getWeakPower(IBlockState state,IBlockAccess world,BlockPos pos,EnumFacing side){return state.getValue(PHASE)==Phase.ACTIVE?15:0;}
+    @Override public int getWeakPower(IBlockState state,IBlockAccess world,BlockPos pos,EnumFacing side){TileEntity tile=world.getTileEntity(pos);return state.getValue(PHASE)==Phase.ACTIVE&&tile instanceof SculkSensorTile?((SculkSensorTile)tile).power:0;}
+    @Override public boolean hasComparatorInputOverride(IBlockState state){return true;}
+    @Override public int getComparatorInputOverride(IBlockState state,World world,BlockPos pos){TileEntity tile=world.getTileEntity(pos);return state.getValue(PHASE)==Phase.ACTIVE&&tile instanceof SculkSensorTile?((SculkSensorTile)tile).frequency:0;}
     @Override public int damageDropped(IBlockState state){return 0;}
 }

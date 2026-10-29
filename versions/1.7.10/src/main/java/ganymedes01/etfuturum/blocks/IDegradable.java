@@ -101,7 +101,8 @@ public interface IDegradable {
 	}
 
 	default void tryDegrade(World world, int x, int y, int z, Random random) {
-		int i = getCopperMeta(world, x, y, z, world.getBlockMetadata(x, y, z));
+		if(!world.checkChunksExist(x-CHECK_RANGE,Math.max(0,y-CHECK_RANGE),z-CHECK_RANGE,x+CHECK_RANGE,Math.min(255,y+CHECK_RANGE),z+CHECK_RANGE))return;
+        int i = getCopperMeta(world, x, y, z, world.getBlockMetadata(x, y, z));
 		int j = 0;
 		int k = 0;
 
@@ -111,7 +112,7 @@ public interface IDegradable {
 					for (int z1 = -CHECK_RANGE; z1 <= CHECK_RANGE; z1++) {
 						Block block = world.getBlock(x1 + x, y1 + y, z1 + z);
 						if (block instanceof IDegradable && (x1 != 0 || y1 != 0 || z1 != 0) && Math.abs(x1) + Math.abs(y1) + Math.abs(z1) <= CHECK_RANGE) {
-							int m = ((IDegradable) block).getCopperMeta(world, x, y, z, world.getBlockMetadata(x1 + x, y1 + y, z1 + z));
+							int m = ((IDegradable) block).getCopperMeta(world, x1+x, y1+y, z1+z, world.getBlockMetadata(x1 + x, y1 + y, z1 + z));
 
 							if (!countTowardsDegredation(m, world, x + x1, y + y1, z + z1)) {
 								continue;
@@ -161,6 +162,9 @@ public interface IDegradable {
 	}
 
 	default boolean tryWaxOnWaxOff(World world, int x, int y, int z, EntityPlayer entityPlayer) {
+        ItemStack predicted=entityPlayer.getHeldItem();
+        if(predicted==null||!entityPlayer.canPlayerEdit(x,y,z,1,predicted))return false;
+        if(world.isRemote){int copper=getCopperMeta(world,x,y,z,world.getBlockMetadata(x,y,z));boolean wax=copper<8&&isWaxableMaterial(predicted),axe=predicted.getItem().getToolClasses(predicted).contains("axe")&&(copper%4!=0||copper>7);if(wax||axe)spawnParticles(world,x,y,z,wax?0:copper>7?1:2);return wax||axe;}
 		boolean flag = false;
 		boolean flag2 = false;
 		int meta = getCopperMeta(world, x, y, z, world.getBlockMetadata(x, y, z));

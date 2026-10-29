@@ -3,6 +3,7 @@ package ganymedes01.etfuturum;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import ganymedes01.etfuturum.world.LootEnchantmentOptions;
 import com.google.gson.*;
 import net.minecraft.enchantment.*;
 import net.minecraft.init.*;
@@ -13,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.EnchantRandomly;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -37,15 +37,32 @@ public final class ModernLoot {
             if(function.equals("minecraft:set_count")){int count=integer(f.get("count"),random,1);if(f.has("add")&&f.get("add").getAsBoolean())count+=stack.getCount();stack.setCount(Math.max(0,Math.min(stack.getMaxStackSize(),count)));}
             else if(function.equals("minecraft:set_damage"))stack.setItemDamage((int)((1-Math.max(0,Math.min(1,number(f.get("damage"),random,1))))*stack.getMaxDamage()));
             else if(function.equals("minecraft:enchant_with_levels"))stack=EnchantmentHelper.addRandomEnchantment(random,stack,integer(f.get("levels"),random,20),false);
-            else if(function.equals("minecraft:enchant_randomly"))stack=new EnchantRandomly(new LootCondition[0],Collections.emptyList()).apply(stack,random,context);
+            else if(function.equals("minecraft:enchant_randomly"))stack=randomEnchantment(stack,f,random);
             else if(function.equals("minecraft:set_potion")){ResourceLocation potion=new ResourceLocation(f.get("id").getAsString());if(!PotionType.REGISTRY.containsKey(potion))return ItemStack.EMPTY;PotionUtils.addPotionToItemStack(stack,PotionType.REGISTRY.getObject(potion));}
             else if(function.equals("minecraft:set_ominous_bottle_amplifier"))stack.setItemDamage(integer(f.get("amplifier"),random,0));
-            else if(function.equals("minecraft:set_enchantments")){for(Map.Entry<String,JsonElement> entry:f.getAsJsonObject("enchantments").entrySet()){ResourceLocation id=new ResourceLocation(entry.getKey());Enchantment enchantment=Enchantment.REGISTRY.getObject(id);if(enchantment==null)enchantment=Enchantment.REGISTRY.getObject(new ResourceLocation(UAB.ID,id.getPath()));if(enchantment==null||!ModEnchantments.available(enchantment))return ItemStack.EMPTY;int level=integer(entry.getValue(),random,1);if(stack.getItem()==Items.ENCHANTED_BOOK)ItemEnchantedBook.addEnchantment(stack,new EnchantmentData(enchantment,level));else stack.addEnchantment(enchantment,level);}}
+            else if(function.equals("minecraft:set_enchantments")){if((!f.has("add")||!f.get("add").getAsBoolean())&&stack.hasTagCompound()){stack.getTagCompound().removeTag("ench");stack.getTagCompound().removeTag("StoredEnchantments");}for(Map.Entry<String,JsonElement> entry:f.getAsJsonObject("enchantments").entrySet()){Enchantment enchantment=enchantment(entry.getKey());if(enchantment==null||!ModEnchantments.available(enchantment))return ItemStack.EMPTY;stack=enchanted(stack,enchantment,Math.max(1,Math.min(enchantment.getMaxLevel(),integer(entry.getValue(),random,1))));}}
             else if(function.equals("minecraft:set_stew_effect")){JsonArray effects=f.getAsJsonArray("effects");JsonObject e=effects.get(random.nextInt(effects.size())).getAsJsonObject();Potion effect=Potion.REGISTRY.getObject(new ResourceLocation(e.get("type").getAsString()));if(effect==null)return ItemStack.EMPTY;stack=SuspiciousStew.effect(effect,integer(e.get("duration"),random,5)*(effect.isInstant()?1:20));}
             else if(function.equals("minecraft:exploration_map")){net.minecraft.util.math.BlockPos target=OceanTreasure.nearest(context.getWorld(),context.getKillerPlayer()==null?context.getWorld().getSpawnPoint():context.getKillerPlayer().getPosition());if(target==null)return ItemStack.EMPTY;stack=ItemMap.setupNewMap(context.getWorld(),target.getX(),target.getZ(),(byte)(f.has("zoom")?f.get("zoom").getAsInt():1),true,true);ItemMap.renderBiomePreviewMap(context.getWorld(),stack);NBTTagCompound tag=stack.hasTagCompound()?stack.getTagCompound():new NBTTagCompound(),marker=new NBTTagCompound();NBTTagList markers=new NBTTagList();marker.setByte("type",(byte)4);marker.setString("id","uab_treasure");marker.setDouble("x",target.getX());marker.setDouble("z",target.getZ());marker.setDouble("rot",180);markers.appendTag(marker);tag.setTag("Decorations",markers);stack.setTagCompound(tag);}
             else if(function.equals("minecraft:set_name")){JsonElement name=f.get("name");String text=name.isJsonPrimitive()?name.getAsString():name.getAsJsonObject().has("text")?name.getAsJsonObject().get("text").getAsString():"Buried Treasure Map";stack.setStackDisplayName(text);}
             else throw new IllegalArgumentException("Unsupported released loot function "+function);
         }return stack;
+    }
+    private static Enchantment enchantment(String name){ResourceLocation id=new ResourceLocation(name);Enchantment enchantment=Enchantment.REGISTRY.getObject(id);return enchantment==null?Enchantment.REGISTRY.getObject(new ResourceLocation(UAB.ID,id.getPath())):enchantment;}
+    private static ItemStack randomEnchantment(ItemStack stack,JsonObject function,Random random){
+        List<String> names=new ArrayList<>();JsonElement options=function.get("options");
+        if(options==null)names.addAll(LootEnchantmentOptions.randomLoot());
+        else if(options.isJsonPrimitive())names.addAll(LootEnchantmentOptions.expand(options.getAsString()));
+        else for(JsonElement option:options.getAsJsonArray())names.addAll(LootEnchantmentOptions.expand(option.getAsString()));
+        boolean book=stack.getItem()==Items.BOOK||stack.getItem()==Items.ENCHANTED_BOOK;
+        names.removeIf(name->{Enchantment enchantment=enchantment(name);return enchantment==null?!book:!ModEnchantments.available(enchantment)||!book&&!enchantment.canApply(stack);});
+        if(names.isEmpty())return ItemStack.EMPTY;
+        Enchantment enchantment=enchantment(names.get(random.nextInt(names.size())));if(enchantment==null)return ItemStack.EMPTY;
+        return enchanted(stack,enchantment,enchantment.getMinLevel()+random.nextInt(enchantment.getMaxLevel()-enchantment.getMinLevel()+1));
+    }
+    private static ItemStack enchanted(ItemStack stack,Enchantment enchantment,int level){
+        if(stack.getItem()==Items.BOOK){ItemStack book=new ItemStack(Items.ENCHANTED_BOOK);if(stack.hasTagCompound())book.setTagCompound(stack.getTagCompound().copy());stack=book;}
+        if(stack.getItem()==Items.ENCHANTED_BOOK)ItemEnchantedBook.addEnchantment(stack,new EnchantmentData(enchantment,level));else stack.addEnchantment(enchantment,level);
+        return stack;
     }
     public static ItemStack item(String id){String name=id.replace("minecraft:","");if(id.startsWith("minecraft:")&&(name.equals("oak_boat")||name.equals("spruce_boat")||name.equals("birch_boat")||name.equals("jungle_boat")||name.equals("acacia_boat")||name.equals("dark_oak_boat")))return new ItemStack(Item.REGISTRY.getObject(new ResourceLocation("minecraft",name.equals("oak_boat")?"boat":name)));if(name.startsWith("music_disc_"))name=(name.equals("music_disc_5")?"five":name.substring(11))+"_record";ItemStack variant=VariantItem.stack(name);if(!variant.isEmpty())return variant;if(Content.ITEMS.containsKey(name))return Content.available(name)?Content.stack(name):ItemStack.EMPTY;String[] fish={"cod","salmon","tropical_fish","pufferfish"};for(int i=0;i<fish.length;i++)if(name.equals(fish[i]))return new ItemStack(Items.FISH,1,i);if(name.equals("cooked_cod")||name.equals("cooked_salmon"))return new ItemStack(Items.COOKED_FISH,1,name.equals("cooked_salmon")?1:0);if(name.equals("lapis_lazuli"))return new ItemStack(Items.DYE,1,4);if(name.equals("cocoa_beans"))return new ItemStack(Items.DYE,1,3);if(name.equals("ink_sac"))return new ItemStack(Items.DYE);if(name.equals("bone_meal"))return new ItemStack(Items.DYE,1,15);if(name.equals("map"))return new ItemStack(Items.MAP);if(name.equals("dead_bush"))name="deadbush";if(name.equals("terracotta"))name="hardened_clay";if(name.equals("oak_boat"))name="boat";
         ResourceLocation key=new ResourceLocation(id.startsWith("minecraft:")?"minecraft:"+name:id);if(Item.REGISTRY.containsKey(key))return new ItemStack(Item.REGISTRY.getObject(key));NBTTagCompound state=new NBTTagCompound();state.setString("Name","minecraft:"+name);net.minecraft.block.state.IBlockState block=ModernStates.read(state);return block==null||Item.getItemFromBlock(block.getBlock())==Items.AIR?ItemStack.EMPTY:new ItemStack(block.getBlock(),1,block.getBlock().getMetaFromState(block));}

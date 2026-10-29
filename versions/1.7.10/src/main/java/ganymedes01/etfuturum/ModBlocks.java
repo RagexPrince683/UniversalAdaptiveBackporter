@@ -377,6 +377,8 @@ public enum ModBlocks {
 			.setBlockSound(ModSounds.soundDripstoneBlock).setHardness(1.5F).setResistance(1F)),
 	POINTED_DRIPSTONE(ConfigExperiments.enableDripstone, new BlockPointedDripstone()),
 	HONEY_BLOCK(ConfigBlocksItems.enableHoney, new BlockHoney()),
+	CAMPFIRE(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("campfires"), new BlockCampfire(false)),
+	SOUL_CAMPFIRE(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("campfires"), new BlockCampfire(true)),
 	HONEYCOMB_BLOCK(ConfigBlocksItems.enableHoney, new BaseBlock(Material.clay).setNames("honeycomb_block")
 			.setBlockSound(ModSounds.soundCoralBlock).setHardness(0.6F).setResistance(0.6F)),
 	BEEHIVE(ConfigEntities.enableBees, new BlockBeeHive().setHiveType("beehive", true)),
@@ -665,7 +667,8 @@ public enum ModBlocks {
 	SUSPICIOUS_SAND(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("archaeology"), new BlockBrushable("suspicious_sand", Blocks.sand)),
 	SUSPICIOUS_GRAVEL(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("archaeology"), new BlockBrushable("suspicious_gravel", Blocks.gravel)),
 	DECORATED_POT(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("decorated_pots"), new BlockDecoratedPot()),
-	HEAVY_CORE(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("heavy_cores"), new BlockStructureDecoration("heavy_core", "heavy_core").setHardness(10).setResistance(30))
+	HEAVY_CORE(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("heavy_cores"), new BlockStructureDecoration("heavy_core", "heavy_core").setHardness(10).setResistance(30)),
+    CALIBRATED_SCULK_SENSOR(ConfigExperiments.enableSculk&&ConfigBlocksItems.enableAmethyst,new BlockCalibratedSculkSensor())
 	;
 
 	public static final ModBlocks[] DOORS = new ModBlocks[]{DOOR_SPRUCE, DOOR_BIRCH, DOOR_JUNGLE, DOOR_ACACIA, DOOR_DARK_OAK, CRIMSON_DOOR, WARPED_DOOR, MANGROVE_DOOR, CHERRY_DOOR, BAMBOO_DOOR};

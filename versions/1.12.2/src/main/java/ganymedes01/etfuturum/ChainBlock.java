@@ -7,7 +7,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockAccess;
 
-public final class ChainBlock extends BlockRotatedPillar {
+public class ChainBlock extends BlockRotatedPillar {
     ChainBlock() { super(Material.IRON); setHardness(5); setResistance(6); setHarvestLevel("pickaxe", 0); setLightOpacity(0); setSoundType(net.minecraft.block.SoundType.METAL); }
     @Override public boolean isOpaqueCube(IBlockState state) { return false; }
     @Override public boolean isFullCube(IBlockState state) { return false; }

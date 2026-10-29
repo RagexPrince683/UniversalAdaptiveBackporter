@@ -26,7 +26,8 @@ public final class ClientPacketHandler {
 		mc.func_152344_a(() -> {
 			WorldClient world = mc.theWorld;
 			if (world == null || mc.getNetHandler() != context.netHandler) return;
-			if (packet instanceof AttackYawMessage message) {
+			if(packet instanceof ganymedes01.etfuturum.SpringAnimals.State state){ganymedes01.etfuturum.client.SpringAnimalView.receive(state);
+            }else if (packet instanceof AttackYawMessage message) {
 				if (ConfigFunctions.enableAttackedAtYawFix && mc.thePlayer != null && Float.isFinite(message.attackedAtYaw)) {
 					mc.thePlayer.attackedAtYaw = message.attackedAtYaw;
 				}
@@ -38,7 +39,7 @@ public final class ClientPacketHandler {
 			} else if (packet instanceof WoodSignOpenMessage message && world.blockExists(message.tileX, message.tileY, message.tileZ)) {
 				TileEntity tile = world.getTileEntity(message.tileX, message.tileY, message.tileZ);
 				if (!(tile instanceof TileEntityWoodSign)) {
-					tile = new TileEntityWoodSign();
+					tile = Block.getBlockById(message.id) instanceof ganymedes01.etfuturum.blocks.BlockHangingSign ? new ganymedes01.etfuturum.tileentities.TileEntityHangingSign() : new TileEntityWoodSign();
 					tile.blockType = Block.getBlockById(message.id);
 					tile.setWorldObj(world);
 					tile.xCoord = message.tileX;

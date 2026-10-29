@@ -103,6 +103,21 @@ public final class ConfigurationTest {
 		check(config.integer("world", "copperClusterSize", 8, 0, 64) == 8, "restart settings frozen during reload");
 		check(signature.equals(config.handshake()), "reload retains active handshake state");
 
+		for (String id : new String[]{"broken", "-2", "32768", "65535"}) {
+			File identity = folder("potion-identity");
+			current = new Configuration(new File(identity, "uab.cfg"));
+			set(current, "enchantspotions", "darknessID", id); current.save();
+			config = open(identity, true);
+			boolean rejected = false;
+			java.lang.reflect.Method readId = ganymedes01.etfuturum.configuration.configs.ConfigEnchantsPotions.class.getDeclaredMethod("potionId", String.class);
+			readId.setAccessible(true);
+			try { readId.invoke(null, "darknessID"); }
+			catch (java.lang.reflect.InvocationTargetException expected) { rejected = expected.getCause() instanceof IllegalArgumentException; }
+			check(rejected, "invalid saved potion ID fails explicitly: " + id);
+			FeatureRegistry.Option option = FeatureRegistry.option("enchantspotions", "darknessID");
+			check(id.equals(config.nativeConfig().getCategory(option.category).get(option.field).getString()), "invalid identity is not rewritten");
+		}
+
 		File server = folder("server"); config = open(server, false); config.bool("functions", "enableExtraF3HTooltips", true); config.bool("blocksitems", "enableCopper", true); config.finish();
 		check(!config.nativeConfig().hasCategory(FeatureRegistry.option("functions", "enableExtraF3HTooltips").category), "dedicated config excludes client preferences");
 

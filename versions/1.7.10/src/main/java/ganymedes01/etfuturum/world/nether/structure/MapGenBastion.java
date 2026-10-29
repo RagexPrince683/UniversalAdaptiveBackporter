@@ -16,6 +16,35 @@ import java.util.*;
 
 /** Bounded, deterministic jigsaw assembly; native MapGenStructure owns chunk placement and saved starts. */
 public class MapGenBastion extends MapGenStructure {
+	private static final Map<World, MapGenBastion> EXTERNAL = new IdentityHashMap<>();
+	private boolean external;
+	public static void unload(World world) { EXTERNAL.remove(world); }
+	/** Forge population supplies terrain owned by vanilla or an optional Nether mod. */
+	public static void populateExternal(World world, net.minecraft.world.chunk.IChunkProvider provider, int cx, int cz) {
+		if (world.isRemote || world.provider.dimensionId != -1 || provider instanceof ganymedes01.etfuturum.world.nether.dimension.NetherChunkProvider
+				|| !ConfigWorld.enableBastions || !world.getWorldInfo().isMapFeaturesEnabled() || savedChunk(world, cx, cz)) return;
+		MapGenBastion generator = EXTERNAL.computeIfAbsent(world, key -> { MapGenBastion gen = new MapGenBastion(); gen.external = true; return gen; });
+		generator.func_151539_a(provider, world, cx, cz, null);
+		generator.hasStructureAt(cx * 16, 0, cz * 16);
+		MapGenStructureData data = (MapGenStructureData) world.perWorldStorage.loadData(MapGenStructureData.class, "EFRBastion");
+		StructureBoundingBox clip = new StructureBoundingBox(cx * 16, 0, cz * 16, cx * 16 + 15, 127, cz * 16 + 15);
+		Random random = new Random(world.getSeed() ^ cx * 341873128712L ^ cz * 132897987541L);
+		for (StructureStart value : generator.structureMap.values()) if (value.getBoundingBox().intersectsWith(clip)) {
+			Start start = (Start) value; long key = net.minecraft.world.ChunkCoordIntPair.chunkXZ2Int(cx, cz);
+			if (start.externalChunks.add(key)) {
+				start.generateStructure(world, random, clip);
+				data.func_143043_a(start.func_143021_a(start.func_143019_e(), start.func_143018_f()), start.func_143019_e(), start.func_143018_f());
+				data.markDirty();
+			}
+		}
+	}
+	private static boolean savedChunk(World world, int x, int z) {
+		net.minecraft.world.chunk.IChunkProvider provider = world.getChunkProvider();
+		if (!(provider instanceof net.minecraft.world.gen.ChunkProviderServer)) return true;
+		Object loader = ((net.minecraft.world.gen.ChunkProviderServer) provider).currentChunkLoader;
+		return !(loader instanceof net.minecraft.world.chunk.storage.AnvilChunkLoader)
+				|| ((net.minecraft.world.chunk.storage.AnvilChunkLoader) loader).chunkExists(world, x, z);
+	}
 	private static final Map<String, BastionTemplate> TEMPLATES = new HashMap<>();
 	private static final Map<String, List<PoolElement>> POOLS = new HashMap<>();
 	private static class PoolElement {
@@ -26,6 +55,7 @@ public class MapGenBastion extends MapGenStructure {
 	static BastionTemplate template(String name) { return TEMPLATES.computeIfAbsent(name, BastionTemplate::new); }
 	@Override public String func_143025_a() { return "EFRBastion"; }
 	@Override protected boolean canSpawnStructureAtCoords(int x, int z) {
+		if (external && savedChunk(worldObj, x, z)) return false;
 		if (!ConfigWorld.enableBastions || !ModBlocks.BLACKSTONE.isEnabled() || !ModBlocks.BASALT.isEnabled() || !ModBlocks.SMOOTH_QUARTZ.isEnabled() || !worldObj.getWorldInfo().isMapFeaturesEnabled()) return false;
 		int spacing = ConfigWorld.bastionSpacing;
 		int gx = Math.floorDiv(x, spacing), gz = Math.floorDiv(z, spacing);
@@ -89,6 +119,9 @@ public class MapGenBastion extends MapGenStructure {
 	}
 
 	public static class Start extends StructureStart {
+		private final Set<Long> externalChunks = new HashSet<>();
+		@Override public void func_143022_a(NBTTagCompound tag) { super.func_143022_a(tag); net.minecraft.nbt.NBTTagList list = new net.minecraft.nbt.NBTTagList(); for (long key : externalChunks) { NBTTagCompound entry = new NBTTagCompound(); entry.setLong("Chunk", key); list.appendTag(entry); } tag.setTag("UABExternalChunks", list); }
+		@Override public void func_143017_b(NBTTagCompound tag) { super.func_143017_b(tag); externalChunks.clear(); net.minecraft.nbt.NBTTagList list = tag.getTagList("UABExternalChunks", 10); for (int i = 0; i < list.tagCount(); i++) externalChunks.add(list.getCompoundTagAt(i).getLong("Chunk")); }
 		public Start() { }
 		public Start(World world, int cx, int cz) {
 			super(cx, cz);

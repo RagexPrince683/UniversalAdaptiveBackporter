@@ -1,0 +1,1 @@
+{"textures":{"particle":"block/leaf_litter","texture":"block/leaf_litter"},"elements":[{"from":[0,0.25,0],"to":[8,0.25,8],"faces":{"up":{"uv":[0,0,8,8],"texture":"block/leaf_litter","tintindex":0},"down":{"uv":[0,8,8,0],"texture":"block/leaf_litter","tintindex":0}}}]}

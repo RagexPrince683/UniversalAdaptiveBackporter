@@ -3,6 +3,10 @@ package ganymedes01.etfuturum.world.structure.underground;
 import com.google.gson.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 import ganymedes01.etfuturum.ModItems;
+import ganymedes01.etfuturum.ModEnchantments;
+import ganymedes01.etfuturum.world.LootEnchantmentOptions;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -63,14 +67,22 @@ public final class UndergroundLoot {
 		if (name.equals("minecraft:exploration_map")) { deferred("exploration map markers"); return null; }
 		if (name.equals("minecraft:set_count")) stack.stackSize = Math.min(stack.getMaxStackSize(), (int) number(f.get("count"), random, 1));
 		else if (name.equals("minecraft:set_damage")) stack.setItemDamage((int) ((1 - Math.min(1, number(f.get("damage"), random, 1))) * stack.getMaxDamage()));
-		else if (name.equals("minecraft:enchant_with_levels") || name.equals("minecraft:enchant_randomly")) stack = EnchantmentHelper.addRandomEnchantment(random, stack, (int) number(f.get("levels"), random, 20));
+		else if (name.equals("minecraft:enchant_with_levels")) stack = EnchantmentHelper.addRandomEnchantment(random, stack, (int) number(f.get("levels"), random, 20));
+		else if (name.equals("minecraft:enchant_randomly")) stack = randomEnchantment(stack, f, random);
 		else if (name.equals("minecraft:set_potion")) {
 			String potion = f.get("id").getAsString().replace("minecraft:", "");
 			int meta = potion.contains("regeneration") ? 8193 : potion.contains("strength") ? 8201 : potion.contains("healing") ? 8197 : potion.contains("swiftness") ? 8194 : potion.contains("poison") ? 8196 : potion.contains("slowness") ? 8202 : potion.contains("weakness") ? 8200 : 0;
 			if (potion.startsWith("strong_")) meta += 32; if (potion.startsWith("long_")) meta += 64;
 			stack.setItemDamage(meta | (stack.getItemDamage() & 16384));
 		} else if (name.equals("minecraft:set_ominous_bottle_amplifier")) stack.setItemDamage((int) number(f.get("amplifier"), random, 0));
-		else if (name.equals("minecraft:set_enchantments")) { deferred("Swift Sneak loot enchantment"); return null; }
+		else if (name.equals("minecraft:set_enchantments")) {
+			if ((!f.has("add") || !f.get("add").getAsBoolean()) && stack.hasTagCompound()) { stack.getTagCompound().removeTag("ench"); stack.getTagCompound().removeTag("StoredEnchantments"); }
+			for (Map.Entry<String,JsonElement> entry : f.getAsJsonObject("enchantments").entrySet()) {
+				Enchantment enchantment = ModEnchantments.byName(entry.getKey());
+				if (enchantment == null || !ModEnchantments.available(enchantment)) { deferred("enchantment " + entry.getKey()); return null; }
+				stack = enchanted(stack, enchantment, Math.max(1, Math.min(enchantment.getMaxLevel(), (int) number(entry.getValue(), random, 1))));
+			}
+		}
 		else if (name.equals("minecraft:set_stew_effect")) {
 			JsonArray effects = f.getAsJsonArray("effects"); JsonObject effect = effects.get(random.nextInt(effects.size())).getAsJsonObject();
 			String effectName = effect.get("type").getAsString().replace("minecraft:", "");
@@ -87,6 +99,24 @@ public final class UndergroundLoot {
 			net.minecraft.nbt.NBTTagCompound data = new net.minecraft.nbt.NBTTagCompound(), e = new net.minecraft.nbt.NBTTagCompound(); net.minecraft.nbt.NBTTagList list = new net.minecraft.nbt.NBTTagList();
 			e.setByte("EffectId", (byte) id); e.setInteger("EffectDuration", (int) number(effect.get("duration"), random, 5) * 20); list.appendTag(e); data.setTag("Effects", list); stack.setTagCompound(data);
 		} else throw new IllegalArgumentException("Unsupported loot function " + name);
+		return stack;
+	}
+	private static ItemStack randomEnchantment(ItemStack stack, JsonObject function, Random random) {
+		List<String> names = new ArrayList<>(); JsonElement options = function.get("options");
+		if (options == null) names.addAll(LootEnchantmentOptions.randomLoot());
+		else if (options.isJsonPrimitive()) names.addAll(LootEnchantmentOptions.expand(options.getAsString()));
+		else for (JsonElement option : options.getAsJsonArray()) names.addAll(LootEnchantmentOptions.expand(option.getAsString()));
+		boolean book = stack.getItem() == Items.book || stack.getItem() == Items.enchanted_book;
+		names.removeIf(name -> { Enchantment enchantment = ModEnchantments.byName(name); return enchantment == null ? !book : !ModEnchantments.available(enchantment) || !book && !enchantment.canApply(stack); });
+		if (names.isEmpty()) return null;
+		String selected = names.get(random.nextInt(names.size())); Enchantment enchantment = ModEnchantments.byName(selected);
+		if (enchantment == null) { deferred("enchantment " + selected); return null; }
+		return enchanted(stack, enchantment, enchantment.getMinLevel() + random.nextInt(enchantment.getMaxLevel() - enchantment.getMinLevel() + 1));
+	}
+	private static ItemStack enchanted(ItemStack stack, Enchantment enchantment, int level) {
+		if (stack.getItem() == Items.book) { ItemStack book = new ItemStack(Items.enchanted_book); if (stack.hasTagCompound()) book.setTagCompound((net.minecraft.nbt.NBTTagCompound) stack.getTagCompound().copy()); stack = book; }
+		if (stack.getItem() == Items.enchanted_book) Items.enchanted_book.addEnchantment(stack, new EnchantmentData(enchantment, level));
+		else stack.addEnchantment(enchantment, level);
 		return stack;
 	}
 	public static ItemStack item(String id) {

@@ -8,6 +8,7 @@ public class TileEntityCopperChest extends TileEntity implements IInventory {
 	private final InventoryBasic inventory = new InventoryBasic("Copper Chest", false, 27);
 	public float lidAngle, prevLidAngle;
 	private int users;
+    @Override public boolean shouldRefresh(net.minecraft.block.Block old,net.minecraft.block.Block next,int oldMeta,int nextMeta,net.minecraft.world.World world,int x,int y,int z){return old!=next&&!(old instanceof ganymedes01.etfuturum.blocks.BlockCopperChest&&next instanceof ganymedes01.etfuturum.blocks.BlockCopperChest);}
 	@Override public void validate() { super.validate(); if (worldObj != null) ganymedes01.etfuturum.world.MobChestIndex.add(worldObj, xCoord, yCoord, zCoord); }
 	@Override public void invalidate() { if (worldObj != null) ganymedes01.etfuturum.world.MobChestIndex.remove(worldObj, xCoord, yCoord, zCoord); super.invalidate(); }
 	@Override public void updateEntity() {
@@ -31,5 +32,5 @@ public class TileEntityCopperChest extends TileEntity implements IInventory {
 	@Override public void closeInventory() { if (!worldObj.isRemote) { users = Math.max(0, users - 1); worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 1, users); } }
 	@Override public boolean isItemValidForSlot(int slot, ItemStack stack) { return slot >= 0 && slot < 27; }
 	@Override public void writeToNBT(NBTTagCompound tag) { super.writeToNBT(tag); NBTTagList list = new NBTTagList(); for (int i = 0; i < 27; i++) if (inventory.getStackInSlot(i) != null) { NBTTagCompound entry = inventory.getStackInSlot(i).writeToNBT(new NBTTagCompound()); entry.setByte("Slot", (byte) i); list.appendTag(entry); } tag.setTag("Items", list); }
-	@Override public void readFromNBT(NBTTagCompound tag) { super.readFromNBT(tag); NBTTagList list = tag.getTagList("Items", 10); for (int i = 0; i < Math.min(27, list.tagCount()); i++) { NBTTagCompound entry = list.getCompoundTagAt(i); int slot = entry.getByte("Slot") & 255; if (slot < 27) inventory.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(entry)); } }
+	@Override public void readFromNBT(NBTTagCompound tag) { super.readFromNBT(tag);for(int slot=0;slot<27;slot++)inventory.setInventorySlotContents(slot,null); NBTTagList list = tag.getTagList("Items", 10); for (int i = 0; i < Math.min(27, list.tagCount()); i++) { NBTTagCompound entry = list.getCompoundTagAt(i); int slot = entry.getByte("Slot") & 255; if (slot < 27) inventory.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(entry)); } }
 }

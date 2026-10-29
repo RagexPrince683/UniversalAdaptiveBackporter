@@ -171,6 +171,7 @@ public class BlockBeeHive extends BlockContainer {
 		if (!list.isEmpty()) {
 			List<EntityPlayer> list1 = p_226881_1_.getEntitiesWithinAABB(EntityPlayer.class, box);
 			int i = list1.size();
+			if (i == 0) return;
 			for (EntityBee beeentity : list) {
 				if (beeentity.getAttackTarget() == null) {
 					beeentity.setBeeAttacker(list1.get(p_226881_1_.rand.nextInt(i)));
@@ -189,15 +190,21 @@ public class BlockBeeHive extends BlockContainer {
 		ItemStack itemstack = player.getHeldItem();
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (!(te instanceof TileEntityBeeHive)) return false;
+		if (itemstack == null || !player.canPlayerEdit(x, y, z, side, itemstack)
+				|| !(itemstack.getItem() instanceof ItemShears) && itemstack.getItem() != Items.glass_bottle
+				|| ((TileEntityBeeHive) te).getHoneyLevel() < 5) return false;
+		if (!ganymedes01.etfuturum.configuration.ContentAvailability.available(
+				itemstack.getItem() instanceof ItemShears ? ModItems.HONEYCOMB.get() : ModItems.HONEY_BOTTLE.get())) return false;
+		if (world.isRemote) return true;
 		boolean flag = false;
-		if (world.getBlockMetadata(x, y, z) > 6 && itemstack != null) {
+		if (((TileEntityBeeHive) te).getHoneyLevel() >= 5) {
 			if (itemstack.getItem() instanceof ItemShears) {
 				world.playSoundAtEntity(player, Tags.MC_ASSET_VER + ":block.beehive.shear", 1.0F, 1.0F);
 				dropHoneyComb(world, x, y, z);
 				itemstack.damageItem(1, player);
 				flag = true;
 			} else if (itemstack.getItem() == Items.glass_bottle) {
-				itemstack.stackSize--;
+				if (!player.capabilities.isCreativeMode) itemstack.stackSize--;
 				world.playSoundAtEntity(player, Tags.MC_ASSET_VER + ":item.bottle.fill", 1.0F, 1.0F);
 				ItemStack bottle = ModItems.HONEY_BOTTLE.newItemStack();
 				if (itemstack.stackSize == 0) {

@@ -1,5 +1,6 @@
 package ganymedes01.etfuturum.potion;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.potion.Potion;
@@ -44,6 +45,9 @@ public final class PotionIdRegistry {
                 String key = owner + ":" + entry.getKey();
                 int override = entry.getValue();
                 if (override < -1) throw failure("Invalid override for " + key);
+                // Reject unsupported new requests before persisting a reservation that
+                // would otherwise survive a failed first startup.
+                if (override >= 0 && enabled.contains(entry.getKey())) requireSupported(key, override);
                 String stored = data.getProperty(key);
                 if (stored == null || stored.equals("-1")) {
                     if (override >= 0 || enabled.contains(entry.getKey())) data.setProperty(key, Integer.toString(override));
@@ -81,8 +85,7 @@ public final class PotionIdRegistry {
             TreeMap<String, Integer> result = new TreeMap<String, Integer>();
             for (String key : requested) {
                 int id = Integer.parseInt(data.getProperty(key));
-                if (id < 0 || id >= Potion.potionTypes.length)
-                    throw failure(key + " ID " + id + " is outside the live potion registry.");
+                requireSupported(key, id);
                 if (Potion.potionTypes[id] != null)
                     throw failure(key + " ID " + id + " is occupied by " + Potion.potionTypes[id].getName()
                             + ". Its persisted ID will not be silently reassigned.");
@@ -98,6 +101,22 @@ public final class PotionIdRegistry {
         Integer id = active.get(owner + ":" + name);
         if (id == null) throw failure("Potion was not allocated: " + name);
         return id;
+    }
+
+    public static int maximumSupportedId() {
+        // An expanded array alone does not make signed-byte packets/NBT safe.
+        // The dummy module ID exists only when EndlessIDs' potion transformations are enabled.
+        return Math.min(Potion.potionTypes.length - 1,
+                Loader.isModLoaded("endlessids_potion") ? Short.MAX_VALUE : 127);
+    }
+
+    private void requireSupported(String key, int id) {
+        int maximum = maximumSupportedId();
+        if (id < 0 || id > maximum)
+            throw failure(key + " ID " + id + " is unsupported by this runtime (0.." + maximum
+                    + ", live registry: " + Potion.potionTypes.length + " slots). UAB supports 0..127 natively;"
+                    + " higher IDs require the enabled EndlessIDs potion module, including its packet/NBT extensions."
+                    + " Restore the matching config/allocation file for existing saves; IDs will not be remapped.");
     }
 
     public void track(String name, Potion potion) {

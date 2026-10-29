@@ -1,6 +1,5 @@
 package ganymedes01.etfuturum.items;
 
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
@@ -13,7 +12,6 @@ public class ItemHoneyBottle extends BaseItem {
 		setNames("honey_bottle");
 		setContainerItem(Items.glass_bottle);
 		setMaxStackSize(16);
-		EntityXPOrb.getXPSplit(1);
 	}
 
 	@Override
@@ -23,6 +21,7 @@ public class ItemHoneyBottle extends BaseItem {
 		}
 
 		if (!p_77654_2_.isRemote) {
+			p_77654_3_.getFoodStats().addStats(6, 0.1F);
 			p_77654_3_.removePotionEffect(Potion.poison.id);
 		}
 
@@ -31,7 +30,8 @@ public class ItemHoneyBottle extends BaseItem {
 				return new ItemStack(Items.glass_bottle);
 			}
 
-			p_77654_3_.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle));
+			ItemStack bottle = new ItemStack(Items.glass_bottle);
+			if (!p_77654_3_.inventory.addItemStackToInventory(bottle)) p_77654_3_.dropPlayerItemWithRandomChoice(bottle, false);
 		}
 
 		return p_77654_1_;
@@ -39,7 +39,7 @@ public class ItemHoneyBottle extends BaseItem {
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack p_77626_1_) {
-		return 32;
+		return 40;
 	}
 
 	@Override

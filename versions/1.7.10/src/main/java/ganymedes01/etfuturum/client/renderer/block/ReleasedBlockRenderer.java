@@ -13,6 +13,10 @@ import org.lwjgl.opengl.GL11;
 public final class ReleasedBlockRenderer extends BlockModelBase {
 	public ReleasedBlockRenderer() { super(RenderIDs.RELEASED_BLOCK); }
 	private ReleasedBlockModel model(Block block, int meta) {
+        if(block instanceof ganymedes01.etfuturum.PowderSnow.Cauldron cauldron) return cauldron.getReleasedModel(meta);
+		if (block instanceof BlockScaffolding scaffolding) return scaffolding.getReleasedModel(meta);
+		if (block instanceof BlockCampfire campfire) return campfire.getReleasedModel(meta);
+		if (block instanceof BlockLightningRod rod) return rod.getReleasedModel(meta);
 		if (block instanceof BlockCoral coral) return coral.getReleasedModel(meta);
 		if (block instanceof BlockConduit conduit) return conduit.getReleasedModel();
 		if (block instanceof BlockSeaPickle pickle) return pickle.getReleasedModel(meta);
@@ -28,13 +32,14 @@ public final class ReleasedBlockRenderer extends BlockModelBase {
 		return ((BlockSnifferPlant) block).getReleasedModel(meta);
 	}
 	@Override public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int id, RenderBlocks renderer) {
-		if ((block instanceof BlockDriedGhast || block instanceof BlockAquaticPlant) && net.minecraftforge.client.ForgeHooksClient.getWorldRenderPass() == 1) {
-			if (block instanceof BlockDriedGhast ? (world.getBlockMetadata(x, y, z) & 4) == 0 : !((BlockAquaticPlant) block).submerged) return false;
+		if ((block instanceof BlockCampfire || block instanceof BlockDriedGhast || block instanceof BlockAquaticPlant) && net.minecraftforge.client.ForgeHooksClient.getWorldRenderPass() == 1) {
+			if (block instanceof BlockCampfire ? (world.getBlockMetadata(x, y, z) & 8) == 0 : block instanceof BlockDriedGhast ? (world.getBlockMetadata(x, y, z) & 4) == 0 : !((BlockAquaticPlant) block).submerged) return false;
 			IBlockAccess previous = renderer.blockAccess;
 			try { renderer.blockAccess = new ContainedWaterAccess(world, x, y, z); return renderer.renderBlockLiquid(net.minecraft.init.Blocks.water, x, y, z); }
 			finally { renderer.blockAccess = previous; }
 		}
-		ReleasedBlockModel selected = block instanceof BlockKelp kelp ? kelp.getReleasedModel(world.getBlock(x, y + 1, z) != block) : model(block, world.getBlockMetadata(x, y, z));
+		if(block instanceof BlockBookStorage){((BlockBookStorage)block).render(world,x,y,z,renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture:null);return true;}
+        ReleasedBlockModel selected = block instanceof BlockKelp kelp ? kelp.getReleasedModel(world.getBlock(x, y + 1, z) != block) : model(block, world.getBlockMetadata(x, y, z));
 		selected.render(block, world, x, y, z, renderer.hasOverrideBlockTexture() ? renderer.overrideBlockTexture : null);
 		return true;
 	}

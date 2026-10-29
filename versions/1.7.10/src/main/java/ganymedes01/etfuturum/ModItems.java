@@ -20,7 +20,7 @@ public enum ModItems {
 	DRIED_KELP(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("kelp"), new ItemDriedKelp()),
 	WOODEN_SPEAR(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(Item.ToolMaterial.WOOD, "wooden_spear")),
 	STONE_SPEAR(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(Item.ToolMaterial.STONE, "stone_spear")),
-	COPPER_SPEAR(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(net.minecraftforge.common.util.EnumHelper.addToolMaterial("EFR_COPPER_SPEAR", 1, 190, 4, 1, 13), "copper_spear")),
+	COPPER_SPEAR(ConfigBlocksItems.enableCopper && ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(net.minecraftforge.common.util.EnumHelper.addToolMaterial("EFR_COPPER_SPEAR", 1, 190, 4, 1, 13), "copper_spear")),
 	IRON_SPEAR(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(Item.ToolMaterial.IRON, "iron_spear")),
 	GOLDEN_SPEAR(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(Item.ToolMaterial.GOLD, "golden_spear")),
 	DIAMOND_SPEAR(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(Item.ToolMaterial.EMERALD, "diamond_spear")),
@@ -123,7 +123,7 @@ public enum ModItems {
 	NETHERITE_AXE(ConfigBlocksItems.enableNetherite, new ItemEFRAxe(ModMaterials.NETHERITE_TOOL, ConfigBlocksItems.netheriteAxeDurability)),
 	NETHERITE_HOE(ConfigBlocksItems.enableNetherite, new ItemEFRHoe(ModMaterials.NETHERITE_TOOL, ConfigBlocksItems.netheriteHoeDurability)),
 	NETHERITE_SWORD(ConfigBlocksItems.enableNetherite, new ItemEFRSword(ModMaterials.NETHERITE_TOOL, ConfigBlocksItems.netheriteSwordDurability)),
-	NETHERITE_SPEAR(ConfigBlocksItems.enableNetherite, new ItemSpear(ModMaterials.NETHERITE_TOOL, "netherite_spear")),
+	NETHERITE_SPEAR(ConfigBlocksItems.enableNetherite && ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(ModMaterials.NETHERITE_TOOL, "netherite_spear")),
 	TOTEM_OF_UNDYING(ConfigBlocksItems.enableTotemUndying, new BaseItem("totem_of_undying").setMaxStackSize(1)),
 	DYE(ConfigBlocksItems.enableNewDyes, new BaseSubtypesItem("white_dye", "blue_dye", "brown_dye", "black_dye").setNames("dye")),
 	COPPER_INGOT(ConfigBlocksItems.enableCopper && !ConfigModCompat.disableCopperOreAndIngotOnly, new BaseItem("copper_ingot")),
@@ -148,7 +148,7 @@ public enum ModItems {
 			&& ConfigModCompat.barrelIronChest && ConfigModCompat.barrelIronChestUpgradeItem, new ItemBarrelUpgrade()),
 	HONEYCOMB(ConfigBlocksItems.enableHoney, new BaseItem("honeycomb")),
 	HONEY_BOTTLE(ConfigBlocksItems.enableHoney, new ItemHoneyBottle()),
-	BAMBOO(ConfigBlocksItems.enableBambooBlocks, new ItemBamboo()),
+	BAMBOO(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("bamboo_plants"), new ItemBamboo()),
 	GOAT_HORN(ConfigEntities.enableGoats, new ItemGoatHorn()),
 	RESIN_BRICK(ConfigExperiments.enablePaleGarden, new BaseItem("resin_brick")),
 	TADPOLE_BUCKET(ConfigEntities.enableFrogs, new ItemTadpoleBucket()),
@@ -192,7 +192,8 @@ public enum ModItems {
 	BANNER_PATTERN(ConfigBlocksItems.enableBanners, new ItemBannerPattern()),
 	TRIAL_KEY(ConfigWorld.enableTrialChambers, new BaseItem("trial_key")),
 	OMINOUS_TRIAL_KEY(ConfigWorld.enableTrialChambers, new BaseItem("ominous_trial_key")),
-	ECHO_SHARD(ConfigExperiments.enableSculk, new BaseItem("echo_shard"));
+	ECHO_SHARD(ConfigExperiments.enableSculk, new BaseItem("echo_shard")),
+	MACE(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("maces"), new ItemMace());
 
 	public static final ModItems[] CHEST_BOATS = new ModItems[]{OAK_CHEST_BOAT, SPRUCE_CHEST_BOAT, BIRCH_CHEST_BOAT, JUNGLE_CHEST_BOAT, ACACIA_CHEST_BOAT, DARK_OAK_CHEST_BOAT, CHERRY_CHEST_BOAT, BAMBOO_CHEST_RAFT};
 	public static final ModItems[] BOATS = new ModItems[]{OAK_BOAT, SPRUCE_BOAT, BIRCH_BOAT, JUNGLE_BOAT, ACACIA_BOAT, DARK_OAK_BOAT, CHERRY_BOAT, BAMBOO_RAFT};

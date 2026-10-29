@@ -96,9 +96,8 @@ final class ModernStates {
     }
     static IBlockState structure(String identifier,Map<String,String> original,int rotation){
         String name=identifier.isEmpty()?"minecraft:air":identifier;Map<String,String> properties=new HashMap<>(original);int bracket=name.indexOf('[');if(bracket>=0){if(!name.endsWith("]"))throw new IllegalArgumentException("Malformed structure state "+name);for(String entry:name.substring(bracket+1,name.length()-1).split(",")){String[] pair=entry.split("=",2);if(pair.length!=2)throw new IllegalArgumentException("Malformed structure property "+entry);properties.put(pair[0],pair[1]);}name=name.substring(0,bracket);}
-        if(name.equals("minecraft:jigsaw")||name.equals("minecraft:structure_void")||name.equals("minecraft:campfire")||name.equals("minecraft:soul_campfire")||name.equals("minecraft:grindstone"))return Blocks.AIR.getDefaultState();
-        if(name.equals("minecraft:powder_snow"))return Blocks.SNOW.getDefaultState();
-        if(name.equals("minecraft:lectern"))return Blocks.BOOKSHELF.getDefaultState();
+        if(name.equals("minecraft:jigsaw")||name.equals("minecraft:structure_void"))return Blocks.AIR.getDefaultState();
+        if(name.equals("minecraft:powder_snow"))return PowderSnow.enabled()?Content.block("powder_snow").getDefaultState():Blocks.SNOW.getDefaultState();
         if(name.startsWith("minecraft:potted_"))return Blocks.FLOWER_POT.getDefaultState();
         if(name.equals("minecraft:damaged_anvil"))return Blocks.ANVIL.getDefaultState().withProperty(BlockAnvil.DAMAGE,2).withProperty(BlockAnvil.FACING,net.minecraft.util.EnumFacing.byName(properties.getOrDefault("facing","north"))).withRotation(net.minecraft.util.Rotation.values()[rotation&3]);
         NBTTagCompound entry=new NBTTagCompound(),props=new NBTTagCompound();entry.setString("Name",name);for(Map.Entry<String,String> property:properties.entrySet())props.setString(property.getKey(),property.getValue());entry.setTag("Properties",props);IBlockState state=read(entry);return state==null?null:state.withRotation(net.minecraft.util.Rotation.values()[rotation&3]);

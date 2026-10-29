@@ -7,9 +7,13 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
-final class SpearItem extends ItemSword {
+public final class SpearItem extends ItemSword {
     final float thrustDamage;
     SpearItem(ToolMaterial material){super(material);thrustDamage=3+material.getAttackDamage();}
+    @Override public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity target) {
+        if (player.world.isRemote) UAB.proxy.spearLunge(player);
+        return false;
+    }
     @Override public EnumAction getItemUseAction(ItemStack stack){return EnumAction.BOW;}
     @Override public int getMaxItemUseDuration(ItemStack stack){return 72000;}
     @Override public ActionResult<ItemStack> onItemRightClick(World world,EntityPlayer player,EnumHand hand){player.setActiveHand(hand);return new ActionResult<>(EnumActionResult.SUCCESS,player.getHeldItem(hand));}

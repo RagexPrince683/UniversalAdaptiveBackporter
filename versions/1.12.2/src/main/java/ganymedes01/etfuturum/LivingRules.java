@@ -16,6 +16,7 @@ public final class LivingRules {
  private static final java.lang.reflect.Field JUMP=net.minecraftforge.fml.relauncher.ReflectionHelper.findField(EntityLivingBase.class,"isJumping","field_70703_bu");
  public static boolean jumping(EntityLivingBase entity){try{return JUMP.getBoolean(entity);}catch(IllegalAccessException failure){throw new IllegalStateException("Cannot read native climbing input",failure);}}
  private LivingRules(){}
+ @SubscribeEvent public static void jump(LivingEvent.LivingJumpEvent event){EntityLivingBase entity=event.getEntityLiving();if(entity.world.getBlockState(new BlockPos(entity.posX,entity.getEntityBoundingBox().minY-.2,entity.posZ)).getBlock() instanceof HoneyBlock)entity.motionY*=.5;}
  @SubscribeEvent public static void update(LivingEvent.LivingUpdateEvent event){EntityLivingBase entity=event.getEntityLiving();if(Features.enabled("mixins.stepHeightFix")&&entity.stepHeight==.5F)entity.stepHeight=.6F;
   if(!entity.world.isRemote&&entity.getClass()==EntitySquid.class&&Features.enabled("entities.enableSquidInk")&&"Nelly".equals(entity.getCustomNameTag())){Vec3d look=entity.getLookVec().normalize();entity.fallDistance=0;entity.addVelocity(look.x*.08,.08,look.z*.08);entity.motionY=.08;entity.velocityChanged=true;}
  }

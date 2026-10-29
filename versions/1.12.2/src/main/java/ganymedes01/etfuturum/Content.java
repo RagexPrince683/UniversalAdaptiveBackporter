@@ -229,9 +229,13 @@ public final class Content {
         add("crossbow", "content.crossbows", new CrossbowItem());
         add("warped_fungus_on_a_stick", "mobs.strider", new FungusOnStick());
         simple("content.wind_charges", "breeze_rod");
+        add("mace", "content.maces", new MaceItem());
         add("honey_bottle", "blocksitems.enableHoney", new HoneyBottle());
         simple("blocksitems.enableHoney", "honeycomb");
         add("honey_block", "blocksitems.enableHoney", new HoneyBlock());
+        add("campfire", "content.campfires", new CampfireBlock(false));
+        add("soul_campfire", "content.campfires", new CampfireBlock(true));
+        GameRegistry.registerTileEntity(CampfireTile.class,new ResourceLocation(UAB.ID,"campfire"));
         add("honeycomb_block", "blocksitems.enableHoney", new Block(Material.CLAY).setHardness(.6F));
         add("mangrove_roots", "experiments.enableMangroveBlocks", new MangroveRoots());
         add("muddy_mangrove_roots", "experiments.enableMangroveBlocks", new BlockRotatedPillar(Material.WOOD) { { setDefaultState(blockState.getBaseState().withProperty(AXIS,net.minecraft.util.EnumFacing.Axis.Y));setHardness(.7F); setSoundType(SoundType.GROUND); } });
@@ -311,6 +315,7 @@ public final class Content {
         GameRegistry.registerTileEntity(UndyedShulkerTile.class,new ResourceLocation(UAB.ID,"shulker_box"));
         BoatContent.define();
         WoodSigns.define();
+        ModernAdditions.define();
         GameRegistry.registerTileEntity(BarrelTile.class, new ResourceLocation(UAB.ID, "barrel"));
         GameRegistry.registerTileEntity(CookingTile.Smoker.class, new ResourceLocation(UAB.ID, "smoker"));
         GameRegistry.registerTileEntity(CookingTile.BlastFurnace.class, new ResourceLocation(UAB.ID, "blast_furnace"));
@@ -326,7 +331,7 @@ public final class Content {
     @SubscribeEvent public static void items(RegistryEvent.Register<Item> event) {
         for (Map.Entry<String, Block> entry : BLOCKS.entrySet()) {
             if(entry.getValue() instanceof WoodSigns.Sign)continue;
-            if(entry.getValue() instanceof AncientCrop || entry.getValue() instanceof FilledCauldron || entry.getValue() instanceof SoulFire)continue;
+            if(entry.getValue() instanceof PowderSnow.Snow||entry.getValue() instanceof PowderSnow.Cauldron||entry.getValue() instanceof AncientCrop || entry.getValue() instanceof FilledCauldron || entry.getValue() instanceof SoulFire)continue;
             if (entry.getValue() instanceof WoodDoor || ITEMS.containsKey(entry.getKey())) continue;
             if(entry.getValue() instanceof BambooBlock||entry.getValue() instanceof BambooShoot||entry.getValue() instanceof CaveVines)continue;
             if(entry.getValue() instanceof BubbleColumn || entry.getValue() instanceof AquaticPlant && ((AquaticPlant)entry.getValue()).submerged && !(entry.getValue() instanceof KelpBlock) && !(entry.getValue() instanceof Seagrass) || entry.getValue() instanceof CoralPlant && ((CoralPlant)entry.getValue()).shape.equals("_wall_fan"))continue;
@@ -335,15 +340,16 @@ public final class Content {
             ItemBlock item;
             if (entry.getValue() instanceof NativeSlab) {
                 NativeSlab slab = (NativeSlab) entry.getValue();
-                item = new ItemSlab(slab, slab.single, slab.doubled) { @Override public int getItemBurnTime(ItemStack stack) { return fungus ? 0 : super.getItemBurnTime(stack); } };
+                item = new ItemSlab(slab, slab.single, slab.doubled) { @Override public int getItemBurnTime(ItemStack stack) { return SpringPlants.fuel(entry.getValue())>0?SpringPlants.fuel(entry.getValue()):fungus ? 0 : super.getItemBurnTime(stack); } };
             } else if(entry.getValue() instanceof ModdedOreBlock){ModdedOreBlock modded=(ModdedOreBlock)entry.getValue();item=new ItemBlock(modded){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&15;}@Override public String getTranslationKey(ItemStack stack){return "tile.etfuturum."+modded.variant(stack.getMetadata()).replace("compat/","").replace('/','.');}};
-            } else if(entry.getValue() instanceof CopperStatue)item=new ItemBlock(entry.getValue()){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&7;}};
+            } else if(entry.getValue() instanceof ScaffoldingBlock)item=new ScaffoldingBlock.ScaffoldItem(entry.getValue());
+            else if(entry.getValue() instanceof CopperStatue)item=new ItemBlock(entry.getValue()){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&7;}};
             else if(entry.getValue() instanceof BeeHiveBlock)item=new ItemBlock(entry.getValue()){{addPropertyOverride(new ResourceLocation("honey"),(stack,world,entity)->stack.hasTagCompound()&&stack.getTagCompound().getCompoundTag("BlockEntityTag").getInteger("honeyLevel")==5?1:0);}};
             else if(entry.getValue() instanceof Eyeblossom)item=new ItemBlock(entry.getValue()){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&1;}};
             else if(entry.getValue() instanceof LightBlock)item=new ItemBlock(entry.getValue()){{setHasSubtypes(true);}@Override public int getMetadata(int damage){return damage&15;}};
             else if(entry.getValue() instanceof GlowLichen)item=new GlowLichen.LichenItem(entry.getValue());
             else if(entry.getValue() instanceof SeaPickle || entry.getValue() instanceof CoralPlant || entry.getValue() instanceof Seagrass)item=new AquaticItem(entry.getValue());
-            else item = new ItemBlock(entry.getValue()) { @Override public int getItemBurnTime(ItemStack stack) { return fungus ? 0 : super.getItemBurnTime(stack); } };
+            else item = new ItemBlock(entry.getValue()) { @Override public int getItemBurnTime(ItemStack stack) { return SpringPlants.fuel(entry.getValue())>0?SpringPlants.fuel(entry.getValue()):fungus ? 0 : super.getItemBurnTime(stack); } };
             item.setRegistryName(entry.getValue().getRegistryName());
             if (available(entry.getKey())) item.setCreativeTab(TAB);
             if (ITEMS.put(entry.getKey(), item) != null) throw new IllegalStateException("Duplicate item " + entry.getKey());

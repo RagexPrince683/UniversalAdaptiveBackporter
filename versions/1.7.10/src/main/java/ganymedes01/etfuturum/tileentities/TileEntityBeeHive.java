@@ -29,15 +29,6 @@ public class TileEntityBeeHive extends TileEntity {
 	private int honeyLevel = 0;
 
 	@Override
-	public void markDirty() {
-		if (this.isNearFire()) {
-			this.angerBees(null, TileEntityBeeHive.State.EMERGENCY);
-		}
-
-		super.markDirty();
-	}
-
-	@Override
 	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
 		return oldBlock != newBlock;
 	}
@@ -74,7 +65,7 @@ public class TileEntityBeeHive extends TileEntity {
 			for (Entity entity : list) {
 				if (entity instanceof EntityBee) {
 					EntityBee beeentity = (EntityBee) entity;
-					if (beeentity.getDistanceSq(entity.posX, entity.posY, entity.posZ) <= 16.0D) {
+					if (beeentity.getDistanceSqToEntity(p_226963_1_) <= 16.0D) {
 						if (!this.isSmoked()) {
 							beeentity.setBeeAttacker(p_226963_1_);
 						} else {
@@ -89,7 +80,7 @@ public class TileEntityBeeHive extends TileEntity {
 
 	private List<Entity> tryReleaseBees(TileEntityBeeHive.State p_226965_2_) {
 		List<Entity> list = Lists.newArrayList();
-		this.bees.removeIf(p_226966_4_ -> releaseBee(p_226966_4_.entityData, list, p_226965_2_));
+		if (this.bees.removeIf(p_226966_4_ -> releaseBee(p_226966_4_.entityData, list, p_226965_2_))) markDirty();
 		return list;
 	}
 
@@ -117,6 +108,7 @@ public class TileEntityBeeHive extends TileEntity {
 			if (block.isAir(world, x, y - i, z)) continue;
 
 			int meta = world.getBlockMetadata(x, y - i, z);
+			if (block instanceof ganymedes01.etfuturum.blocks.BlockCampfire) { if (ganymedes01.etfuturum.blocks.BlockCampfire.lit(meta)) return true; continue; }
 			if ((BlockTags.getInTag(Tags.MOD_ID + ":bee_hive_fumigator").isEmpty() && block.getMaterial() == Material.fire)
 					|| BlockTags.hasTag(block, meta, Tags.MOD_ID + ":bee_hive_fumigator")) {
 				return true;
@@ -137,6 +129,7 @@ public class TileEntityBeeHive extends TileEntity {
 	}
 
 	public void tryEnterHive(Entity p_226962_1_, boolean p_226962_2_, int p_226962_3_) {
+		if (!(p_226962_1_ instanceof EntityBee) || p_226962_1_.isDead || worldObj != null && worldObj.isRemote) return;
 		if (getBeeCount() < maxHiveSize() && p_226962_1_ instanceof EntityBee) {
 			p_226962_1_.riddenByEntity = null;
 			Entity living = ((EntityBee) p_226962_1_).getLeashedToEntity();
@@ -163,6 +156,7 @@ public class TileEntityBeeHive extends TileEntity {
 			}
 
 			p_226962_1_.setDead();
+			markDirty();
 		}
 	}
 
@@ -187,6 +181,7 @@ public class TileEntityBeeHive extends TileEntity {
 						beeentity.setFlowerPos(this.flowerPos);
 					}
 
+					if (!getWorldObj().spawnEntityInWorld(beeentity)) return false;
 					if (p_226967_4_ == State.HONEY_DELIVERED) {
 						beeentity.onHoneyDelivered();
 						if (getWorldObj().getBlock(xCoord, yCoord, zCoord) instanceof BlockBeeHive) {
@@ -210,7 +205,6 @@ public class TileEntityBeeHive extends TileEntity {
 
 					this.getWorldObj().playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5,
 							Tags.MC_ASSET_VER + ":block.beehive.exit", 1.0F, 1.0F);
-					getWorldObj().spawnEntityInWorld(beeentity);
 				}
 				return true;
 			}
@@ -223,6 +217,7 @@ public class TileEntityBeeHive extends TileEntity {
 	}
 
 	private void tickBees() {
+		boolean occupied = !bees.isEmpty();
 		if (this.isNearFire()) {
 			this.angerBees(null, TileEntityBeeHive.State.EMERGENCY);
 		}
@@ -240,6 +235,7 @@ public class TileEntityBeeHive extends TileEntity {
 				beehivetileentity$bee.ticksInHive++;
 			}
 		}
+		if (occupied) markDirty();
 	}
 
 	@Override
@@ -270,7 +266,7 @@ public class TileEntityBeeHive extends TileEntity {
 			this.flowerPos = BlockPos.readFromNBT(compound.getCompoundTag("FlowerPos"));
 		}
 		if (compound.hasKey("honeyLevel")) {
-			setHoneyLevel(MathHelper.clamp_int(compound.getInteger("honeyLevel"), 0, 5));
+			honeyLevel = MathHelper.clamp_int(compound.getInteger("honeyLevel"), 0, 5);
 		}
 		super.readFromNBT(compound);
 	}
@@ -289,6 +285,7 @@ public class TileEntityBeeHive extends TileEntity {
 
 	public void destroyAllBees() {
 		bees.clear();
+		markDirty();
 	}
 
 	public NBTTagList getBees() {
@@ -313,6 +310,11 @@ public class TileEntityBeeHive extends TileEntity {
 
 	public void setHoneyLevel(int level) {
 		honeyLevel = MathHelper.clamp_int(level, 0, 5);
+		markDirty();
+		if (worldObj != null && !worldObj.isRemote && worldObj.getBlock(xCoord, yCoord, zCoord) instanceof BlockBeeHive) {
+			BlockBeeHive.updateHiveState(worldObj, xCoord, yCoord, zCoord, honeyLevel == 5);
+			worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+		}
 	}
 
 	static class Bee {

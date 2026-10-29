@@ -43,8 +43,10 @@ final class ModernContent {
         Content.shapes("resin_bricks","experiments.enablePaleGarden",Content.block("resin_bricks").getDefaultState(),true,true);
         GameRegistry.registerTileEntity(CreakingHeartTile.class,new ResourceLocation(UAB.ID,"creaking_heart"));
         Content.add("sculk","experiments.enableSculk",new SculkBlock(1));
-        Content.add("sculk_catalyst","experiments.enableSculk",new SculkBlock(20));
+        Content.add("sculk_catalyst","experiments.enableSculk",new SculkCatalyst());
         Content.add("sculk_sensor","experiments.enableSculk",new SculkSensor());
+        Content.add("calibrated_sculk_sensor","experiments.enableSculk",new CalibratedSculkSensor());Content.requires("calibrated_sculk_sensor","blocksitems.enableAmethyst");
+        GameRegistry.registerTileEntity(SculkCatalystTile.class,new ResourceLocation(UAB.ID,"sculk_catalyst"));
         Content.add("sculk_shrieker","experiments.enableSculk",new SculkShrieker());
         Content.add("reinforced_deepslate","experiments.enableSculk",new Block(Material.ROCK){@Override public Item getItemDropped(net.minecraft.block.state.IBlockState state,java.util.Random random,int fortune){return Items.AIR;}@Override public net.minecraft.block.material.EnumPushReaction getPushReaction(net.minecraft.block.state.IBlockState state){return net.minecraft.block.material.EnumPushReaction.BLOCK;}@Override public boolean canSilkHarvest(net.minecraft.world.World world,net.minecraft.util.math.BlockPos pos,net.minecraft.block.state.IBlockState state,net.minecraft.entity.player.EntityPlayer player){return false;}}.setHardness(55).setResistance(1200));
         GameRegistry.registerTileEntity(SculkSensorTile.class,new ResourceLocation(UAB.ID,"sculk_sensor"));

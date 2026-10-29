@@ -21,7 +21,9 @@ public class BlockSeagrass extends BaseBlock implements IShearable, net.minecraf
 	public BlockSeagrass() { super(Material.water); setNames("seagrass"); setHardness(0); setLightOpacity(0); setBlockBounds(.1F, 0, .1F, .9F, .8F, .9F); setBlockSound(ganymedes01.etfuturum.client.sound.ModSounds.soundWetGrass); }
 	@Override public boolean isOpaqueCube() { return false; }
 	@Override public boolean renderAsNormalBlock() { return false; }
-	@Override public int getRenderType() { return 1; }
+	@Override public int getRenderType() { return ganymedes01.etfuturum.lib.RenderIDs.SEAGRASS; }
+	@cpw.mods.fml.relauncher.SideOnly(cpw.mods.fml.relauncher.Side.CLIENT) @Override public int getRenderBlockPass() { return 1; }
+	@cpw.mods.fml.relauncher.SideOnly(cpw.mods.fml.relauncher.Side.CLIENT) @Override public boolean canRenderInPass(int pass) { return pass == 0 || pass == 1; }
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) { return null; }
 	@Override public boolean canCollideCheck(int meta, boolean liquid) { return false; }
 	private boolean sourceWater(World world, int x, int y, int z) { Block block = world.getBlock(x, y, z); return (block == Blocks.water || block == Blocks.flowing_water) && world.getBlockMetadata(x, y, z) == 0; }

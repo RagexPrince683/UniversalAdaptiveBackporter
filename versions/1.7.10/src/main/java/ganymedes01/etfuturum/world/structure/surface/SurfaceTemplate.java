@@ -80,7 +80,9 @@ final class SurfaceTemplate {
 		else if (name.equals("attached_melon_stem")) { block = Blocks.melon_stem; meta = 7; }
 		else if (name.equals("attached_pumpkin_stem")) { block = Blocks.pumpkin_stem; meta = 7; }
 		else if (name.equals("water_cauldron")) { block = Blocks.cauldron; meta = Integer.parseInt(p.get("level")); }
-		else if (name.equals("campfire") || name.equals("grindstone")) return new BlockStateContainer(Blocks.air); // unavailable workstation decorations are omitted, never replaced with unrelated blocks
+		else if (name.equals("grindstone")) { block=ganymedes01.etfuturum.ModernAdditions.block("grindstone"); meta=Arrays.asList("north","east","south","west").indexOf(p.getOrDefault("facing","north")) | ("wall".equals(p.get("face"))?4:"ceiling".equals(p.get("face"))?8:0); }
+        else if (ganymedes01.etfuturum.ModernAdditions.BLOCKS.containsKey(name)) { block=ganymedes01.etfuturum.ModernAdditions.block(name); if(block instanceof ganymedes01.etfuturum.blocks.BlockHangingSign)meta=name.contains("wall_hanging")?("north".equals(p.get("facing"))?2:"south".equals(p.get("facing"))?3:"west".equals(p.get("facing"))?4:5):Integer.parseInt(p.getOrDefault("rotation","0")); else if(block instanceof ganymedes01.etfuturum.blocks.BlockBookStorage||block instanceof ganymedes01.etfuturum.blocks.BlockLectern)meta=Arrays.asList("north","east","south","west").indexOf(p.getOrDefault("facing","north")); }
+		else if (name.equals("campfire") || name.equals("soul_campfire")) { block = name.equals("campfire") ? ModBlocks.CAMPFIRE.get() : ModBlocks.SOUL_CAMPFIRE.get(); meta = Arrays.asList("south", "west", "north", "east").indexOf(p.getOrDefault("facing", "north")) | ("false".equals(p.get("lit")) ? 4 : 0) | ("true".equals(p.get("waterlogged")) ? 12 : 0); }
 		if (block == null) {
 			BlockStateContainer translated = UndergroundTemplate.state(id, p, 0);
 			if (name.startsWith("potted_") || name.endsWith("banner")) return EFRBlockStateConverter.INSTANCE.createBlockStateContainer(id, translated.getBlock(), p, ForgeDirection.NORTH);
@@ -103,12 +105,13 @@ final class SurfaceTemplate {
 			if (!clip.isVecInside(x, y, z) || world.getBlock(x, y, z) == Blocks.bedrock) continue;
 			Random random = new Random(seed ^ (long) x * 3129871 ^ (long) z * 116129781L ^ y);
 			if (marker) { marker(world, nbt.getString("metadata"), x, y, z, piece, random); continue; }
-			if (piece.kind != 0 && (block == Blocks.air || name.equals("minecraft:jigsaw"))) continue;
+			if (piece.kind == 1 && (block == Blocks.air || name.equals("minecraft:jigsaw"))) continue;
 			String loot = processed == null ? null : processed.loot[i];
 			if (processed != null && processed.states[i] != null) state = processed.states[i];
 			world.setBlock(x, y, z, state.getBlock(), state.getMeta(), 2);
 			TileEntity tile = world.getTileEntity(x, y, z);
 			if (tile != null && state.getCompound() != null) { NBTTagCompound tag = (NBTTagCompound) state.getCompound().copy(); tag.setInteger("x", x); tag.setInteger("y", y); tag.setInteger("z", z); tile.readFromNBT(tag); }
+			if(tile instanceof ganymedes01.etfuturum.tileentities.TileEntityLectern lectern)lectern.template(nbt);
 			if (tile instanceof TileEntityBrushable) ((TileEntityBrushable) tile).configure(loot == null ? "" : loot, random.nextLong());
 			if (tile instanceof TileEntityMobSpawner) ((TileEntityMobSpawner) tile).func_145881_a().setEntityName("Spider");
 			if (tile instanceof IInventory) {
@@ -117,10 +120,19 @@ final class SurfaceTemplate {
 				else { NBTTagList items = nbt.getTagList("Items", 10); for (int j = 0; j < items.tagCount(); j++) { NBTTagCompound data = items.getCompoundTagAt(j); ItemStack stack = UndergroundLoot.item(data.getString("id")); int slot = data.getByte("Slot") & 255; if (stack != null && slot < inventory.getSizeInventory()) { stack.stackSize = Math.max(1, data.getInteger("count")); inventory.setInventorySlotContents(slot, stack); } } }
 			}
 			if (tile != null) tile.markDirty();
+			if (piece.kind == 2 && tile instanceof TileEntityBrewingStand)
+				((TileEntityBrewingStand) tile).setInventorySlotContents(1, new ItemStack(net.minecraft.init.Items.potionitem, 1, 16392));
+			if (piece.kind == 2 && tile instanceof TileEntitySign) { ((TileEntitySign) tile).signText[1] = "<----"; ((TileEntitySign) tile).signText[2] = "---->"; tile.markDirty(); }
 			if (piece.kind == 0 && pos.getY() == 0 && piece.y <= piece.foundation && block != Blocks.air) for (int yy = y - 1; yy > 1 && !world.getBlock(x, yy, z).getMaterial().isSolid(); yy--) world.setBlock(x, yy, z, Blocks.cobblestone, 0, 2);
 		}
 	}
 	private static void marker(World world, String marker, int x, int y, int z, SurfaceStructures.Piece piece, Random random) {
+		if (piece.kind == 2 && marker.equals("chest")) {
+			world.setBlockToAir(x, y, z);
+			TileEntity tile = world.getTileEntity(x, y - 1, z);
+			if (tile instanceof IInventory) UndergroundLoot.fill((IInventory) tile, "minecraft:chests/igloo_chest", random);
+			return;
+		}
 		if (marker.startsWith("Chest")) {
 			String dir = marker.startsWith("Chest") ? marker.substring(5).toLowerCase(Locale.ROOT) : "north"; dir = facing(dir, piece.rotation, piece.mirror);
 			int meta = dir.equals("north") ? 2 : dir.equals("south") ? 3 : dir.equals("west") ? 4 : 5;

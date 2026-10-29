@@ -135,6 +135,17 @@ final class GeneratedResources implements IResourcePack {
                     result.add("textures", textures);
                 } else result.add(entry.getKey(), rewrite(entry.getValue(), entry.getKey()));
             }
+            // Flattened retained models contain resolved face paths. The 1.12 loader
+            // resolves face strings as texture-table keys, so intern those paths.
+            if(result.has("elements")){
+                JsonObject textures=result.has("textures")?result.getAsJsonObject("textures"):new JsonObject();
+                Map<String,String> direct=new LinkedHashMap<>();
+                for(JsonElement part:result.getAsJsonArray("elements"))if(part.getAsJsonObject().has("faces"))for(Map.Entry<String,JsonElement> side:part.getAsJsonObject().getAsJsonObject("faces").entrySet()){
+                    JsonObject face=side.getValue().getAsJsonObject();if(!face.has("texture"))continue;String value=face.get("texture").getAsString();if(value.startsWith("#"))continue;
+                    String mapped=reference(value,true,false),slot=direct.get(mapped);if(slot==null){slot="uab_direct_"+direct.size();while(textures.has(slot))slot+="_";direct.put(mapped,slot);textures.addProperty(slot,mapped);}face.addProperty("texture","#"+slot);
+                }
+                result.add("textures",textures);
+            }
             return result;
         }
         if (element.isJsonArray()) { JsonArray result = new JsonArray(); for (JsonElement item : element.getAsJsonArray()) result.add(rewrite(item, key)); return result; }
@@ -156,6 +167,7 @@ final class GeneratedResources implements IResourcePack {
         if(block instanceof ModdedOreBlock){JsonObject result=new JsonObject(),variants=new JsonObject();for(int meta=0;meta<16;meta++)variants.add("variant="+meta,model(((ModdedOreBlock)block).variant(meta)));result.add("variants",variants);return result;}
         if(name.equals("rose")||name.equals("old_gravel")||block instanceof LegacyDaylightDetector){JsonObject result=new JsonObject(),variants=new JsonObject();variants.add("normal",model(name));result.add("variants",variants);return result;}
         if(block instanceof MossCarpet){JsonObject variants=new JsonObject(),result=new JsonObject();variants.add("normal",model(assetName(name)));result.add("variants",variants);return result;}
+        if(block instanceof BookStorage&&!((BookStorage)block).books){JsonObject result=new JsonObject(),variants=new JsonObject();for(IBlockState state:block.getBlockState().getValidStates()){JsonObject selected=model(name+(state.getValue(BookStorage.POWERED)?"_unconnected":"_unpowered"));selected.addProperty("y",(state.getValue(BookStorage.FACING).getHorizontalIndex()+2)%4*90);variants.add(variantKey(properties(state)),selected);}result.add("variants",variants);return result;}
         JsonObject released = read("blockstates/" + assetName(name) + ".json");
         if (released != null && released.has("multipart")) {
             if(name.equals("resin_clump")){JsonObject adapted=new JsonObject();JsonArray faces=new JsonArray();for(JsonElement element:released.getAsJsonArray("multipart")){JsonObject face=rewrite(element,"").getAsJsonObject();if(face.getAsJsonObject("apply").has("x")&&face.getAsJsonObject("apply").get("x").getAsInt()==90)continue;if(face.has("when")){JsonObject condition=face.getAsJsonObject("when");if(condition.has("down")&&condition.get("down").getAsString().equals("true"))continue;condition.remove("down");}faces.add(face);}adapted.add("multipart",faces);return adapted;}
@@ -184,8 +196,9 @@ final class GeneratedResources implements IResourcePack {
             else if(block instanceof Eyeblossom)selected=model(state.getValue(Eyeblossom.OPEN)?"open_eyeblossom":"closed_eyeblossom");
             else if(name.equals("pitcher_plant"))selected=model(state.getValue(BlockDoublePlant.HALF)==BlockDoublePlant.EnumBlockHalf.UPPER?"pitcher_plant_top":"pitcher_plant_bottom");
             else if (name.equals("kelp")) selected = model(state.getValue(KelpBlock.TOP) ? "kelp" : "kelp_plant");
+            else if(block instanceof PowderSnow.Cauldron)selected=model(state.getValue(BlockCauldron.LEVEL)<3?"powder_snow_cauldron_level"+Math.max(1,state.getValue(BlockCauldron.LEVEL)):"powder_snow_cauldron_full");
             else if(block instanceof FilledCauldron)selected=model(name.equals("lava_cauldron")?"lava_cauldron":state.getValue(BlockCauldron.LEVEL)<3?"water_cauldron_level"+Math.max(1,state.getValue(BlockCauldron.LEVEL)):"water_cauldron_full");
-            else if(name.equals("soul_torch")&&state.getValue(BlockTorch.FACING)!=net.minecraft.util.EnumFacing.UP){net.minecraft.util.EnumFacing facing=state.getValue(BlockTorch.FACING);JsonObject wall=model("soul_wall_torch");wall.addProperty("y",facing==net.minecraft.util.EnumFacing.EAST?0:facing==net.minecraft.util.EnumFacing.SOUTH?90:facing==net.minecraft.util.EnumFacing.WEST?180:270);selected=wall;}
+            else if((name.equals("soul_torch")||name.equals("copper_torch"))&&state.getValue(BlockTorch.FACING)!=net.minecraft.util.EnumFacing.UP){net.minecraft.util.EnumFacing facing=state.getValue(BlockTorch.FACING);JsonObject wall=model(name.equals("copper_torch")?"copper_wall_torch":"soul_wall_torch");wall.addProperty("y",facing==net.minecraft.util.EnumFacing.EAST?0:facing==net.minecraft.util.EnumFacing.SOUTH?90:facing==net.minecraft.util.EnumFacing.WEST?180:270);selected=wall;}
             else if(block instanceof NetherVines)selected=model(name+(state.getValue(NetherVines.TIP)?"":"_plant"));
             else if(block instanceof Seagrass)selected=model(state.getValue(Seagrass.PART)==Seagrass.Part.SINGLE?"seagrass":state.getValue(Seagrass.PART)==Seagrass.Part.LOWER?"tall_seagrass_bottom":"tall_seagrass_top");
             else if (block instanceof BlockLog && state.getValue(BlockLog.LOG_AXIS) == BlockLog.EnumAxis.NONE) selected = model(name + "_bark");
@@ -195,6 +208,7 @@ final class GeneratedResources implements IResourcePack {
                     if (!entry.getKey().isEmpty()) for (String part : entry.getKey().split(",")) {
                         String[] property = part.split("=", 2);
                         String nativeValue = values.get(property[0]);
+                        if(block instanceof CrafterBlock&&property[0].equals("orientation")){net.minecraft.util.EnumFacing direction=state.getValue(CrafterBlock.FACING);nativeValue=direction.getName()+ (direction.getAxis()==net.minecraft.util.EnumFacing.Axis.Y?"_north":"_up");}
                         if(block instanceof BeeHiveBlock&&property[0].equals("honey_level"))nativeValue=state.getValue(BeeHiveBlock.FULL)?"5":"0";
                         if(block instanceof AquaticPlant&&property[0].equals("waterlogged"))nativeValue=String.valueOf(((AquaticPlant)block).submerged);
                         if (block instanceof BlockSlab && property[0].equals("type")) nativeValue = ((BlockSlab) block).isDouble() ? "double" : state.getValue(BlockSlab.HALF).getName();
@@ -216,6 +230,9 @@ final class GeneratedResources implements IResourcePack {
         if ((!path.startsWith("models/block/") && !path.startsWith("models/item/")) || !path.endsWith(".json")) return null;
         boolean item = path.startsWith("models/item/");
         String name = path.substring(item ? 12 : 13, path.length() - 5);
+        if(item&&(name.equals("lodestone_compass")||name.equals("recovery_compass"))){JsonObject compass=new JsonObject(),textures=new JsonObject();compass.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","etfuturum:items/"+(name.equals("recovery_compass")?"recovery_compass":"compass")+"_16");compass.add("textures",textures);JsonArray overrides=new JsonArray();for(int i=0;i<32;i++){JsonObject entry=new JsonObject(),predicate=new JsonObject();predicate.addProperty("angle",i/32D);entry.add("predicate",predicate);entry.addProperty("model","etfuturum:item/"+name+"_"+String.format(Locale.ROOT,"%02d",i));overrides.add(entry);}compass.add("overrides",overrides);return compass;}
+        if(item&&(name.startsWith("lodestone_compass_")||name.startsWith("recovery_compass_"))&&name.matches("(?:lodestone|recovery)_compass_[0-3][0-9]")){JsonObject compass=new JsonObject(),textures=new JsonObject();compass.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","etfuturum:items/"+(name.startsWith("recovery")?"recovery_compass":"compass")+name.substring(name.length()-3));compass.add("textures",textures);return compass;}
+        if(item&&Content.BLOCKS.get(name) instanceof CopperChestBlock){JsonObject chest=rewrite(read("models/item/template_chest.json"),"").getAsJsonObject();chest.addProperty("parent","minecraft:builtin/entity");return chest;}
         if(name.equals("raw_adamantium")||name.equals("raw_adamantium_block")){JsonObject own=read((item?"models/item/":"models/block/")+name+".json");if(own!=null)return own;}
         if(name.endsWith("_barrel")||name.endsWith("_barrel_open")){JsonObject own=read((item?"models/item/":"models/block/")+name+".json");if(own!=null)return own;}
         if(item&&(name.equals("barrel_upgrade")||name.equals("shulker_box_upgrade"))){JsonObject own=read("models/item/"+name+".json");if(own!=null)return own;}

@@ -34,11 +34,37 @@ public class ModEnchantments {
 	public static Enchantment swiftSneak;
 	public static Enchantment soulSpeed;
 	public static Enchantment quickCharge, multishot, piercing, loyalty, impaling, riptide, channeling;
+	public static Enchantment density, breach, windBurst, lunge;
 	public static int level(Enchantment enchantment, ItemStack stack) { return enchantment == null || stack == null ? 0 : EnchantmentHelper.getEnchantmentLevel(enchantment.effectId, stack); }
+	public static boolean available(Enchantment enchantment) {
+		if (enchantment == null) return false;
+		if (enchantment == mending) return ConfigEnchantsPotions.enableMending;
+		if (enchantment == frostWalker) return ConfigEnchantsPotions.enableFrostWalker;
+		if (enchantment == swiftSneak) return ConfigEnchantsPotions.enableSwiftSneak;
+		if (enchantment == soulSpeed) return ConfigEnchantsPotions.enableSoulSpeed;
+		if (enchantment == quickCharge || enchantment == multishot || enchantment == piercing) return ganymedes01.etfuturum.configuration.ContentAvailability.enabled("crossbows");
+		if (enchantment == loyalty || enchantment == impaling || enchantment == riptide || enchantment == channeling) return ganymedes01.etfuturum.configuration.ContentAvailability.enabled("tridents");
+		if (enchantment == lunge) return ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears");
+		if (enchantment == density || enchantment == breach || enchantment == windBurst) return ganymedes01.etfuturum.configuration.ContentAvailability.enabled("maces");
+		return enchantment != null;
+	}
+	public static Enchantment byName(String identifier) {
+		String name = identifier.replace("minecraft:", "").replace("etfuturum:", "");
+		String[] vanilla = {"protection","fire_protection","feather_falling","blast_protection","projectile_protection","respiration","aqua_affinity","thorns","sharpness","smite","bane_of_arthropods","knockback","fire_aspect","looting","efficiency","silk_touch","unbreaking","fortune","power","punch","flame","infinity","luck_of_the_sea","lure"};
+		int[] ids = {0,1,2,3,4,5,6,7,16,17,18,19,20,21,32,33,34,35,48,49,50,51,61,62};
+		for (int i=0;i<vanilla.length;i++) if (name.equals(vanilla[i])) return Enchantment.enchantmentsList[ids[i]];
+		for (Enchantment enchantment : new Enchantment[]{frostWalker,mending,swiftSneak,soulSpeed,quickCharge,multishot,piercing,loyalty,impaling,riptide,channeling,density,breach,windBurst,lunge})
+			if (enchantment != null && enchantment.getName().equals("enchantment." + name)) return enchantment;
+		return null;
+	}
 
 	private static final Map<EntityLivingBase, double[]> prevMoveCache = new WeakHashMap<>();
 
 	public static void init() {
+		RegistrySafety.requireVacant(Enchantment.enchantmentsList, ConfigEnchantsPotions.lungeID, "lunge"); lunge = new ganymedes01.etfuturum.enchantment.Lunge(ConfigEnchantsPotions.lungeID);
+		RegistrySafety.requireVacant(Enchantment.enchantmentsList, ConfigEnchantsPotions.densityID, "density"); density = new ganymedes01.etfuturum.enchantment.MaceEnchantment(ConfigEnchantsPotions.densityID, "density", 0);
+		RegistrySafety.requireVacant(Enchantment.enchantmentsList, ConfigEnchantsPotions.breachID, "breach"); breach = new ganymedes01.etfuturum.enchantment.MaceEnchantment(ConfigEnchantsPotions.breachID, "breach", 1);
+		RegistrySafety.requireVacant(Enchantment.enchantmentsList, ConfigEnchantsPotions.windBurstID, "wind_burst"); windBurst = new ganymedes01.etfuturum.enchantment.MaceEnchantment(ConfigEnchantsPotions.windBurstID, "wind_burst", 2);
 		RegistrySafety.requireVacant(Enchantment.enchantmentsList, ConfigEnchantsPotions.quickChargeID, "quick_charge"); quickCharge = new ganymedes01.etfuturum.enchantment.MobEquipmentEnchantment(ConfigEnchantsPotions.quickChargeID, "quick_charge", 3, 0);
 		RegistrySafety.requireVacant(Enchantment.enchantmentsList, ConfigEnchantsPotions.multishotID, "multishot"); multishot = new ganymedes01.etfuturum.enchantment.MobEquipmentEnchantment(ConfigEnchantsPotions.multishotID, "multishot", 1, 0);
 		RegistrySafety.requireVacant(Enchantment.enchantmentsList, ConfigEnchantsPotions.piercingID, "piercing"); piercing = new ganymedes01.etfuturum.enchantment.MobEquipmentEnchantment(ConfigEnchantsPotions.piercingID, "piercing", 4, 0);

@@ -19,7 +19,7 @@ public class TileEntityLightningRod extends TileEntity {
 	public boolean powerExpired() { return worldObj.getTotalWorldTime() >= poweredUntil; }
 	public int powerTicksRemaining() { return (int) Math.min(8, Math.max(1, poweredUntil - worldObj.getTotalWorldTime())); }
 	@Override public boolean shouldRefresh(net.minecraft.block.Block oldBlock, net.minecraft.block.Block newBlock,
-			int oldMeta, int newMeta, World world, int x, int y, int z) { return oldBlock != newBlock; }
+			int oldMeta, int newMeta, World world, int x, int y, int z) { return oldBlock != newBlock&&!(oldBlock instanceof ganymedes01.etfuturum.blocks.BlockLightningRod&&newBlock instanceof ganymedes01.etfuturum.blocks.BlockLightningRod); }
 	@Override public void writeToNBT(NBTTagCompound nbt) { super.writeToNBT(nbt); nbt.setLong("PoweredUntil", poweredUntil); }
 	@Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); poweredUntil = nbt.getLong("PoweredUntil"); }
 	private void remove() {
@@ -39,7 +39,7 @@ public class TileEntityLightningRod extends TileEntity {
 		double best = 128 * 128;
 		for (TileEntityLightningRod rod : LOADED.getOrDefault(world, Collections.emptySet())) {
 			if (rod.isInvalid() || !world.blockExists(rod.xCoord, rod.yCoord, rod.zCoord)
-					|| world.getBlock(rod.xCoord, rod.yCoord, rod.zCoord) != ModBlocks.LIGHTNING_ROD.get()) continue;
+					|| !(world.getBlock(rod.xCoord, rod.yCoord, rod.zCoord) instanceof ganymedes01.etfuturum.blocks.BlockLightningRod)) continue;
 			double distance = rod.getDistanceFrom(x, y, z);
 			if (distance <= best && world.canBlockSeeTheSky(rod.xCoord, rod.yCoord + 1, rod.zCoord)) {
 				nearest = rod;

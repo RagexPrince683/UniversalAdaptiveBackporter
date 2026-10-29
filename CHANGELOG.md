@@ -428,3 +428,133 @@
 
 - Skip empty harvests and blocks without an item form before querying Forge 1.12.2's OreDictionary. Water destroying these blocks, including during immediate spring-generation updates, no longer aborts the integrated server with an invalid-stack exception.
 - Resolve raw-ore mappings only when a nonempty matching block drop can be converted. Preserve other drops, silk touch, fortune, metadata, copied tags and optional ore blacklists; ignore empty or null drop entries without replacing them. Keep vanilla fluid propagation, notifications, scheduling and solidification unchanged.
+
+2026-10-27 16:12 — Restore Enderlicious cities and safe extended potion identities on 1.7.10
+
+- Retain Enderlicious's native End provider and add saved End City population through Forge, including the existing attached towers and ships. Predict native terrain without loading chunks or advancing decoration randomness; adapt the support-height threshold to its lower terrain band while preserving the seeded placement grid and central-island exclusion. Honor existing content/generation gates, protect saved terrain and persist completed city population sections.
+- Preserve End City start validity across save/reload, including older starts, and let both city locator commands use the supported native terrain adapter.
+- Expand the native potion registry to at least 128 slots without shrinking external expansions or losing entries. Require the enabled EndlessIDs potion module for explicit IDs above 127, bounded by the live registry and UAB's existing 32767 configuration limit. Keep automatic allocations in the native range, reject malformed/unsupported IDs and collisions explicitly, and preserve existing saved allocation identities without automatic remapping.
+
+2026-10-27 20:30 — Complete missing honey survival paths and repair native content integration
+
+- Add dispenser shearing/bottling on both targets, the missing 1.12.2 honey crafting/unpacking recipes, sugar recipes on both targets and glass-container returns. Restore legacy honey nutrition and the native drinking animation/duration. Keep legacy hive harvesting server-owned, save honey/occupant changes and retain bees when release is cancelled. Keep fire evacuation with the hive tick owner.
+- Render 1.7.10 lightning rods with released geometry, explicit UVs, powered textures and six orientations. Replace 1.12.2 aquatic plants' static water cube with native fluid rendering through a local read-only view, retaining native tint, surface heights, flow and overlay behavior.
+- Add the missing 1.7.10 single/tall seagrass water pass. Normalize adjacent submerged vegetation and locally water-filled blocks while rendering contained water, preserving native fluid heights and biome tint without changing the world.
+- Add 1.7.10 parrots, a distinct Elder Guardian egg, snowy-biome igloos with basement curing supplies and saved loot, and opt-in world-locked 128-stronghold rings using native portal generation. Preserve the corresponding native 1.12.2 systems and existing entity identities.
+- Add native campfires/soul campfires with persistent four-slot cooking, lighting/extinguishing and bee calming on both targets. Add 1.12.2 honey piston adhesion, slime separation and entity carrying through server-safe piston progress. Restore honey's half-strength jump, avoid duplicate walking slowdown on 1.12.2 and correct the legacy honey collision base.
+- Preserve HEE's End provider and Netherlicious biome surfaces. Add clipped saved bastion population for externally owned legacy Nether terrain, retaining native terrain/provider ownership and existing bastion identities. Record remaining content and integration gaps in the implementation matrix.
+
+2026-10-27 23:36 — Add Mace survival combat and exact enchantment rewards
+
+- Add the Heavy Core/Breeze Rod Mace recipe, 500-durability weapons, Breeze Rod repairs, native attack attributes and smash damage on both targets. Route full smash damage into native hit and armor processing, retain native critical decisions, and apply impact knockback and saved fall context after successful hits. Wind Burst uses a non-destructive, occlusion-aware impulse and permitted wind-reactive interactions.
+- Register Density, Breach and Wind Burst with stable legacy IDs and native 1.12.2 registry identities. Preserve native/Forge special-armor processing while reducing armor effectiveness for Breach, and restrict Mace enchanting to its supported enchantments. Keep Wind Burst out of ordinary enchanting/trade book lists, including the native 1.12.2 librarian chooser; enforce damage-enchantment exclusivity in both legacy anvil directions.
+- Resolve released random-loot enchantment tags and explicit option lists rather than ignoring them. Convert book rewards into real enchanted books, restore explicit legacy Swift Sneak rewards and support fixed ominous-vault Wind Burst rewards without substituting unsupported enchantments.
+
+2026-10-28 00:49 — Resolve native sound samples before ambience replacement
+
+- Fix a 1.12.2 client crash when cave, Nether music or note-block replacements read an unresolved native sound's volume and pitch. Resolve the original sample at the Forge sound-event boundary before preserving its playback properties.
+
+2026-10-28 06:59 — Complete adaptive workstations, decoration and update families
+
+- Complete campfire food display and client synchronization, hay-bale signal smoke, Frost Walker protection, burning-arrow ignition and bucket draining while retaining native cooking and bee calming.
+- Add native grindstone repair/disenchant containers, bells, spyglasses, hanging signs and chiseled bookshelves to both targets. Reuse existing workstation extraction and sign ownership/networking; keep native village and profession systems authoritative.
+- Add saved deterministic ruined portal sites in Overworld and Nether terrain, with repairable broken frames, chest rewards and saved-site discovery. Keep each footprint within its owning chunk and preserve external terrain providers.
+- Add Copper Age equipment, nuggets, torches, weathering fixtures and twelve wood shelves. Reuse copper oxidation/wax/scrape/lightning behavior, preserve rod orientation and power through identity changes, correct legacy neighbor-stage lookup, and prevent client-side wax inventory mutations. Copper horse armor uses native slots, persistence and tracking; its crafting recipe provides an adaptive survival route.
+- Add Spring to Life vegetation, fallen logs, climate animal coats and sheep colors, wolf coats/voices and colored eggs. Retain native animal identities and AI, persist variants and synchronize tracking snapshots on the client thread; preserve older saved coats and breeding/hatching inheritance.
+- Define Adapted coverage separately from unfinished functionality. Native movement/presentation, compatible village ownership, loot/rates and placement/spawn adaptations are deliberate backport choices, not missing features.
+
+2026-10-28 08:36 — Preserve copper state and complete adaptive sculk integration
+
+- Preserve copper-chest inventories and active container ownership across oxidation, waxing and scraping; add the missing weather/wax identities under the existing chest setting.
+- Preserve lightning-rod pulse deadlines through native identity changes, translate retained model face references for the 1.12.2 model loader, and apply the released dry-foliage palette to leaf litter.
+- Bind legacy animal appearance snapshots to server identities without relying on UUIDs omitted by vanilla mob spawn packets. Keep native 1.12.2 UUID checks and use server-safe wolf sound registry names.
+- Add calibrated sensor filtering, comparator frequencies, persisted pulses and loaded-chunk vibration routing. Feed native actions into that routing without treating ordinary block placement as an earlier container interaction.
+- Add bounded, saved catalyst spreading charge from native mob XP. Retain excess XP, avoid duplicate collectible orbs and preserve the legacy catalyst entry point.
+- Adapt cow and pig texture sheets to native model dimensions, preserving shared model UVs used by other renderers.
+
+2026-10-28 09:26 — Add persistent lodestone and recovery navigation
+
+- Activate lodestones and bound compasses on both native targets with the latest iron recipe, survival binding/retargeting, preserved custom tags, dimension tracking and loaded-only target validation. Ordinary vanilla compasses retain their own behavior.
+- Add recovery-compass crafting, holder-specific last-death targets and native death/respawn persistence without overwriting unrelated saved player data. Add the missing 1.12.2 echo shard to existing Ancient City loot resolution.
+- Use native icon/item-property needle frames and inventory NBT synchronization. Adapt copper horse armor to native 128-pixel UV coverage with the released copper palette.
+
+2026-10-28 09:43 — Keep native animal appearances by default
+
+- Make Spring cow, pig, chicken and wolf texture overrides a separate client preference, disabled by default. Preserve appearances and models supplied by vanilla or other mods while keeping Spring gameplay and saved variants independent.
+- Allow explicit client opt-in without changing server settings, and tolerate externally replaced texture methods. Native models and their shared UV data remain untouched.
+
+2026-10-28 10:06 — Add functional native lecterns
+
+- Add craftable lecterns on both targets with saved book contents and pages, server-owned reading controls, comparator output, short page-turn pulses and downward hopper extraction.
+- Render books with the native book model and use an adapted read-only screen with long-page scrolling. Taking a book requires inventory space; native village professions and other mods retain ownership of their existing systems.
+- Replace decorative bookshelf substitutions in released structures with functional lecterns and translate released template books into native book data.
+- Preserve lectern and shelf inventories and open-container tile identities on both targets when page pulses, book occupancy or redstone power change block state or metadata.
+
+2026-10-28 10:35 — Add rooted dirt and hanging-root survival paths
+
+- Add rooted soil and ceiling roots on both targets, with bone-meal growth, hoe conversion, shears collection and hanging-root composting.
+- Supply rooted dirt beneath successfully grown azaleas and through additive wandering-trader offers. Preserve tree-growth protection hooks, failed-growth soil restoration and existing cave-biome ownership.
+
+2026-10-28 10:51 — Keep shoulder parrots out of the first-person camera
+
+- Hide only the local player's perched parrots while viewing through that player's first-person camera on 1.7.10. Keep their tracked entities, shoulder state and visibility to other players and third-person cameras intact.
+
+2026-10-28 11:00 — Add legacy directional shields
+
+- Add craftable 1.7.10 shields with a native one-hand pose, directional blocking, raising delay, durability, plank repairs and player-wide axe disable timers synchronized through item data.
+- Keep the old sword damage reduction separate from shield protection and render shields as native 3D items. Preserve vanilla 1.12.2 shields without adding replacement registrations or controls.
+
+2026-10-28 14:05 — Add spear-specific Lunge enchantments
+
+- Register Lunge I–III on both targets with enchanting, book/anvil and released-loot integration. Primary actions request a server-owned horizontal impulse with hunger, durability and movement checks.
+- Preserve native attack rules and existing spear thrusts; mining and right-click interactions do not activate the ability. Keep its movement limit separate from attack cooldowns, and honor copper/netherite material prerequisites for legacy spear availability.
+
+2026-10-28 14:15 — Add netherite horse armor through native equipment
+
+- Add netherite horse armor on both targets, using native horse inventory, persistence, synchronization and armor calculations. Preserve existing copper armor identities and native model geometry.
+- Upgrade diamond horse armor through the existing netherite smithing and template settings, retaining base-item data. Keep disabled-feature registrations available for saved equipment.
+
+2026-10-28 14:32 — Match native right-hand shield poses
+
+- Use native right-hand shield display transforms for idle and raised first-person views. Remove inherited flat-item scale and rotation from the held model so raised third-person shields cover the front correctly.
+- Turn only the shield-bearing right forearm into its blocking pose, preserving other items and keeping handedness, inventory and combat rules unchanged.
+
+2026-10-28 15:05 — Add native automatic crafters
+
+- Add nine-slot crafters on both targets with disabled slots, comparator output, four-tick rising-edge crafts, hopper access and six output directions. Keep each target’s native recipe and inventory APIs authoritative.
+- Preserve committed results and recipe containers in saved output state, deliver through adjacent inventories before ejection, and retry refused output without recreating the portion already accepted. Synchronize disabled slots through native container messages and keep render assets on client paths.
+- Normalize zero-count legacy inventory stacks before recipe snapshots so empty-stack callers cannot stall automatic crafting.
+
+2026-10-28 16:25 — Add weighted bundles and preserved color recipes
+
+- Add bundles and all sixteen colors on both targets with weighted storage, nesting limits, native inventory right-click interactions, last-in-first-out retrieval, capacity bars and contents tooltips.
+- Preserve stored item data through dyeing and saves, respect slot permissions and crafting-result ownership, and retain items when a world drop is refused. Keep unrelated inventory clicks on their native paths.
+
+2026-10-28 16:45 — Add native scaffolding support and climbing
+
+- Add scaffolding on both targets with six-block bridge support, vertical stacking, native falling entities, one-way platforms and jump/sneak climbing. Use local scheduled updates and preserve native placement permissions and world saves.
+- Keep legacy bamboo-item acquisition under its existing bamboo-plants setting, independent of bamboo wood, so scaffolding retains its actual survival prerequisite.
+
+2026-10-28 16:47 — Leave automatic crafters disabled by default
+
+- Default the crafter acquisition setting to false on both targets. Preserve explicit existing settings, saved blocks and inventories.
+
+2026-10-28 18:59 — Restore native ruined-portal chest loot
+
+- Supply the missing 1.12.2 native loot entry so Forge invokes the maintained ruined-portal reward adapter instead of caching an empty table.
+- Check every released table for its required native entry during artifact verification, preventing newly added loot tables from silently producing empty treasure.
+
+2026-10-28 19:09 — Add powder-snow survival and freezing interactions
+
+- Add powder snow, buckets and snowy cauldrons on both targets, including native bucket interactions and dispenser placement/collection. Reuse sampled native snowfall positions for cauldron filling without terrain replacement or world scans.
+- Add sinking, leather-equipment protection, leather-boot support/climbing, persisted freezing/thawing and skeleton-to-stray conversion. Preserve native entity data and refuse conversion while another riding or leash relationship owns the entity.
+
+2026-10-28 19:44 — Add scoped respawn-anchor integration
+
+- Add glowstone charging, dispenser charging, light/comparator output, survival crafting and saved anchor bindings on both targets. Charged anchors used outside Nether-like providers use native explosions.
+- Resolve safe exits through the existing worlds and scope the provider exception to a validated native death respawn. Preserve native spawn-point changes and End-return handling, and consume a charge after a successful anchor respawn.
+- Preserve saved bindings when native respawn restores an existing bed during fallback; treat later player-selected bed and spawn-point changes as authoritative.
+
+2026-10-28 19:51 — Expose the missing update groups in configuration screens
+
+- Include Bundles of Bravery and Spring to Life in both native configuration screens so their existing settings remain discoverable. Validate update-group coverage when checking the shared catalog.

@@ -53,6 +53,8 @@ public final class ContentAvailability {
 		MOBS.put("EntityDrowned", "entities.enableDrownedSpawning");
 		MOBS.put("EntityPhantom", "entities.enablePhantomSpawning");
 		MOBS.put("EntityGuardian", "entities.enableGuardians");
+		MOBS.put("EntityElderGuardian", "entities.enableGuardians");
+		MOBS.put("EntityParrot", "mobs.parrot");
 		MOBS.put("EntityFrog", "entities.enableFrogs");
 		MOBS.put("EntityTadpole", "entities.enableFrogs");
 		MOBS.put("EntityRabbit", "entities.enableRabbits");
@@ -74,6 +76,7 @@ public final class ContentAvailability {
    if (option.feature && (option.source.equals("content") || option.source.equals("mobs"))) UabConfiguration.get().bool(option.source, option.legacyKey, true);
  }
  public static boolean enabled(String key) { return UabConfiguration.get().bool("content", key, true); }
+ public static void register(Object object, boolean enabled) { CONTENT.put(object, enabled); }
  public static boolean mobEnabled(Class<?> type) {
   String alias = MOBS.get(type.getSimpleName());
   if (alias == null || !type.getName().startsWith("ganymedes01.etfuturum.entities.")) return true;

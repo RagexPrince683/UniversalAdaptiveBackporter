@@ -97,9 +97,10 @@ public final class UndergroundTemplate {
 			else if (clean.endsWith("grate")) { block = ModBlocks.COPPER_GRATE.get(); subtype = age + (wax ? 4 : 0); }
 			else { block = ModBlocks.COPPER_BLOCK.get(); subtype = age + (wax ? 8 : 0) + (clean.contains("cut_") ? 4 : 0); }
 		}
-		else if (name.equals("powder_snow")) block = Blocks.snow; // native solid snow adaptation
-		else if (name.equals("lectern")) block = Blocks.bookshelf; // decorative; no book UI in legacy
-		else if (name.equals("campfire")) block = Blocks.air; // preserve city clearance; no campfire smoke/fuel backport
+		else if (name.equals("powder_snow")) block = ganymedes01.etfuturum.PowderSnow.enabled()?ganymedes01.etfuturum.ModernAdditions.block(name):Blocks.snow;
+		else if(name.equals("rooted_dirt")||name.equals("hanging_roots")){block=ganymedes01.etfuturum.RootedSoils.enabled()?ganymedes01.etfuturum.ModernAdditions.block(name):Blocks.air;direct=true;}
+		else if (name.equals("lectern")) {block=ganymedes01.etfuturum.configuration.ContentAvailability.enabled("lecterns")?ganymedes01.etfuturum.ModernAdditions.block("lectern"):Blocks.air;subtype=directionIndex(props.getOrDefault("facing","north"));direct=true;}
+		else if (name.equals("campfire") || name.equals("soul_campfire")) { block = enabled(name.equals("campfire") ? ModBlocks.CAMPFIRE : ModBlocks.SOUL_CAMPFIRE); subtype = java.util.Arrays.asList("south", "west", "north", "east").indexOf(props.getOrDefault("facing", "north")) | ("false".equals(props.get("lit")) ? 4 : 0) | ("true".equals(props.get("waterlogged")) ? 12 : 0); direct = true; }
 		else if (name.equals("target")) block = enabled(ModBlocks.TARGET);
 		else if (name.equals("soul_fire")) block = ganymedes01.etfuturum.configuration.configs.ConfigMixins.soulFire ? Blocks.fire : Blocks.air;
 		else if (name.equals("iron_chain")) { block = enabled(ModBlocks.CHAIN); subtype = "x".equals(props.get("axis")) ? 1 : "z".equals(props.get("axis")) ? 2 : 0; direct = true; }
@@ -128,6 +129,7 @@ public final class UndergroundTemplate {
 				s = UndergroundProcessors.apply(processors, name, s, rotation, random); if (s == null) continue;
 				world.setBlock(wx, wy, wz, s.getBlock(), s.getMeta(), 2);
 				TileEntity tile = world.getTileEntity(wx, wy, wz);
+				if(tile instanceof ganymedes01.etfuturum.tileentities.TileEntityLectern lectern)lectern.template(nbt);
 				if (tile instanceof IInventory inventory) {
 					if (nbt.hasKey("LootTable")) UndergroundLoot.fill(inventory, nbt.getString("LootTable"), random);
 					else {

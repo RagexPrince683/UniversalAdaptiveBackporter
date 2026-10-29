@@ -63,6 +63,16 @@ tasks.register('verifyArtifacts') {
                 ['mcmod.info', 'uab/options.tsv'].each { name ->
                     if (jar.getEntry(name) == null) throw new GradleException("Missing ${name} in ${artifact.name}")
                 }
+                if (mc == '1.12.2') {
+                    def index = jar.getEntry('data/loot/tables.txt')
+                    if (index == null) throw new GradleException("Missing released loot index in ${artifact.name}")
+                    jar.getInputStream(index).withCloseable { stream ->
+                        stream.getText('UTF-8').readLines().findAll { !it.trim().isEmpty() }.each { table ->
+                            String entry = "assets/etfuturum/loot_tables/${table}.json"
+                            if (jar.getEntry(entry) == null) throw new GradleException("Missing native loot entry ${entry} in ${artifact.name}; Forge cannot invoke the released-loot adapter without it")
+                        }
+                    }
+                }
                 def metadata = new groovy.json.JsonSlurper().parse(jar.getInputStream(jar.getEntry('mcmod.info')))
                 def mod = metadata.find { it.modid == 'etfuturum' }
                 if (mod == null || mod.version != releaseVersion || mod.mcversion != mc) throw new GradleException("Incorrect release metadata in ${artifact.name}")

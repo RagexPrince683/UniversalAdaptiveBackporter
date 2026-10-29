@@ -14,7 +14,7 @@ import java.util.*;
 
 /** Operator discovery reads saved starts first; prediction never generates terrain. */
 public class CommandLocateStructure extends CommandBase {
-	private static final String[] TYPES = {"ancient_city", "trial_chambers", "woodland_mansion", "trail_ruins", "ocean_monument", "shipwreck", "ocean_ruin", "buried_treasure", "pillager_outpost", "bastion_remnant", "end_city"};
+	private static final String[] TYPES = {"ancient_city", "trial_chambers", "woodland_mansion", "trail_ruins", "igloo", "ruined_portal", "stronghold", "ocean_monument", "shipwreck", "ocean_ruin", "buried_treasure", "pillager_outpost", "bastion_remnant", "end_city"};
 	@Override public String getCommandName() { return "uab_locate"; }
 	@Override public List<String> getCommandAliases() { return Collections.singletonList("efr_locate"); }
 	@Override public int getRequiredPermissionLevel() { return 2; }
@@ -23,12 +23,15 @@ public class CommandLocateStructure extends CommandBase {
 	@Override public void processCommand(ICommandSender sender, String[] args) {
 		if (args.length != 1 || !Arrays.asList(TYPES).contains(args[0])) throw new WrongUsageException(getCommandUsage(sender));
 		String name = args[0]; World world = sender.getEntityWorld();
-		int dimension = name.equals("end_city") ? 1 : name.equals("bastion_remnant") ? -1 : 0;
+		int dimension = name.equals("ruined_portal") ? world.provider.dimensionId : name.equals("end_city") ? 1 : name.equals("bastion_remnant") ? -1 : 0;
 		if (world.provider.dimensionId != dimension) throw new CommandException("Locate " + name + " in the " + (dimension == 1 ? "End" : dimension == -1 ? "Nether" : "Overworld") + ".");
 		ChunkCoordinates origin = sender.getPlayerCoordinates();
 		ChunkCoordinates point = saved(world, name, origin.posX, origin.posZ);
-		boolean saved = point != null;
+		if (name.equals("igloo")) point = ganymedes01.etfuturum.world.structure.surface.Igloos.nearest(world, origin.posX, origin.posZ);
+		if(name.equals("ruined_portal"))point=ganymedes01.etfuturum.world.structure.surface.RuinedPortals.nearest(world,origin.posX,origin.posZ);
+        boolean saved = point != null;
 		if (point == null && world.getWorldInfo().isMapFeaturesEnabled()) {
+			if (name.equals("stronghold")) { net.minecraft.world.ChunkPosition p = world.findClosestStructure("Stronghold", origin.posX, origin.posY, origin.posZ); if (p != null) point = new ChunkCoordinates(p.chunkPosX, p.chunkPosY, p.chunkPosZ); }
 			if (name.equals("ancient_city") || name.equals("trial_chambers")) point = UndergroundStructures.nearest(world, origin.posX, origin.posZ, name.equals("ancient_city"));
 			else if (name.equals("woodland_mansion") || name.equals("trail_ruins")) point = SurfaceStructures.nearest(world, origin.posX, origin.posZ, name.equals("woodland_mansion") ? 0 : 1);
 			else if (name.equals("ocean_monument") && ConfigWorld.enableOceanMonuments && ganymedes01.etfuturum.ModBlocks.PRISMARINE_BLOCK.isEnabled() && ganymedes01.etfuturum.ModBlocks.SEA_LANTERN.isEnabled()) point = monument(world, origin.posX, origin.posZ);

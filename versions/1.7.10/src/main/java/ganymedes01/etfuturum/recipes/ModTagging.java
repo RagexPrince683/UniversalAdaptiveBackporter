@@ -127,6 +127,7 @@ public class ModTagging {
 	}
 
 	private static void doBeeTags() {
+		for(String name:new String[]{"wildflowers","cactus_flower"}){Block block=ganymedes01.etfuturum.ModernAdditions.block(name);BlockTags.addTags(block,"minecraft:bee_attractive");ItemTags.addTags(Item.getItemFromBlock(block),"minecraft:bee_food");}
 		ItemTags.addTags(Item.getItemFromBlock(Blocks.double_plant), 0, "minecraft:bee_food");
 		ItemTags.addTags(Item.getItemFromBlock(Blocks.double_plant), 1, "minecraft:bee_food");
 		ItemTags.addTags(Item.getItemFromBlock(Blocks.double_plant), 4, "minecraft:bee_food");

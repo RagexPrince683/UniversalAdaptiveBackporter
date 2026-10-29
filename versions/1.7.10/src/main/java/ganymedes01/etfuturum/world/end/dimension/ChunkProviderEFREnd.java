@@ -28,7 +28,7 @@ import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import java.util.List;
 import java.util.Random;
 
-public class ChunkProviderEFREnd implements IChunkProvider {
+public class ChunkProviderEFREnd implements IChunkProvider, ganymedes01.etfuturum.world.end.gen.EndCityTerrain {
 	/**
 	 * RNG.
 	 */

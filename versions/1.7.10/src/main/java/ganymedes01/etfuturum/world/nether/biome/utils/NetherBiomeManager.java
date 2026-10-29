@@ -34,12 +34,14 @@ public class NetherBiomeManager {
 			basaltDeltas = new BiomeBasaltDeltas(RegistrySafety.requireVacant(BiomeGenBase.getBiomeGenArray(), ConfigWorld.basaltDeltasID, "Basalt Deltas")).setBiomeName("Basalt Deltas");
 		}
 
-		BiomeGenBase.hell.topBlock = Blocks.netherrack;
-		BiomeGenBase.hell.fillerBlock = Blocks.netherrack;
-//		BiomeGenBase.hell.biomeName = "Nether Wastes"; //Breaks some mods that stupidly check for the biome name "hell" instead of the fucking ID or tags...
-		BiomeGenBase.hell.field_76754_C = 0; // fillerBlockMetadata
-		//Sets filler block meta to 0. Vanilla sets it to a ridiculous value for some reason.
-		//This value seems to be unused in vanilla as well.
+		if (!ganymedes01.etfuturum.compat.ModsList.NETHERLICIOUS.isLoaded()) {
+			BiomeGenBase.hell.topBlock = Blocks.netherrack;
+			BiomeGenBase.hell.fillerBlock = Blocks.netherrack;
+	//		BiomeGenBase.hell.biomeName = "Nether Wastes"; //Breaks some mods that stupidly check for the biome name "hell" instead of the fucking ID or tags...
+			BiomeGenBase.hell.field_76754_C = 0; // fillerBlockMetadata
+			//Sets filler block meta to 0. Vanilla sets it to a ridiculous value for some reason.
+			//This value seems to be unused in vanilla as well.
+		}
 	}
 
 	public static int provideCrimsonForestID() {

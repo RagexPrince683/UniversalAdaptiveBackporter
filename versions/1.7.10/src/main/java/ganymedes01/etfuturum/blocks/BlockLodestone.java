@@ -23,9 +23,10 @@ public class BlockLodestone extends Block {
 		setBlockTextureName("lodestone");
 		setCreativeTab(EtFuturum.creativeTabBlocks);
 		Utils.setBlockSound(this, ModSounds.soundLodestone);
-		setTickRandomly(true);
+		setTickRandomly(false);
 	}
 
+    @Override public boolean onBlockActivated(net.minecraft.world.World world,int x,int y,int z,net.minecraft.entity.player.EntityPlayer player,int side,float hx,float hy,float hz){return ganymedes01.etfuturum.configuration.ContentAvailability.enabled("lodestones")&&player.canPlayerEdit(x,y,z,side,player.getHeldItem())&&ganymedes01.etfuturum.NavigationItems.bind(player,world,x,y,z);}
 	@Override
 	public IIcon getIcon(int side, int meta) {
 		return side > 1 ? blockIcon : topIcon;

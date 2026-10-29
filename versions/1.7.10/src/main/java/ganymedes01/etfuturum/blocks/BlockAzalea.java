@@ -68,7 +68,7 @@ public class BlockAzalea extends BlockBush implements ISubBlocksBlock, IGrowable
 		int soilMeta = world.getBlockMetadata(x, y - 1, z);
 		world.setBlock(x, y, z, Blocks.air, 0, 4);
 		// The native oak generator requires sapling soil; azalea can also be planted on clay.
-		if (soil.getMaterial() == Material.clay) world.setBlock(x, y - 1, z, Blocks.dirt, 0, 4);
+		if (soil.getMaterial() == Material.clay || soil == ModBlocks.MOSS_BLOCK.get() || soil instanceof ganymedes01.etfuturum.RootedSoils.Soil) world.setBlock(x, y - 1, z, Blocks.dirt, 0, 4);
 		WorldGenTrees tree = new WorldGenTrees(true, 4, 0, 0, false) {
 			@Override
 			protected void setBlockAndNotifyAdequately(World target, int tx, int ty, int tz, Block block, int meta) {
@@ -83,6 +83,7 @@ public class BlockAzalea extends BlockBush implements ISubBlocksBlock, IGrowable
 			world.setBlock(x, y - 1, z, soil, soilMeta, 4);
 			world.setBlock(x, y, z, this, plantMeta, 3);
 		}
+		else ganymedes01.etfuturum.RootedSoils.tree(world,x,y-1,z);
 	}
 
 	@Override
@@ -97,8 +98,10 @@ public class BlockAzalea extends BlockBush implements ISubBlocksBlock, IGrowable
 
 	@Override
 	public boolean canBlockStay(World world, int x, int y, int z) {
-		return world.getBlock(x, y - 1, z).getMaterial() == Material.clay || super.canBlockStay(world, x, y, z);
+		Block soil=world.getBlock(x,y-1,z);
+		return soil.getMaterial() == Material.clay || soil==ModBlocks.MOSS_BLOCK.get() || soil instanceof ganymedes01.etfuturum.RootedSoils.Soil || super.canBlockStay(world, x, y, z);
 	}
+	@Override public boolean canPlaceBlockAt(World world,int x,int y,int z){return world.getBlock(x,y,z).isReplaceable(world,x,y,z)&&canBlockStay(world,x,y,z);}
 
 	@Override
 	public void addCollisionBoxesToList(World worldIn, int x, int y, int z, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collider) {

@@ -23,6 +23,7 @@ public class EntityWanderingTrader extends EntityVillager {
 			net.minecraft.item.Item[] items = {net.minecraft.item.Item.getItemFromBlock(Blocks.sapling), net.minecraft.item.Item.getItemFromBlock(Blocks.red_flower), net.minecraft.item.Item.getItemFromBlock(Blocks.sand), Items.dye, Items.reeds, Items.slime_ball};
 			for (int i = 0; i < 5; i++) { int choice = rand.nextInt(items.length); offers.add(new MerchantRecipe(new ItemStack(Items.emerald, 1 + rand.nextInt(4)), new ItemStack(items[choice], choice == 2 ? 8 : 1, choice == 0 ? rand.nextInt(6) : choice == 3 ? rand.nextInt(16) : 0))); }
 			offers.add(new MerchantRecipe(new ItemStack(Items.emerald, 5), new ItemStack(Items.water_bucket)));
+			if(ganymedes01.etfuturum.RootedSoils.enabled())offers.add(new MerchantRecipe(new ItemStack(Items.emerald),new ItemStack(ganymedes01.etfuturum.ModernAdditions.block("rooted_dirt"),2)));
 		}
 		return offers;
 	}

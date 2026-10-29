@@ -1,0 +1,1 @@
+{"elements":[{"from":[0,0,0],"to":[5,8,0],"faces":{"north":{"uv":[11,8,16,16],"texture":"block/chiseled_bookshelf_empty","cullface":"north"}}}],"textures":{"particle":"block/chiseled_bookshelf_empty","texture":"block/chiseled_bookshelf_empty"}}

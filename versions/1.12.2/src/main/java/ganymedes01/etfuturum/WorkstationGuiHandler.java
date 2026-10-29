@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 
 final class WorkstationGuiHandler implements IGuiHandler {
     private WorkstationContainer selectable(int id, EntityPlayer player, World world, BlockPos pos) {
+        if (id == 6) return new GrindstoneContainer(player.inventory, world, pos);
         if (id == 2) return new StonecutterContainer(player.inventory, world, pos);
         if (id == 3) return new LoomContainer(player.inventory, world, pos);
         if (id == 4) return new CartographyContainer(player.inventory, world, pos);
@@ -14,6 +15,8 @@ final class WorkstationGuiHandler implements IGuiHandler {
     }
     @Override public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
+        if(id==8&&world.getTileEntity(pos) instanceof CrafterTile)return new CrafterContainer(player.inventory,(CrafterTile)world.getTileEntity(pos));
+        if(id==7&&world.getTileEntity(pos) instanceof LecternTile)return new LecternContainer((LecternTile)world.getTileEntity(pos));
         if(id==5&&world.getTileEntity(pos) instanceof net.minecraft.inventory.IInventory)return new StorageContainer(player.inventory,(net.minecraft.inventory.IInventory)world.getTileEntity(pos),player);
         if (id == 0) return new SmithingContainer(player.inventory, world, pos);
         if (id == 1 && world.getTileEntity(pos) instanceof CookingTile) return ((CookingTile) world.getTileEntity(pos)).createContainer(player.inventory, player);
@@ -21,6 +24,8 @@ final class WorkstationGuiHandler implements IGuiHandler {
     }
     @Override public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
+        if(id==8&&world.getTileEntity(pos) instanceof CrafterTile)return UAB.proxy.crafterGui(new CrafterContainer(player.inventory,(CrafterTile)world.getTileEntity(pos)));
+        if(id==7&&world.getTileEntity(pos) instanceof LecternTile)return UAB.proxy.lecternGui(new LecternContainer((LecternTile)world.getTileEntity(pos)));
         if(id==5&&world.getTileEntity(pos) instanceof net.minecraft.inventory.IInventory)return UAB.proxy.storageGui(player,(net.minecraft.inventory.IInventory)world.getTileEntity(pos));
         if (id == 0) return UAB.proxy.smithingGui(player, world, pos);
         if (id == 1 && world.getTileEntity(pos) instanceof CookingTile) return UAB.proxy.cookingGui(player, (CookingTile) world.getTileEntity(pos));

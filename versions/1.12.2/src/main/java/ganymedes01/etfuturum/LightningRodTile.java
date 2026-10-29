@@ -21,7 +21,7 @@ public final class LightningRodTile extends TileEntity {
     @Override public void onChunkUnload(){remove();super.onChunkUnload();}
     @SubscribeEvent public static void unload(WorldEvent.Unload event){LOADED.remove(event.getWorld());}
     public static BlockPos attract(World world,BlockPos strike){if(!Content.available("lightning_rod"))return strike;LightningRodTile nearest=null;double distance=128*128;for(LightningRodTile tile:LOADED.getOrDefault(world,Collections.emptySet())){if(tile.isInvalid()||!world.isBlockLoaded(tile.pos)||!(world.getBlockState(tile.pos).getBlock() instanceof LightningRod)||!world.canSeeSky(tile.pos.up()))continue;double value=tile.pos.distanceSq(strike);if(value<=distance){distance=value;nearest=tile;}}return nearest==null?strike:nearest.pos.up();}
-    @Override public boolean shouldRefresh(World world,BlockPos pos,IBlockState old,IBlockState state){return old.getBlock()!=state.getBlock();}
+    @Override public boolean shouldRefresh(World world,BlockPos pos,IBlockState old,IBlockState state){return old.getBlock()!=state.getBlock()&&!(old.getBlock() instanceof LightningRod&&state.getBlock() instanceof LightningRod);}
     @Override public NBTTagCompound writeToNBT(NBTTagCompound tag){super.writeToNBT(tag);tag.setLong("PoweredUntil",poweredUntil);return tag;}
     @Override public void readFromNBT(NBTTagCompound tag){super.readFromNBT(tag);poweredUntil=tag.getLong("PoweredUntil");}
 }

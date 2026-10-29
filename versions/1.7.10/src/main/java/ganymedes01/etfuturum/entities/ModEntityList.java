@@ -101,6 +101,8 @@ public class ModEntityList {
 	}
 
 	public static ItemStack getEggFromEntity(Entity entity) {
+		if (entity instanceof EntityGuardian && ((EntityGuardian) entity).isElder())
+			return new ItemStack(Items.spawn_egg, 1, eggIds.get(EntityElderGuardian.class));
 		return new ItemStack(Items.spawn_egg, 1, eggIds.get(entity.getClass()));
 	}
 

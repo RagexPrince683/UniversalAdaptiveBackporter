@@ -49,6 +49,14 @@ import net.minecraftforge.common.MinecraftForge;
 import java.io.File;
 
 public class ClientProxy extends CommonProxy {
+    @Override public void spearLunge(EntityPlayer player) {
+        Minecraft mc = Minecraft.getMinecraft();
+        net.minecraft.item.ItemStack stack = player.getHeldItem();
+        if (player == mc.thePlayer && mc.currentScreen == null && stack != null
+                && stack.getItem() instanceof ganymedes01.etfuturum.items.ItemSpear
+                && ganymedes01.etfuturum.ModEnchantments.level(ganymedes01.etfuturum.ModEnchantments.lunge, stack) > 0)
+            ganymedes01.etfuturum.items.SpearLunge.request();
+    }
 
 	@Override
 	public void handleClientPacket(IMessage packet, MessageContext context) {
@@ -115,6 +123,15 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	private void registerBlockRenderers() {
+        net.minecraftforge.client.MinecraftForgeClient.registerItemRenderer(ganymedes01.etfuturum.ModernAdditions.item("bell"),new ganymedes01.etfuturum.client.renderer.item.BellItemRenderer());
+        net.minecraftforge.client.MinecraftForgeClient.registerItemRenderer(ganymedes01.etfuturum.ModernAdditions.item("shield"),new ganymedes01.etfuturum.client.renderer.item.ShieldItemRenderer());
+        cpw.mods.fml.common.FMLCommonHandler.instance().bus().register(new ganymedes01.etfuturum.client.SpringAnimalView());
+        ClientRegistry.bindTileEntitySpecialRenderer(ganymedes01.etfuturum.tileentities.TileEntityHangingSign.class,new ganymedes01.etfuturum.client.renderer.tileentity.HangingSignRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(ganymedes01.etfuturum.blocks.BlockBell.BellTile.class,new ganymedes01.etfuturum.client.renderer.tileentity.BellRenderer());
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new ganymedes01.etfuturum.client.SpyglassView());
+        ClientRegistry.bindTileEntitySpecialRenderer(ganymedes01.etfuturum.tileentities.TileEntityCampfire.class,new ganymedes01.etfuturum.client.renderer.tileentity.StorageDisplayRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(ganymedes01.etfuturum.tileentities.TileEntityBookStorage.class,new ganymedes01.etfuturum.client.renderer.tileentity.StorageDisplayRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(ganymedes01.etfuturum.tileentities.TileEntityLectern.class,new ganymedes01.etfuturum.client.renderer.tileentity.LecternRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(ganymedes01.etfuturum.tileentities.TileEntityDecoratedPot.class, new ganymedes01.etfuturum.client.renderer.tileentity.TileEntityDecoratedPotRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(ganymedes01.etfuturum.tileentities.TileEntityBrushable.class, new ganymedes01.etfuturum.client.renderer.tileentity.TileEntityBrushableRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodSign.class, new TileEntityWoodSignRenderer());
@@ -138,6 +155,7 @@ public class ClientProxy extends CommonProxy {
 
 		RenderingRegistry.registerBlockHandler(new BlockExtendedCrossedSquaresRenderer());
 		RenderingRegistry.registerBlockHandler(new ReleasedBlockRenderer());
+		RenderingRegistry.registerBlockHandler(new BlockSeagrassRenderer());
 		RenderingRegistry.registerBlockHandler(new BlockNewFenceRenderer());
 		RenderingRegistry.registerBlockHandler(new BlockTrapDoorRenderer(RenderIDs.TRAPDOOR));
 		RenderingRegistry.registerBlockHandler(new BlockDoorRenderer(RenderIDs.DOOR));
@@ -160,7 +178,6 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerBlockHandler(new BlockDoubleCubeRenderer(15, RenderIDs.HONEY_BLOCK));
 		RenderingRegistry.registerBlockHandler(new BlockChainRenderer(RenderIDs.CHAIN));
 		RenderingRegistry.registerBlockHandler(new BlockAzaleaRenderer(RenderIDs.AZALEA));
-		RenderingRegistry.registerBlockHandler(new BlockLightningRodRenderer());
 		RenderingRegistry.registerBlockHandler(new BlockMangroveRootsRenderer(RenderIDs.MANGROVE_ROOTS));
 		RenderingRegistry.registerBlockHandler(new BlockPinkPetalsRenderer(RenderIDs.PINK_PETALS));
 		RenderingRegistry.registerBlockHandler(new BlockBambooRenderer(RenderIDs.BAMBOO));
@@ -193,6 +210,7 @@ public class ClientProxy extends CommonProxy {
 			@Override protected net.minecraft.util.ResourceLocation getEntityTexture(net.minecraft.entity.Entity entity) { return texture; }
 		});
 		RenderingRegistry.registerEntityRenderingHandler(EntityGuardian.class, new ganymedes01.etfuturum.client.renderer.entity.GuardianRenderer());
+		RenderingRegistry.registerEntityRenderingHandler(EntityParrot.class, new ganymedes01.etfuturum.client.renderer.entity.ParrotRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(EntityFrog.class, new AmphibianRenderer(false));
 		RenderingRegistry.registerEntityRenderingHandler(EntityTadpole.class, new AmphibianRenderer(true));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCreaking.class, new NetherMobRenderer(3, "creaking"));

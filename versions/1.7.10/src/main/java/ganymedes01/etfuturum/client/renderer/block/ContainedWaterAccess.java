@@ -12,7 +12,14 @@ final class ContainedWaterAccess implements IBlockAccess {
 	private final IBlockAccess delegate; private final int x, y, z;
 	ContainedWaterAccess(IBlockAccess delegate, int x, int y, int z) { this.delegate = delegate; this.x = x; this.y = y; this.z = z; }
 	private boolean own(int x, int y, int z) { return this.x == x && this.y == y && this.z == z; }
-	private boolean water(int x, int y, int z) { return own(x, y, z) || delegate.getBlock(x, y, z) instanceof ganymedes01.etfuturum.blocks.BlockAquaticPlant plant && plant.submerged; }
+	private boolean water(int x, int y, int z) {
+		if (own(x, y, z)) return true;
+		Block block = delegate.getBlock(x, y, z);
+		return block instanceof ganymedes01.etfuturum.blocks.BlockSeagrass
+				|| block instanceof ganymedes01.etfuturum.blocks.BlockAquaticPlant plant && plant.submerged
+				|| block instanceof ganymedes01.etfuturum.blocks.BlockDriedGhast && (delegate.getBlockMetadata(x, y, z) & 4) != 0
+				|| block instanceof ganymedes01.etfuturum.blocks.BlockCampfire && (delegate.getBlockMetadata(x, y, z) & 8) != 0;
+	}
 	@Override public Block getBlock(int x, int y, int z) { return water(x, y, z) ? Blocks.water : delegate.getBlock(x, y, z); }
 	@Override public int getBlockMetadata(int x, int y, int z) { return water(x, y, z) ? 0 : delegate.getBlockMetadata(x, y, z); }
 	@Override public TileEntity getTileEntity(int x, int y, int z) { return delegate.getTileEntity(x, y, z); }

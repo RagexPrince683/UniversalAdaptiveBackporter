@@ -9,6 +9,10 @@ import net.minecraft.world.World;
 public class ItemSpear extends ItemSword {
 	private final float thrustDamage;
 	public ItemSpear(ToolMaterial material, String name) { super(material); thrustDamage = 3 + material.getDamageVsEntity(); setUnlocalizedName("etfuturum." + name); setTextureName(name); setCreativeTab(EtFuturum.creativeTabItems); }
+	@Override public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity target) {
+		if (player.worldObj.isRemote) EtFuturum.proxy.spearLunge(player);
+		return false;
+	}
 	@Override public EnumAction getItemUseAction(ItemStack stack) { return EnumAction.bow; }
 	@Override public int getMaxItemUseDuration(ItemStack stack) { return 72000; }
 	@Override public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) { player.setItemInUse(stack, getMaxItemUseDuration(stack)); return stack; }

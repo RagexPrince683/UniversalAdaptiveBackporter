@@ -11,9 +11,9 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.*;
 
-public final class LightningRod extends Block {
+public class LightningRod extends Block {
     public static final PropertyDirection FACING=PropertyDirection.create("facing");public static final PropertyBool POWERED=PropertyBool.create("powered");
-    LightningRod(){super(Material.IRON);setHardness(3);setResistance(6);setHarvestLevel("pickaxe",1);setDefaultState(blockState.getBaseState().withProperty(FACING,EnumFacing.UP).withProperty(POWERED,false));}
+    LightningRod(){super(Material.IRON);setTickRandomly(true);setHardness(3);setResistance(6);setHarvestLevel("pickaxe",1);setDefaultState(blockState.getBaseState().withProperty(FACING,EnumFacing.UP).withProperty(POWERED,false));}
     @Override protected BlockStateContainer createBlockState(){return new BlockStateContainer(this,FACING,POWERED);}
     @Override public IBlockState getStateFromMeta(int meta){return getDefaultState().withProperty(FACING,EnumFacing.byIndex(meta&7)).withProperty(POWERED,(meta&8)!=0);}
     @Override public int getMetaFromState(IBlockState state){return state.getValue(FACING).getIndex()|(state.getValue(POWERED)?8:0);}
@@ -30,5 +30,7 @@ public final class LightningRod extends Block {
     @Override public int getStrongPower(IBlockState state,IBlockAccess world,BlockPos pos,EnumFacing face){return face==state.getValue(FACING)?getWeakPower(state,world,pos,face):0;}
     public void strike(World world,BlockPos pos){if(world.isRemote)return;TileEntity tile=world.getTileEntity(pos);if(tile instanceof LightningRodTile)((LightningRodTile)tile).power();IBlockState state=world.getBlockState(pos);world.setBlockState(pos,state.withProperty(POWERED,true),3);notify(world,pos,state);world.scheduleUpdate(pos,this,8);}
     private void notify(World world,BlockPos pos,IBlockState state){world.notifyNeighborsOfStateChange(pos,this,false);world.notifyNeighborsOfStateChange(pos.offset(state.getValue(FACING).getOpposite()),this,false);}
+    @Override public void randomTick(World world,BlockPos pos,IBlockState state,Random random){if(Features.enabled("content.copper_age"))CopperAging.tick(world,pos,state,random);}
+    @Override public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,net.minecraft.entity.player.EntityPlayer player,EnumHand hand,EnumFacing face,float x,float y,float z){return Features.enabled("content.copper_age")&&CopperAging.use(world,pos,state,player,hand,face);}
     @Override public void updateTick(World world,BlockPos pos,IBlockState state,Random random){if(world.isRemote||!state.getValue(POWERED))return;TileEntity tile=world.getTileEntity(pos);int remaining=tile instanceof LightningRodTile?((LightningRodTile)tile).remaining():0;if(remaining>0){world.scheduleUpdate(pos,this,remaining);return;}world.setBlockState(pos,state.withProperty(POWERED,false),3);notify(world,pos,state);}
 }

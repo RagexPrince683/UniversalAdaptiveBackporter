@@ -9,7 +9,8 @@ import net.minecraft.world.IBlockAccess;
 public class BlockStructureDecoration extends BaseBlock {
 	protected final String[] modelNames;
 	@cpw.mods.fml.relauncher.SideOnly(cpw.mods.fml.relauncher.Side.CLIENT) private ganymedes01.etfuturum.client.renderer.block.ReleasedBlockModel[][] models;
-	public BlockStructureDecoration(String name, String... models) { super(Material.rock); setNames(name); modelNames = models; setHardness(1); setLightOpacity(0); if (name.equals("heavy_core")) setBlockBounds(.25F, 0, .25F, .75F, .5F, .75F); if (name.equals("candle")) setBlockBounds(.4375F, 0, .4375F, .5625F, .375F, .5625F); }
+	public BlockStructureDecoration(String name,String... models){this(Material.rock,name,models);}
+    public BlockStructureDecoration(Material material,String name,String... models){super(material); setNames(name); modelNames = models; setHardness(1); setLightOpacity(0); if (name.equals("heavy_core")) setBlockBounds(.25F, 0, .25F, .75F, .5F, .75F); if (name.equals("candle")) setBlockBounds(.4375F, 0, .4375F, .5625F, .375F, .5625F); }
 	@Override @cpw.mods.fml.relauncher.SideOnly(cpw.mods.fml.relauncher.Side.CLIENT) public void registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister atlas) {
 		models = new ganymedes01.etfuturum.client.renderer.block.ReleasedBlockModel[modelNames.length][4];
 		for (int i = 0; i < modelNames.length; i++) for (int r = 0; r < 4; r++) models[i][r] = new ganymedes01.etfuturum.client.renderer.block.ReleasedBlockModel(atlas, modelNames[i], r);

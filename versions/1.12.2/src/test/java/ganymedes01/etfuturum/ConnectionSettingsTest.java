@@ -19,6 +19,8 @@ public final class ConnectionSettingsTest {
         net.minecraftforge.common.config.Configuration nativeConfig = config.nativeConfig();
         nativeConfig.get("update_1_17.copper", "enabled", copper).set(copper);
         nativeConfig.get("update_1_14.new_textures", "enabled", textures).set(textures);
+        nativeConfig.get("update_1_21_5.animal_appearances","enabled",textures).set(textures);
+        config.bool("content","spring_animal_renders",false);
         config.bool("blocksitems", "enableCopper", true); config.bool("functions", "enableNewTextures", true);
         config.finish(); ConnectionSettings.capture();
     }
