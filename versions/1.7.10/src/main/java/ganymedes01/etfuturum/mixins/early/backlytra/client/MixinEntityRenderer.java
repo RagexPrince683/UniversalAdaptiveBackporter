@@ -1,27 +1,26 @@
 package ganymedes01.etfuturum.mixins.early.backlytra.client;
 
 import ganymedes01.etfuturum.elytra.IElytraPlayer;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
-import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class MixinEntityRenderer {
 	@Shadow
 	private Minecraft mc;
 
-	@Inject(method = "orientCamera", at = @At("TAIL"))
-	private void adjustThirdPersonForElytra(float partialTicks, CallbackInfo ci) {
-		if (this.mc.gameSettings.thirdPersonView > 0 && this.mc.renderViewEntity instanceof IElytraPlayer) {
-			if (((IElytraPlayer) this.mc.renderViewEntity).etfu$isElytraFlying()) {
-				/* Move the camera down 1.62 blocks to sit at the player's feet and then up by 0.4 blocks, like 1.12 does */
-				GL11.glTranslatef(0, 1.22f, 0f);
-			}
+	@ModifyExpressionValue(method = "orientCamera", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;yOffset:F"))
+	private float elytraCameraOffset(float original) {
+		if (this.mc.renderViewEntity instanceof IElytraPlayer
+				&& ((IElytraPlayer) this.mc.renderViewEntity).etfu$isElytraFlying()
+				&& !this.mc.renderViewEntity.isPlayerSleeping()) {
+			// Camera placement must never change the physical anchor used by movement packets.
+			return original + 1.62F - this.mc.renderViewEntity.getEyeHeight() - this.mc.renderViewEntity.ySize;
 		}
+		return original;
 	}
 }

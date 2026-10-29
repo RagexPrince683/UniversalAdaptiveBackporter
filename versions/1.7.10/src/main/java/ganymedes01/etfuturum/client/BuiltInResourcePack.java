@@ -90,7 +90,8 @@ public abstract class BuiltInResourcePack extends AbstractResourcePack {
 	}
 
 	public BuiltInResourcePack setResourcesEnabled() {
-		this.resourcesEnabled = ConfigFunctions.enableNewTextures;
+		// Vanilla artwork belongs to the target version (or the player's resource pack).
+		this.resourcesEnabled = false;
 		this.langEnabled = ConfigFunctions.enableLangReplacements;
 		return this;
 	}

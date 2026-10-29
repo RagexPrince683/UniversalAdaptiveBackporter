@@ -51,7 +51,7 @@ public final class SpearLunge {
         Vec3 look = player.getLookVec();
         double reach = player.theItemInWorldManager.getBlockReachDistance();
         Vec3 end = eye.addVector(look.xCoord * reach, look.yCoord * reach, look.zCoord * reach);
-        MovingObjectPosition block = player.worldObj.func_147447_a(eye, end, false, true, false);
+        MovingObjectPosition block = player.worldObj.func_147447_a(Vec3.createVectorHelper(eye.xCoord, eye.yCoord, eye.zCoord), end, false, true, false);
         if (block != null) {
             double distance = eye.distanceTo(block.hitVec);
             boolean attackingEntity = false;

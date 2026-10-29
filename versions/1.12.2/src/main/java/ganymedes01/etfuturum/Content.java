@@ -24,6 +24,18 @@ public final class Content {
     static final Map<String, net.minecraft.block.state.IBlockState> SHAPE_BASES = new LinkedHashMap<>();
     public static final CreativeTabs TAB = new CreativeTabs("etfuturum") {
         @Override public ItemStack createIcon() { return new ItemStack(Items.IRON_INGOT); }
+        @Override public void displayAllRelevantItems(net.minecraft.util.NonNullList<ItemStack> items) {
+            super.displayAllRelevantItems(items);
+            for (byte duration = 1; duration <= 3; duration++) {
+                ItemStack rocket = new ItemStack(Items.FIREWORKS);
+                net.minecraft.nbt.NBTTagCompound tag = new net.minecraft.nbt.NBTTagCompound();
+                net.minecraft.nbt.NBTTagCompound fireworks = new net.minecraft.nbt.NBTTagCompound();
+                fireworks.setByte("Flight", duration);
+                tag.setTag("Fireworks", fireworks);
+                rocket.setTagCompound(tag);
+                items.add(rocket);
+            }
+        }
     };
     public static final Item.ToolMaterial NETHERITE = EnumHelper.addToolMaterial("UAB_NETHERITE", 3, 2031, 9, 4, 15);
     public static final ItemArmor.ArmorMaterial NETHERITE_ARMOR = EnumHelper.addArmorMaterial("UAB_NETHERITE", "etfuturum:netherite", 37, new int[]{3, 6, 8, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 3);

@@ -32,7 +32,9 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 	@Inject(method = "onLivingUpdate", at = @At("TAIL"))
 	private void startElytraFlying(CallbackInfo ci) {
 		if (!Utils.badBetterFPSAlgorithm()) {
-			if (this.movementInput.jump && !etfu$lastIsJumping && !this.onGround && (ConfigMixins.enableNewElytraTakeoffLogic || this.motionY < 0.0D) && !((IElytraPlayer) this).etfu$isElytraFlying() && !etfu$lastIsFlying) {
+			if (this.movementInput.jump && !etfu$lastIsJumping && !this.onGround && !this.isRiding() && !this.isInWater()
+					&& !this.handleLavaMovement() && this.isEntityAlive() && !this.capabilities.isFlying
+					&& (ConfigMixins.enableNewElytraTakeoffLogic || this.motionY < 0.0D) && !((IElytraPlayer) this).etfu$isElytraFlying() && !etfu$lastIsFlying) {
 				ItemStack itemstack = ItemArmorElytra.getElytra(this);
 				if (itemstack != null && !ItemArmorElytra.isBroken(itemstack)) {
 					EtFuturum.networkWrapper.sendToServer(new StartElytraFlyingMessage());

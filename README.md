@@ -2,6 +2,8 @@
 
 UAB adapts modern Minecraft content to Forge. **Minecraft 1.7.10** is the maintained implementation; **Minecraft 1.12.2** is a second target under development, with partial feature coverage. Its content reference extends through **Java Edition 1.21.11**. Blocks, items, mobs, biomes, structures and selected gameplay conveniences use implementations suited to the legacy game.
 
+UAB preserves each target version's vanilla textures and artwork. New content and separate variations supply their own assets; player resource packs retain their normal priority.
+
 ## What UAB supplies
 
 - Building materials and wood families, functional workstations, copper and netherite progression, crops, equipment and modern mob families.

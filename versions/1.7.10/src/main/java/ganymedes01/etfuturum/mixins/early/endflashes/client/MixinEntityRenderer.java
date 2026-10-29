@@ -16,7 +16,7 @@ public abstract class MixinEntityRenderer {
 	@Shadow private Minecraft mc;
 	@Shadow private int[] lightmapColors;
 
-	@Inject(method = "updateLightmap", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/DynamicTexture;updateDynamicTexture()V"), require = 0)
+	@Inject(method = "updateLightmap", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/DynamicTexture;updateDynamicTexture()V"), require=0,expect=0)
 	private void etfuturum$applyEndLight(float partialTicks, CallbackInfo ci) {
 		if (mc.theWorld == null || !ModernLightmap.isEnd(mc.theWorld.provider)) return;
 		float flash = ConfigWorld.endFlashes ? EndFlashState.INSTANCE.getIntensity(partialTicks) : 0.0F;

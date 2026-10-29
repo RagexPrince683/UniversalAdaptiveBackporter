@@ -15,7 +15,7 @@ public abstract class MixinEntityRenderer {
 	@Shadow private Minecraft mc;
 	@Shadow private int[] lightmapColors;
 
-	@Inject(method = "updateLightmap", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/DynamicTexture;updateDynamicTexture()V"), require = 0)
+	@Inject(method = "updateLightmap", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/DynamicTexture;updateDynamicTexture()V"), require=0,expect=0)
 	private void etfuturum$applyModernGamma(float partialTicks, CallbackInfo ci) {
 		if (mc.theWorld == null || !ModernLightmap.supports(mc.theWorld.provider)) return;
 		float gamma = mc.gameSettings.gammaSetting;

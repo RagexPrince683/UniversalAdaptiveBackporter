@@ -115,6 +115,8 @@ The 1.7.10 shield crafts from six planks and an iron ingot. Hold use to raise it
 
 Lunge I–III can enchant spears through native enchanting, books/anvils and supported released loot. A primary attack or empty-air jab supplies a horizontal movement impulse, costs one additional durability and adds exhaustion when at least three hunger icons remain. It cannot activate while riding, underwater or gliding. Its separate one-second movement limit leaves each target’s attack timing, reach and damage rules intact. No full combat overhaul is supplied.
 
+Vanilla firework rockets boost elytra flight on both targets, with flight-duration 1–3 rockets in the UAB item tab. The legacy adaptation supports air and block clicks while gliding, respects canceled interactions and consumes a rocket only after its boosting entity is accepted. The 1.12.2 target retains native firework boosting and crafting.
+
 Netherite horse armor upgrades diamond horse armor with a netherite ingot at the smithing table, using an upgrade template when that setting is enabled. It preserves the base item’s saved data and uses native horse equipment, protection and model geometry on each target.
 
 Crafters provide a native three-by-three recipe grid, disabled slots, comparator output, hopper insertion/extraction and six output directions. A rising redstone pulse crafts once after a short delay. Crafted items and recipe containers share saved delivery ownership; interrupted or refused delivery retains only the unaccepted remainder. Minecraft 1.7.10 adapts recipe remainders through Forge container-item callbacks, while 1.12.2 uses each recipe’s remaining-items API and native item-handler integration.

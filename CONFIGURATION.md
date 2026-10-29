@@ -4,6 +4,8 @@
 
 `config/uab.cfg` is the primary native Forge configuration. There are no separate block, entity, world, sound or experiments files to maintain. The in-game Forge configuration screen uses update and feature names.
 
+The legacy `enableNewTextures` setting is retained for configuration compatibility but no longer replaces vanilla artwork on either target, regardless of its saved value. Language replacements remain separately configurable.
+
 For 1.7.10, existing potion allocations remain in `config/legacy-potion-ids.properties`, shared with cooperating legacy mods. This is persistent identity data, not another feature configuration. Do not delete or regenerate it in an existing installation.
 
 On **1.7.10**, UAB grows the native potion registry to at least 128 slots, preserving larger registries and their entries. IDs **0..127** use the native effect packets and NBT. Explicit IDs **128..32767** require the enabled **EndlessIDs potion module** and its network/save extensions on both sides; an expanded array by itself is insufficient. The upper bound is also limited by the live registry capacity. UAB does not allocate IDs above 127 automatically. `-1` selects persistent automatic allocation. Unsupported, malformed, conflicting or changed saved identities fail explicitly instead of being clamped, overwritten or silently reassigned. Keep configured IDs, the allocation file and the world's allocation snapshot consistent; there is no automatic migration for changing existing effect identities.

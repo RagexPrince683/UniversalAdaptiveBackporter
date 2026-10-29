@@ -15,7 +15,7 @@ public class EntityBoostingFireworkRocket extends EntityFireworkRocket {
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		this.dataWatcher.addObject(BOOSTED_ENTITY_ID, 0);
+		this.dataWatcher.addObject(BOOSTED_ENTITY_ID, -1);
 	}
 
 	public EntityBoostingFireworkRocket(World world) {
@@ -36,6 +36,7 @@ public class EntityBoostingFireworkRocket extends EntityFireworkRocket {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
+		if (this.isDead) return;
 		if (this.isAttachedToEntity()) {
 			if (this.boostedEntity == null) {
 				Entity entity = this.worldObj.getEntityByID(this.dataWatcher.getWatchableObjectInt(BOOSTED_ENTITY_ID));
@@ -46,13 +47,16 @@ public class EntityBoostingFireworkRocket extends EntityFireworkRocket {
 			}
 
 			if (this.boostedEntity != null) {
-				if (this.boostedEntity instanceof IElytraPlayer && ((IElytraPlayer) this.boostedEntity).etfu$isElytraFlying()) {
+				if (this.boostedEntity.isEntityAlive() && this.boostedEntity.worldObj == this.worldObj
+						&& !this.boostedEntity.isRiding() && this.boostedEntity instanceof IElytraPlayer
+						&& ((IElytraPlayer) this.boostedEntity).etfu$isElytraFlying()) {
 					Vec3 vec3d = this.boostedEntity.getLookVec();
 					this.boostedEntity.motionX += vec3d.xCoord * 0.1D + (vec3d.xCoord * 1.5D - this.boostedEntity.motionX) * 0.5D;
 					this.boostedEntity.motionY += vec3d.yCoord * 0.1D + (vec3d.yCoord * 1.5D - this.boostedEntity.motionY) * 0.5D;
 					this.boostedEntity.motionZ += vec3d.zCoord * 0.1D + (vec3d.zCoord * 1.5D - this.boostedEntity.motionZ) * 0.5D;
 				} else {
 					this.setDead();
+					return;
 				}
 
 				this.setPosition(this.boostedEntity.posX, this.boostedEntity.posY, this.boostedEntity.posZ);
@@ -64,6 +68,6 @@ public class EntityBoostingFireworkRocket extends EntityFireworkRocket {
 	}
 
 	public boolean isAttachedToEntity() {
-		return this.dataWatcher.getWatchableObjectInt(BOOSTED_ENTITY_ID) > 0;
+		return this.dataWatcher.getWatchableObjectInt(BOOSTED_ENTITY_ID) >= 0;
 	}
 }

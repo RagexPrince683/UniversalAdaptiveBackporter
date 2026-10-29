@@ -18,7 +18,7 @@ public abstract class MixinEntityRenderer {
 	@Shadow private float torchFlickerX;
 	@Shadow protected abstract float getNightVisionBrightness(net.minecraft.entity.player.EntityPlayer player, float partialTicks);
 
-	@Inject(method = "updateLightmap", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/DynamicTexture;updateDynamicTexture()V"), require = 0)
+	@Inject(method = "updateLightmap", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/DynamicTexture;updateDynamicTexture()V"), require=0,expect=0)
 	private void etfuturum$applyModernBlockLight(float partialTicks, CallbackInfo ci) {
 		if (mc.theWorld == null || !ModernLightmap.supports(mc.theWorld.provider)) return;
 		float nightVision = ConfigWorld.modernNightVision && mc.thePlayer.isPotionActive(Potion.nightVision)

@@ -721,23 +721,24 @@ public class ServerEventHandler {
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onPlayerInteractNonVanilla(PlayerInteractEvent event) {
-		if (event.action == Action.RIGHT_CLICK_AIR) {
+		if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {
 			EntityPlayer player = event.entityPlayer;
 			ItemStack heldStack = player.getHeldItem();
 			World world = event.world;
 			//Firework boosting
-			if (ConfigMixins.enableElytra && heldStack != null && heldStack.getItem() == Items.fireworks && ((IElytraPlayer) player).etfu$isElytraFlying()) {
+			if (event.useItem != Result.DENY && ConfigMixins.enableElytra && heldStack != null && heldStack.stackSize > 0
+					&& heldStack.getItem() == Items.fireworks && player instanceof IElytraPlayer
+					&& ((IElytraPlayer) player).etfu$isElytraFlying() && player.isEntityAlive() && !player.isRiding()
+					&& !ganymedes01.etfuturum.api.spectator.SpectatorUtils.isSpectator(player)) {
 				player.swingItem();
 				if (!world.isRemote) {
+					event.setCanceled(true);
 					EntityBoostingFireworkRocket entityfireworkrocket = new EntityBoostingFireworkRocket(world, heldStack, player);
-					world.spawnEntityInWorld(entityfireworkrocket);
-
-					if (!player.capabilities.isCreativeMode) {
-						--heldStack.stackSize;
+					if (world.spawnEntityInWorld(entityfireworkrocket) && !player.capabilities.isCreativeMode) {
+						if (--heldStack.stackSize <= 0) player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
 					}
-					event.useItem = Result.ALLOW;
 				}
 			}
 		}

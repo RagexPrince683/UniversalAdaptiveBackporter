@@ -19,7 +19,7 @@ public class ItemSpear extends ItemSword {
 	@Override public void onUsingTick(ItemStack stack, EntityPlayer player, int remaining) {
 		int used = getMaxItemUseDuration(stack) - remaining; if (player.worldObj.isRemote || used < 10 || used % 20 != 10) return;
 		Vec3 eye = Vec3.createVectorHelper(player.posX, player.posY + player.getEyeHeight(), player.posZ), direction = player.getLookVec(), end = eye.addVector(direction.xCoord * 4.5, direction.yCoord * 4.5, direction.zCoord * 4.5);
-		MovingObjectPosition block = player.worldObj.func_147447_a(eye, end, false, true, false); double distance = block == null ? 4.5 : eye.distanceTo(block.hitVec); EntityLivingBase nearest = null;
+		MovingObjectPosition block = player.worldObj.func_147447_a(Vec3.createVectorHelper(eye.xCoord, eye.yCoord, eye.zCoord), end, false, true, false); double distance = block == null ? 4.5 : eye.distanceTo(block.hitVec); EntityLivingBase nearest = null;
 		for (Object object : player.worldObj.getEntitiesWithinAABBExcludingEntity(player, player.boundingBox.addCoord(direction.xCoord * 4.5, direction.yCoord * 4.5, direction.zCoord * 4.5).expand(.5, .5, .5))) {
 			if (!(object instanceof EntityLivingBase target) || !target.canBeCollidedWith() || target == player.ridingEntity) continue;
 			MovingObjectPosition hit = target.boundingBox.expand(.2, .2, .2).calculateIntercept(eye, end); if (hit == null) continue; double length = eye.distanceTo(hit.hitVec); if (length >= 2 && length < distance) { nearest = target; distance = length; }

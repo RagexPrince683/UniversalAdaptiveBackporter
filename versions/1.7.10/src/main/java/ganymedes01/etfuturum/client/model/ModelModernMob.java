@@ -28,7 +28,13 @@ public class ModelModernMob extends ModelBase {
 			JsonObject part = element.getAsJsonObject(); String name = part.get("name").getAsString(), parent = part.get("parent").getAsString(); ModelRenderer node = new ModelRenderer(this); float[] pose = new float[6];
 			for (int i = 0; i < 6; i++) pose[i] = part.getAsJsonArray("pose").get(i).getAsFloat();
 			node.setRotationPoint(pose[0], pose[1], pose[2]); node.rotateAngleX = pose[3]; node.rotateAngleY = pose[4]; node.rotateAngleZ = pose[5];
-			for (JsonElement box : part.getAsJsonArray("cubes")) { JsonArray cube = box.getAsJsonArray(); node.mirror = cube.get(9).getAsBoolean(); node.setTextureOffset(cube.get(0).getAsInt(), cube.get(1).getAsInt()); node.addBox(cube.get(2).getAsFloat(), cube.get(3).getAsFloat(), cube.get(4).getAsFloat(), cube.get(5).getAsInt(), cube.get(6).getAsInt(), cube.get(7).getAsInt(), cube.get(8).getAsFloat()); }
+			for (JsonElement box : part.getAsJsonArray("cubes")) {
+				JsonArray cube = box.getAsJsonArray(); node.mirror = cube.get(9).getAsBoolean(); node.setTextureOffset(cube.get(0).getAsInt(), cube.get(1).getAsInt());
+				float inflation = cube.get(8).getAsFloat();
+				// The legacy body has no modern per-part squeeze; keep the harness off its coplanar faces.
+				if (kind.equals("harness") && name.equals("harness")) inflation += .125F;
+				node.addBox(cube.get(2).getAsFloat(), cube.get(3).getAsFloat(), cube.get(4).getAsFloat(), cube.get(5).getAsInt(), cube.get(6).getAsInt(), cube.get(7).getAsInt(), inflation);
+			}
 			(parent.isEmpty() ? root : parts.get(parent)).addChild(node); parts.put(name, node); poses.put(name, pose);
 		}
 	}

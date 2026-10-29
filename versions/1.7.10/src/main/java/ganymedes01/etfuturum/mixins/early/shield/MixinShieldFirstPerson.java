@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.injection.At;
 /** The shield item renderer supplies its own raised pose instead of the old sword's rotation. */
 @Mixin(ItemRenderer.class)
 public class MixinShieldFirstPerson {
-    @WrapOperation(method="renderItemInFirstPerson",at=@At(value="INVOKE",target="Lnet/minecraft/item/ItemStack;getItemUseAction()Lnet/minecraft/item/EnumAction;"),require=0)
+    @WrapOperation(method="renderItemInFirstPerson",at=@At(value="INVOKE",target="Lnet/minecraft/item/ItemStack;getItemUseAction()Lnet/minecraft/item/EnumAction;"),require=0,expect=0)
     private EnumAction uab$shieldPose(ItemStack stack,Operation<EnumAction> original){return stack.getItem() instanceof ItemShield?EnumAction.none:original.call(stack);}
 }

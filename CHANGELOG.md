@@ -558,3 +558,28 @@
 2026-10-28 19:51 — Expose the missing update groups in configuration screens
 
 - Include Bundles of Bravery and Spring to Life in both native configuration screens so their existing settings remain discoverable. Validate update-group coverage when checking the shared catalog.
+
+2026-10-28 23:45 — Fix respawn-anchor startup with Mixin injection counting
+
+- Allow the unused development or production naming variant of each respawn-anchor hook to match zero calls on both targets, including when Mixin injection counting is enabled. Preserve the group requirement that a provider hook and stored-spawn hook must each match.
+- Prevent the resulting player-manager loading failure when starting an integrated or dedicated server without changing anchor bindings, respawn rules or charge consumption.
+
+2026-10-28 23:48 — Fix decorated-pot item rendering on 1.12.2
+
+- Render decorated-pot items through Minecraft's registered tile renderer so texture binding uses the initialized dispatcher. Prevent inventory rendering crashes while retaining the same model and item designs.
+
+2026-10-29 00:17 — Keep elytra cameras separate from movement and repair rocket interactions
+
+- Calculate legacy elytra camera height inside camera rendering instead of changing the player's physical position offset, preventing illegal-stance disconnects and keeping packet and collision coordinates authoritative.
+- Reject invalid takeoff requests on both targets. Stop legacy boosts when their rider dies, mounts or changes worlds, accept entity ID zero, and support air/block firework use while respecting interaction denial and refused entity spawns. Expose native flight-duration 1–3 rockets in the 1.12.2 UAB tab alongside the existing legacy entries.
+- Align native client prediction with server rocket ownership so a block click cannot fall through into a second air-use packet and consume a second rocket.
+- Preserve legacy spear ray origins when native block tracing mutates its input vector, keeping thrust visibility and Lunge mining checks consistent.
+
+2026-10-29 00:17 — Make optional mixin hooks compatible with injection counting
+
+- Give explicitly optional hooks zero individual debug expectations on both targets, including alternate mapped names and rendering compatibility fallbacks. Preserve required hook groups and their minimum match checks for combat, fluids, inventories, world generation and other maintained features.
+
+2026-10-29 02:50 — Preserve vanilla artwork and separate Happy Ghast harness faces
+
+- Remove the accidental 1.7.10 vanilla stone texture replacement and the optional grass, sponge, dark-oak end and door-item texture overrides on both targets. Retain the old texture setting for configuration compatibility without allowing it to replace vanilla artwork; keep language replacements and added variants independent.
+- Separate the 1.7.10 Happy Ghast harness shell from the body to prevent coplanar depth flicker. Preserve its UVs, goggles, render-pass behavior, mounting and passenger positions.

@@ -42,7 +42,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements IEly
 		ItemStack itemstack = ItemArmorElytra.getElytra(this);
 		this.setHideCape(1, itemstack != null);
 		if (itemstack != null && !capabilities.isFlying && !ItemArmorElytra.isBroken(itemstack)) {
-			if (flag && !this.onGround && !this.isRiding() && !this.isInWater()) {
+			if (flag && !this.onGround && !this.isRiding() && !this.isInWater() && !this.handleLavaMovement() && this.isEntityAlive()) {
 				if (!this.worldObj.isRemote && (this.etfu$ticksElytraFlying + 1) % 20 == 0) {
 					itemstack.damageItem(1, this);
 				}

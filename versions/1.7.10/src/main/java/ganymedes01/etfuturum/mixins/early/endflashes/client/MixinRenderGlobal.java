@@ -23,7 +23,7 @@ public abstract class MixinRenderGlobal {
 	@Shadow private Minecraft mc;
 	@Shadow private WorldClient theWorld;
 
-	@Inject(method = "renderSky", at = @At("TAIL"), require = 0)
+	@Inject(method = "renderSky", at = @At("TAIL"), require=0,expect=0)
 	private void etfuturum$renderEndFlash(float partialTicks, CallbackInfo ci) {
 		if (theWorld == null || !(theWorld.provider instanceof WorldProviderEnd)) return;
 		float intensity = EndFlashAPI.getIntensity(partialTicks);

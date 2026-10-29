@@ -31,8 +31,8 @@ public class HoneyPistonStructureMixin {
     private boolean etfu$canPull(IBlockState state,World world,BlockPos pos,EnumFacing movement,boolean destroy,EnumFacing side){
         return !separate(state,world.getBlockState(pos.offset(movement)))&&BlockPistonBase.canPush(state,world,pos,movement,destroy,side);
     }
-    @Group(name="honeyPull",min=1) @Redirect(method={"addBlockLine","func_177251_a"},at=@At(value="INVOKE",target="Lnet/minecraft/block/BlockPistonBase;canPush(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;ZLnet/minecraft/util/EnumFacing;)Z",ordinal=1),require=0,remap=false)
+    @Group(name="honeyPull",min=1) @Redirect(method={"addBlockLine","func_177251_a"},at=@At(value="INVOKE",target="Lnet/minecraft/block/BlockPistonBase;canPush(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;ZLnet/minecraft/util/EnumFacing;)Z",ordinal=1),require=0,expect=0,remap=false)
     private boolean etfu$pullMcp(IBlockState state,World world,BlockPos pos,EnumFacing movement,boolean destroy,EnumFacing side){return etfu$canPull(state,world,pos,movement,destroy,side);}
-    @Group(name="honeyPull",min=1) @Redirect(method={"addBlockLine","func_177251_a"},at=@At(value="INVOKE",target="Lnet/minecraft/block/BlockPistonBase;func_185646_a(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;ZLnet/minecraft/util/EnumFacing;)Z",ordinal=1),require=0,remap=false)
+    @Group(name="honeyPull",min=1) @Redirect(method={"addBlockLine","func_177251_a"},at=@At(value="INVOKE",target="Lnet/minecraft/block/BlockPistonBase;func_185646_a(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;ZLnet/minecraft/util/EnumFacing;)Z",ordinal=1),require=0,expect=0,remap=false)
     private boolean etfu$pullSrg(IBlockState state,World world,BlockPos pos,EnumFacing movement,boolean destroy,EnumFacing side){return etfu$canPull(state,world,pos,movement,destroy,side);}
 }

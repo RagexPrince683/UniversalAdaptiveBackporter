@@ -13,7 +13,8 @@ public class StartElytraFlyingHandler implements IMessageHandler<StartElytraFlyi
 	@Override
 	public IMessage onMessage(StartElytraFlyingMessage message, MessageContext ctx) {
 		ServerPacketExecutor.execute(ctx, player -> {
-			if (!ConfigMixins.enableElytra || !(player instanceof IElytraPlayer elytraPlayer) || SpectatorUtils.isSpectator(player)) return;
+			if (!ConfigMixins.enableElytra || !(player instanceof IElytraPlayer elytraPlayer) || SpectatorUtils.isSpectator(player)
+					|| !player.isEntityAlive() || player.isRiding() || player.capabilities.isFlying || player.handleLavaMovement()) return;
 			if (!player.onGround && (ConfigMixins.enableNewElytraTakeoffLogic || player.motionY < 0.0D) && !elytraPlayer.etfu$isElytraFlying() && !player.isInWater()) {
 				ItemStack itemstack = ItemArmorElytra.getElytra(player);
 

@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinShieldArmPose {
     @Shadow public ModelRenderer bipedRightArm;
     @Shadow public int heldItemRight;
-    @Inject(method="setRotationAngles",at=@At("RETURN"),require=0)
+    @Inject(method="setRotationAngles",at=@At("RETURN"),require=0,expect=0)
     private void uab$shieldArm(float limbSwing,float limbAmount,float age,float yaw,float pitch,float scale,Entity entity,CallbackInfo callback){
         if(heldItemRight!=3||!(entity instanceof EntityPlayer))return;
         EntityPlayer player=(EntityPlayer)entity;ItemStack active=player.getItemInUse();

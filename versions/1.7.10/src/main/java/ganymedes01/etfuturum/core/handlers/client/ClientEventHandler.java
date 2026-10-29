@@ -803,8 +803,6 @@ public class ClientEventHandler {
 		}
 	}
 
-	private float prevYOffset;
-
 	@SubscribeEvent
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
 		if (ConfigMixins.worldSaveThumbnails) {
@@ -822,21 +820,6 @@ public class ClientEventHandler {
 			LoadingScreenStateTracker.clearCompletionPending();
 			SpawnChunkProgress.reset();
 			LoadingScreenHooks.reset();
-		}
-		if (!ConfigMixins.enableElytra)
-			return;
-		EntityPlayerSP player = mc.thePlayer;
-		if (!(player instanceof IElytraPlayer))
-			return;
-		if (((IElytraPlayer) player).etfu$isElytraFlying()) {
-			if (event.phase == Phase.START) {
-				prevYOffset = player.yOffset;
-				/* TODO find the right number here */
-				if (mc.gameSettings.thirdPersonView == 0)
-					player.yOffset = 3.02f;
-			} else {
-				player.yOffset = prevYOffset;
-			}
 		}
 	}
 
