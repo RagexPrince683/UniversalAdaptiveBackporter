@@ -1,9 +1,7 @@
 package ganymedes01.etfuturum.mixins.early.stepfix;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import org.objectweb.asm.Opcodes;
@@ -26,14 +24,6 @@ public class MixinEntity {
     @Shadow
     public float stepHeight;
 
-    @Inject(method = "moveEntity",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getCollidingBoundingBoxes(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;", ordinal = 0),
-            slice = @Slice(from = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/Entity;stepHeight:F", ordinal = 1))
-    )
-    private void captureStepContext(double x, double y, double z, CallbackInfo ci, @Share("preMoveBB") LocalRef<AxisAlignedBB> ref) {
-        ref.set(this.boundingBox.copy());
-    }
-
     /**
      * Backports 1.12.2's dual-approach step-up algorithm. 1.7.10 only calculates the Y step-up offset
      * against the entity's current bounding box. 1.12.2 also tries calculating the Y offset against a
@@ -49,7 +39,7 @@ public class MixinEntity {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/util/AxisAlignedBB;offset(DDD)Lnet/minecraft/util/AxisAlignedBB;",
-                    ordinal = 3,
+                    ordinal = 0,
                     shift = At.Shift.AFTER
             ),
             slice = @Slice(
@@ -57,7 +47,7 @@ public class MixinEntity {
                             value = "FIELD",
                             opcode = Opcodes.GETFIELD,
                             target = "Lnet/minecraft/entity/Entity;stepHeight:F",
-                            ordinal = 1
+                            ordinal = 2
                     )
             )
     )
@@ -68,8 +58,8 @@ public class MixinEntity {
                                            @Local(ordinal = 6) double d6,
                                            @Local(ordinal = 8) double d8,
                                            @Local(ordinal = 0) List list,
-                                           @Share("preMoveBB") LocalRef<AxisAlignedBB> ref) {
-        AxisAlignedBB preMoveBB = ref.get();
+                                           @Local(ordinal = 0) AxisAlignedBB preMoveBB) {
+        // Use moveEntity's original snapshot directly, without depending on an earlier injector.
 
         // Approach A: Y offset uses the expanded BB
         AxisAlignedBB bbA = preMoveBB.copy();

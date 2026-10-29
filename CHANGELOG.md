@@ -583,3 +583,8 @@
 
 - Remove the accidental 1.7.10 vanilla stone texture replacement and the optional grass, sponge, dark-oak end and door-item texture overrides on both targets. Retain the old texture setting for configuration compatibility without allowing it to replace vanilla artwork; keep language replacements and added variants independent.
 - Separate the 1.7.10 Happy Ghast harness shell from the body to prevent coplanar depth flicker. Preserve its UVs, goggles, render-pass behavior, mounting and passenger positions.
+
+2026-10-29 14:34 — Remove nullable shared state from legacy step collisions
+
+- Read the original movement bounding box directly from Minecraft's local snapshot instead of a separately captured shared reference, preventing a null dereference in the 1.7.10 alternate step-collision hook.
+- Anchor the hook at the step-down height read so earlier collision offsets do not determine its injection point. Preserve the dual-approach stepping algorithm and existing configuration.
