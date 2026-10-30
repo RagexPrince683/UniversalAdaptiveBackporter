@@ -24,7 +24,9 @@ public class WorldGenDripstone extends WorldGenerator {
 			int ceiling = Math.min(world.getActualHeight() - 5, world.getHeightValue(wx, wz) - 16);
 			for (int y = 16; y < ceiling; y++) {
 				double humidity = (noise.sample(wx * 0.02, y * 0.02, wz * 0.02) + 1) * 0.5;
-				if (humidity < 0.65 || world.getBlock(wx, y, wz) != Blocks.stone) continue;
+				if (humidity < 0.65) continue;
+				Block base = world.getBlock(wx, y, wz);
+				if (base != Blocks.stone && !ganymedes01.etfuturum.compat.CompatUndergroundBiomes.isNaturalStone(base)) continue;
 				boolean up = world.isAirBlock(wx, y + 1, wz), down = world.isAirBlock(wx, y - 1, wz);
 				if (!up && !down) continue;
 				world.setBlock(wx, y, wz, ModBlocks.DRIPSTONE_BLOCK.get(), 0, 2);

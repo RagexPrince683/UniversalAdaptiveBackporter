@@ -262,7 +262,9 @@ public class DeepslateOreRegistry {
 		}
 		// TODO: In the future, maybe change this to == Blocks.stone? Or perhaps, a tag
 		// Brandyn doesn't like it lol, but I feel it's necessary
-		return currentBlock.isReplaceableOreGen(chunk.worldObj, chunk.xPosition << 4 + x, y, chunk.zPosition << 4 + z, Blocks.stone)
+		// The callback takes world coordinates; addition binds more tightly than a shift.
+		// UBC uses these coordinates to queue ore replacement for the affected chunk.
+		return currentBlock.isReplaceableOreGen(chunk.worldObj, (chunk.xPosition << 4) + x, y, (chunk.zPosition << 4) + z, Blocks.stone)
 				&& chunk.func_150807_a(x, y, z, input, inputMeta);
 	}
 

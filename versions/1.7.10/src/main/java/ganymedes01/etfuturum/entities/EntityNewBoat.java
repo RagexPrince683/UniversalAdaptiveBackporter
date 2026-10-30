@@ -1135,7 +1135,8 @@ public class EntityNewBoat extends Entity {
 			getDataWatcher().updateObject(DATA_ID_TYPE, "oak");
 		}
 		getDataWatcher().updateObject(DATA_ID_RAFT, boatInfo.isRaft() ? (byte) 1 : (byte) 0);
-		getDataWatcher().updateObject(DATA_ID_RESOURCELOCATION, resourceDomain + ":textures/entity/boat/" + getBoatType() + ".png");
+		getDataWatcher().updateObject(DATA_ID_RESOURCELOCATION, boatInfo.getEntityTexture() == null
+				? resourceDomain + ":textures/entity/boat/" + getBoatType() + ".png" : boatInfo.getEntityTexture());
 	}
 
 	public String getBoatType() {
@@ -1172,6 +1173,12 @@ public class EntityNewBoat extends Entity {
 			resourceLocation = new ResourceLocation(getDataWatcher().getWatchableObjectString(DATA_ID_RESOURCELOCATION));
 		}
 		return resourceLocation;
+	}
+
+	@Override
+	public void func_145781_i(int key) {
+		if (key == DATA_ID_RESOURCELOCATION) resourceLocation = null;
+		super.func_145781_i(key);
 	}
 
 	public enum Status {

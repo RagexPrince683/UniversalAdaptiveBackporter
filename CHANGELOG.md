@@ -588,3 +588,14 @@
 
 - Read the original movement bounding box directly from Minecraft's local snapshot instead of a separately captured shared reference, preventing a null dereference in the 1.7.10 alternate step-collision hook.
 - Anchor the hook at the step-down height read so earlier collision offsets do not determine its injection point. Preserve the dual-approach stepping algorithm and existing configuration.
+
+2026-10-29 20:32 — Repair legacy Underground Biomes generation and modded wood textures
+
+- Correct the world coordinates passed to modded stone during 1.7.10 deepslate conversion. This prevents Underground Biomes Constructs from loading distant chunks for ore replacement, causing extreme world creation delays and generation stalls.
+- Recognize Underground Biomes' vanilla-terrain wrapper for modern structure placement, reservations and location searches. Allow its natural geological stones to support dripstone and ancient-city sculk without replacing its generator or disabling UAB features.
+- Extend the related natural-stone support to the independent 1.12.2 implementation so its deepslate layers, tuff clusters and ancient-city sculk also work with Underground Biomes geology. The 1.12.2 conversion coordinates already use the correct native positions.
+- Restore inherited Biomes O' Plenty and Witchery stripped-log, boat and chest-boat artwork. Register distinct stripped faces, map compatibility texture domains and species spellings correctly, and refresh boat textures when synchronized data changes. Preserve existing block/item registrations, metadata and saved boat identities.
+
+2026-10-29 20:49 — Restore legacy modded door and trapdoor artwork
+
+- Restore the inherited Biomes O' Plenty and Witchery door block faces, door inventory icons and trapdoor textures for 1.7.10. Resolve their resource paths using the artwork's species names rather than the registry prefixes, preserving all existing registrations and metadata.

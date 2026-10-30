@@ -28,6 +28,7 @@ public class EtFuturumLateMixins implements ILateMixinLoader {
 	public List<String> getMixins(Set<String> loadedMods) {
 		List<String> mixins = new ArrayList<>();
 		if (loadedMods.contains("enderlicious")) mixins.add("enderlicious.MixinEndChunkProvider");
+		if (loadedMods.contains("UndergroundBiomes")) mixins.add("undergroundbiomes.MixinChunkProviderWrapper");
 
 		if (ConfigMixins.enableElytra && loadedMods.stream().anyMatch(name -> name.equals("Thaumcraft"))) {
 			mixins.add("backlytra.thaumcraft.MixinEventHandlerEntity");

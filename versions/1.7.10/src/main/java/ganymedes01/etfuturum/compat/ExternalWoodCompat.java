@@ -73,12 +73,15 @@ public final class ExternalWoodCompat {
 		ExternalWoodFamily family = new ExternalWoodFamily(prefix, textureDomain, name, planks, plankMeta, log, logMeta, raft);
 		FAMILIES.add(family);
 		String id = prefix + '_' + name;
+		// EFR's inherited assets use the original BOP species spellings.
+		String textureName = name.equals("sacred_oak") ? "sacredoak" : name.equals("big_flower_stem") ? "bigflowerstem" : name;
+		String strippedTexture = textureDomain + ":stripped_" + textureName + "_log";
 
 		if (log != null && ConfigBlocksItems.enableStrippedLogs) {
-			family.strippedLog = namedLog(log, logMeta, false, id + "_stripped_log");
-			if (ConfigBlocksItems.enableBarkLogs) family.strippedWood = namedLog(log, logMeta, true, id + "_stripped_wood");
+			family.strippedLog = namedLog(log, logMeta, false, id + "_stripped_log", strippedTexture);
+			if (ConfigBlocksItems.enableBarkLogs) family.strippedWood = namedLog(log, logMeta, true, id + "_stripped_wood", strippedTexture);
 		}
-		if (log != null && ConfigBlocksItems.enableBarkLogs) family.wood = namedLog(log, logMeta, true, id + "_wood");
+		if (log != null && ConfigBlocksItems.enableBarkLogs) family.wood = namedLog(log, logMeta, true, id + "_wood", null);
 		if (planks == null) return;
 
 		if (ConfigBlocksItems.enableNewFences) {
@@ -94,17 +97,17 @@ public final class ExternalWoodCompat {
 		}
 		if (ConfigBlocksItems.enableNewDoors) {
 			family.door = new BaseDoor(id);
-			family.door.setBlockTextureName(textureDomain + ':' + id + "_door");
+			family.door.setBlockTextureName(textureDomain + ':' + textureName + "_door");
 			GameRegistry.registerBlock(family.door, ItemBlockNewDoor.class, id + "_door");
 		}
 		if (ConfigBlocksItems.enableNewTrapdoors) {
 			family.trapdoor = new BaseTrapdoor(id);
-			family.trapdoor.setBlockTextureName(textureDomain + ':' + id + "_trapdoor");
+			family.trapdoor.setBlockTextureName(textureDomain + ':' + textureName + "_trapdoor");
 			registerBlock(family.trapdoor, id + "_trapdoor");
 		}
 		if (ConfigBlocksItems.enableNewBoats) {
-			family.boat = new ItemNewBoat(prefix, name, () -> Item.getItemFromBlock(planks), plankMeta, false, raft);
-			family.chestBoat = new ItemNewBoat(prefix, name, () -> Item.getItemFromBlock(planks), plankMeta, true, raft);
+			family.boat = new ItemNewBoat(prefix, name, () -> Item.getItemFromBlock(planks), plankMeta, false, raft, textureDomain, textureName);
+			family.chestBoat = new ItemNewBoat(prefix, name, () -> Item.getItemFromBlock(planks), plankMeta, true, raft, textureDomain, textureName);
 			family.boat.setUnlocalizedName("etfuturum." + id + (raft ? "_raft" : "_boat"));
 			family.chestBoat.setUnlocalizedName("etfuturum." + id + (raft ? "_chest_raft" : "_chest_boat"));
 			GameRegistry.registerItem(family.boat, id + (raft ? "_raft" : "_boat"));
@@ -112,8 +115,8 @@ public final class ExternalWoodCompat {
 		}
 	}
 
-	private static Block namedLog(Block source, int meta, boolean allSides, String id) {
-		Block block = new BlockExternalWoodLog(source, meta, allSides).setBlockName("etfuturum." + id);
+	private static Block namedLog(Block source, int meta, boolean allSides, String id, String strippedTexture) {
+		Block block = new BlockExternalWoodLog(source, meta, allSides, strippedTexture).setBlockName("etfuturum." + id);
 		registerBlock(block, id);
 		return block;
 	}

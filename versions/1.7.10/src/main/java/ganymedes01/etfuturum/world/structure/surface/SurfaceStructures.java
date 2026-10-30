@@ -37,8 +37,7 @@ public final class SurfaceStructures extends MapGenStructure {
 	/** Uses the generation admission checks without generating or populating chunks. */
 	public static net.minecraft.util.ChunkCoordinates nearest(World world, int x, int z, int kind) {
 		IChunkProvider provider = world.getChunkProvider();
-		if (!enabled(kind) || !world.getWorldInfo().isMapFeaturesEnabled() || !(provider instanceof ChunkProviderServer)
-				|| ((ChunkProviderServer) provider).currentChunkProvider.getClass() != ChunkProviderGenerate.class) return null;
+		if (!enabled(kind) || !world.getWorldInfo().isMapFeaturesEnabled() || !ganymedes01.etfuturum.compat.CompatUndergroundBiomes.hasVanillaTerrain(provider)) return null;
 		SurfaceStructures generator = get(world); generator.hasStructureAt(x, 0, z);
 		double best = Double.MAX_VALUE; net.minecraft.util.ChunkCoordinates result = null;
 		int gx = Math.floorDiv(x >> 4, grid(kind)), gz = Math.floorDiv(z >> 4, grid(kind));
@@ -54,7 +53,7 @@ public final class SurfaceStructures extends MapGenStructure {
 		return result;
 	}
 	public static void populate(World world, IChunkProvider provider, int cx, int cz) {
-		if (world.isRemote || world.provider.dimensionId != 0 || provider.getClass() != ChunkProviderGenerate.class || !world.getWorldInfo().isMapFeaturesEnabled()) return;
+		if (world.isRemote || world.provider.dimensionId != 0 || !ganymedes01.etfuturum.compat.CompatUndergroundBiomes.hasVanillaTerrain(provider) || !world.getWorldInfo().isMapFeaturesEnabled()) return;
 		if (!enabled(0) && !enabled(1)) return;
 		SurfaceStructures gen = get(world); gen.func_151539_a(provider, world, cx, cz, null);
 		gen.generateStructuresInChunk(world, new Random(world.getSeed() ^ cx * 3129871L ^ cz * 116129781L), cx, cz);

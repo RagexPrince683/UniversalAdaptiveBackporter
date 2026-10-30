@@ -209,7 +209,7 @@ public final class UndergroundStructures extends NativeStructureGenerator {
     private static boolean sculkTerrain(World world, int x, int y, int z) {
 		Block block = world.getBlockState(new BlockPos(x,y,z)).getBlock();
 		if (block.hasTileEntity(world.getBlockState(new BlockPos(x,y,z)))) return false;
-		return block == Blocks.STONE || block == Content.block("deepslate") || block == Blocks.DIRT || block == Blocks.GRASS || block == Blocks.MYCELIUM || block == Blocks.GRAVEL || block == Blocks.SAND || block == Blocks.CLAY || block == Blocks.SOUL_SAND || block == Content.block("soul_soil") || block == Content.block("tuff") && block.getMetaFromState(world.getBlockState(new BlockPos(x,y,z))) == 0;
+		return block == Blocks.STONE || UndergroundBiomesCompat.isNaturalStone(block) || block == Content.block("deepslate") || block == Blocks.DIRT || block == Blocks.GRASS || block == Blocks.MYCELIUM || block == Blocks.GRAVEL || block == Blocks.SAND || block == Blocks.CLAY || block == Blocks.SOUL_SAND || block == Content.block("soul_soil") || block == Content.block("tuff") && block.getMetaFromState(world.getBlockState(new BlockPos(x,y,z))) == 0;
 	}
 	public static class Piece extends StructureComponent {
 		private String name, processors = "minecraft:empty"; private int x, y, z, rotation; private boolean city; private Piece parent; private NBTTagCompound incoming;

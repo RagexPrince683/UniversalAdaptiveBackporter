@@ -27,6 +27,7 @@ public class ItemNewBoat extends BaseItem {
 
 	private final String name;
 	private final String domain;
+	private String entityTexture;
 
 	public static final Map<String, BoatInfo> BOAT_INFO = Maps.newHashMap();
 
@@ -49,6 +50,13 @@ public class ItemNewBoat extends BaseItem {
 		this.isChest = isChest;
 		BOAT_INFO.put(domain + ":" + name + (isChest ? "_chest" : ""), new BoatInfo(new ItemStack(this), plank, plankMeta, isRaft));
 		setMaxStackSize(1);
+	}
+
+	/** Keep saved boat keys independent of the resource pack's domain and species spelling. */
+	public ItemNewBoat(String domain, String name, Supplier<Item> plank, int plankMeta, boolean isChest, boolean isRaft, String textureDomain, String textureName) {
+		this(domain, name, plank, plankMeta, isChest, isRaft);
+		setTextureName(textureDomain + ':' + textureName + (isChest ? "_chest" : "") + (isRaft ? "_raft" : "_boat"));
+		entityTexture = textureDomain + ":textures/entity/boat/" + textureName + ".png";
 	}
 
 	@Override
@@ -157,6 +165,10 @@ public class ItemNewBoat extends BaseItem {
 
 		public boolean isRaft() {
 			return raft;
+		}
+
+		public String getEntityTexture() {
+			return entityTexture;
 		}
 	}
 }

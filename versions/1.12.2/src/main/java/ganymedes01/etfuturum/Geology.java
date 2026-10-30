@@ -46,7 +46,7 @@ final class Geology {
         ganymedes01.etfuturum.api.blocksanditems.utils.BlockMetaPair mapped=ganymedes01.etfuturum.api.DeepslateOreRegistry.getOre(block,block.getMetaFromState(current));
         IBlockState replacement=mapped==null?null:mapped.get()==Content.block("deepslate")?stone.getDefaultState():mapped.get().getStateFromMeta(mapped.getMeta());
         if (replacement == null) {
-            if (block == Blocks.STONE && (stones || current.getValue(BlockStone.VARIANT) == BlockStone.EnumType.STONE) || block == Blocks.DIRT && dirt) replacement = stone.getDefaultState();
+            if (block == Blocks.STONE && (stones || current.getValue(BlockStone.VARIANT) == BlockStone.EnumType.STONE) || UndergroundBiomesCompat.isNaturalStone(block) || block == Blocks.DIRT && dirt) replacement = stone.getDefaultState();
             else if (block == Blocks.COBBLESTONE && cobble && Content.available("cobbled_deepslate")) replacement = Content.block("cobbled_deepslate").getDefaultState();
         }
         if (replacement != null) world.setBlockState(pos, replacement, 18);

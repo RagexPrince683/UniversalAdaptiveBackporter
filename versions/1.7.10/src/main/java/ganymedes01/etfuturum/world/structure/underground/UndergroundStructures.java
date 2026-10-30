@@ -41,7 +41,7 @@ public final class UndergroundStructures extends MapGenStructure {
 	static UndergroundTemplate template(String id) { return TEMPLATES.computeIfAbsent(id, UndergroundTemplate::new); }
 	private static boolean nativeTerrain(World world) {
 		IChunkProvider provider = world.getChunkProvider();
-		return provider instanceof net.minecraft.world.gen.ChunkProviderServer && ((net.minecraft.world.gen.ChunkProviderServer) provider).currentChunkProvider.getClass() == ChunkProviderGenerate.class;
+		return ganymedes01.etfuturum.compat.CompatUndergroundBiomes.hasVanillaTerrain(provider);
 	}
 	public static boolean reserved(World world, StructureBoundingBox box) {
 		if (box.maxY < 6 || box.minY > 50) return false;
@@ -83,7 +83,7 @@ public final class UndergroundStructures extends MapGenStructure {
 	}
 	@Override public String func_143025_a() { return "EFRUnderground"; }
 	public static void populate(World world, IChunkProvider provider, int cx, int cz) {
-		if (world.isRemote || world.provider.dimensionId != 0 || provider.getClass() != ChunkProviderGenerate.class || !world.getWorldInfo().isMapFeaturesEnabled()) return;
+		if (world.isRemote || world.provider.dimensionId != 0 || !ganymedes01.etfuturum.compat.CompatUndergroundBiomes.hasVanillaTerrain(provider) || !world.getWorldInfo().isMapFeaturesEnabled()) return;
 		if (!ConfigWorld.enableAncientCities && !ConfigWorld.enableTrialChambers) return;
 		UndergroundStructures generator = get(world);
 		generator.func_151539_a(provider, world, cx, cz, null);
@@ -268,7 +268,7 @@ public final class UndergroundStructures extends MapGenStructure {
 	private static boolean sculkTerrain(World world, int x, int y, int z) {
 		Block block = world.getBlock(x, y, z);
 		if (block.hasTileEntity(world.getBlockMetadata(x, y, z))) return false;
-		return block == Blocks.stone || block == ModBlocks.DEEPSLATE.get() || block == Blocks.dirt || block == Blocks.grass || block == Blocks.mycelium || block == Blocks.gravel || block == Blocks.sand || block == Blocks.clay || block == Blocks.soul_sand || block == ModBlocks.SOUL_SOIL.get() || block == ModBlocks.TUFF.get() && world.getBlockMetadata(x, y, z) == 0;
+		return block == Blocks.stone || ganymedes01.etfuturum.compat.CompatUndergroundBiomes.isNaturalStone(block) || block == ModBlocks.DEEPSLATE.get() || block == Blocks.dirt || block == Blocks.grass || block == Blocks.mycelium || block == Blocks.gravel || block == Blocks.sand || block == Blocks.clay || block == Blocks.soul_sand || block == ModBlocks.SOUL_SOIL.get() || block == ModBlocks.TUFF.get() && world.getBlockMetadata(x, y, z) == 0;
 	}
 	public static class Piece extends StructureComponent {
 		private String name, processors = "minecraft:empty"; private int x, y, z, rotation; private boolean city; private Piece parent; private NBTTagCompound incoming;
