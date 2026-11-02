@@ -23,6 +23,7 @@ public class BlockWoodSign extends BlockSign {
 	private final Block baseBlock;
 	private final int meta;
 	public final String type;
+	public String textureDomain = "minecraft", textureType;
 
 	public final boolean standing;
 
@@ -31,6 +32,7 @@ public class BlockWoodSign extends BlockSign {
 		this.meta = meta;
 		baseBlock = block;
 		this.type = type;
+		this.textureType = type;
 		standing = p_i45426_2_;
 		if (standing) {
 			prevSign = this;
@@ -83,6 +85,6 @@ public class BlockWoodSign extends BlockSign {
 
 	@Override
 	public String getItemIconName() {
-		return type + "_sign";
+		return textureDomain + ':' + textureType + "_sign";
 	}
 }

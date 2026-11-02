@@ -27,6 +27,7 @@ public class EtFuturumLateMixins implements ILateMixinLoader {
 	@Override
 	public List<String> getMixins(Set<String> loadedMods) {
 		List<String> mixins = new ArrayList<>();
+		if (loadedMods.contains("samsocean")) mixins.add("oceanfloor.MixinOceanFloor");
 		if (loadedMods.contains("enderlicious")) mixins.add("enderlicious.MixinEndChunkProvider");
 		if (loadedMods.contains("UndergroundBiomes")) mixins.add("undergroundbiomes.MixinChunkProviderWrapper");
 

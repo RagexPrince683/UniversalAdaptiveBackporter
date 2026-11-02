@@ -75,6 +75,7 @@ public final class MobRegistry {
         for (Class<? extends EntityLiving> type : SPECIES.values()) if (EntityFish.class.isAssignableFrom(type) || type == EntityDrowned.class || type == EntityDolphin.class || type==EntityAxolotl.class || type==EntityGlowSquid.class || EntityNautilus.class.isAssignableFrom(type)) EntitySpawnPlacementRegistry.setPlacementType(type, EntityLiving.SpawnPlacementType.IN_WATER);
     }
     @SubscribeEvent public static void register(RegistryEvent.Register<EntityEntry> event) {
+        event.getRegistry().register(EntityEntryBuilder.create().entity(EntityZombifiedPiglin.class).id(new ResourceLocation(UAB.ID,"zombified_piglin"),78).name("zombified_piglin").tracker(80,3,true).build());
         event.getRegistry().register(EntityEntryBuilder.create().entity(EntityItemUninflammable.class).id(new ResourceLocation(UAB.ID,"fireproof_item"),15).name("fireproof_item").tracker(64,1,true).build());
         event.getRegistry().register(EntityEntryBuilder.create().entity(EntityNewBoat.class).id(new ResourceLocation(UAB.ID,"new_boat"),13).name("new_boat").tracker(64,1,true).build());
         event.getRegistry().register(EntityEntryBuilder.create().entity(EntityNewBoatWithChest.class).id(new ResourceLocation(UAB.ID,"chest_boat"),19).name("chest_boat").tracker(64,1,true).build());

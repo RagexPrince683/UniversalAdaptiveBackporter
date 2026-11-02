@@ -61,7 +61,7 @@ public final class FeatureCatalogTest {
                 if (FeatureVersions.nativeFeature(option, "1.12.2")) nativeFeatures++;
             }
         }
-        check(features == 397, "preserve the 372 original and twenty-five new feature identities: " + features);
+        check(features == 403, "preserve existing features and six independent netherite acquisition groups: " + features);
         for (FeatureRegistry.Option option : FeatureRegistry.options()) if (option.feature) {
             String update = option.category.substring(0, option.category.indexOf('.'));
             check(FeatureRegistry.UPDATES.containsKey(update), "every feature has a discoverable update group: " + option.alias);

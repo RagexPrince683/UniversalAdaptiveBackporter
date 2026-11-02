@@ -96,6 +96,7 @@ public class CommonProxy implements IGuiHandler {
 		}
 		{
 			ganymedes01.etfuturum.world.nether.NetherSpawning.init();
+			ModEntityList.registerEntity(EntityZombifiedPiglin.class, "zombified_piglin", 78, EtFuturum.instance, 80, 3, true);
 			ModEntityList.registerEntity(EntityPiglin.class, "piglin", 26, EtFuturum.instance, 80, 3, true, 0x995F40, 0xF9F3A4);
 			ModEntityList.registerEntity(EntityPiglinBrute.class, "piglin_brute", 27, EtFuturum.instance, 80, 3, true, 0x592A10, 0xF9F3A4);
 			ModEntityList.registerEntity(EntityHoglin.class, "hoglin", 28, EtFuturum.instance, 80, 3, true, 0xC66E55, 0x5F6464);

@@ -22,7 +22,7 @@ public final class ArmorTrims {
 		if (item == Items.EMERALD) return "emerald";
 		if (item == Items.DIAMOND) return "diamond";
 		if (item == Items.DYE && stack.getItemDamage() == 4) return "lapis";
-		if (item == Content.item("netherite_ingot") && Content.available("netherite_ingot")) return "netherite";
+		if ((item == Content.item("netherite_ingot") && Content.available("netherite_ingot")) || ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(stack)) return "netherite";
 		if (item == Content.item("copper_ingot") && Content.available("copper_ingot")) return "copper";
 		if (item == Content.item("amethyst_shard") && Content.available("amethyst_shard")) return "amethyst";
 		if (item == Content.item("resin_brick") && Content.available("resin_brick")) return "resin";

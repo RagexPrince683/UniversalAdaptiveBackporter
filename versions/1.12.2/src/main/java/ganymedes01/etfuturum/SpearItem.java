@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 public final class SpearItem extends ItemSword {
     final float thrustDamage;
     SpearItem(ToolMaterial material){super(material);thrustDamage=3+material.getAttackDamage();}
+    @Override public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) { return getToolMaterialName().equals(Content.NETHERITE.name()) && ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(ingredient) || super.getIsRepairable(stack, ingredient); }
     @Override public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity target) {
         if (player.world.isRemote) UAB.proxy.spearLunge(player);
         return false;

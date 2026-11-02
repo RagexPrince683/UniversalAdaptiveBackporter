@@ -7,7 +7,7 @@ import net.minecraft.util.math.MathHelper;
 public class VariantItem extends Item {
     public final String[] variants;
     VariantItem(String...variants){this.variants=variants.clone();setHasSubtypes(true);setMaxStackSize(1);}
-    public boolean available(int meta){String own=getRegistryName().getPath();return Content.available(own)&&(!own.equals("nautilus_armor")||meta!=0||Content.available("copper_ingot"))&&(!own.equals("nautilus_armor")||meta!=4||Content.available("netherite_ingot"));}
+    public boolean available(int meta){String own=getRegistryName().getPath();return Content.available(own)&&(!own.equals("nautilus_armor")||meta!=0||Content.available("copper_ingot"))&&(!own.equals("nautilus_armor")||meta!=4||Features.enabled("blocksitems.enableNetherite"));}
     @Override public String getTranslationKey(ItemStack stack){return "item.etfuturum."+variants[MathHelper.clamp(stack.getMetadata(),0,variants.length-1)];}
     @Override public void getSubItems(CreativeTabs tab,NonNullList<ItemStack> items){if(isInCreativeTab(tab))for(int meta=0;meta<variants.length;meta++)if(available(meta))items.add(new ItemStack(this,1,meta));}
     public static String model(String name){for(Item item:Content.ITEMS.values())if(item instanceof VariantItem){VariantItem variants=(VariantItem)item;if(item.getRegistryName().getPath().equals(name))return variants.variants[0];for(String variant:variants.variants)if(variant.equals(name))return variant;}return null;}

@@ -41,7 +41,7 @@ public final class Content {
     public static final ItemArmor.ArmorMaterial NETHERITE_ARMOR = EnumHelper.addArmorMaterial("UAB_NETHERITE", "etfuturum:netherite", 37, new int[]{3, 6, 8, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 3);
     private Content() { }
     public static boolean available(String name) {
-        if (!FEATURE.containsKey(name) || !Features.enabled(FEATURE.get(name))) return false;
+        if (!FEATURE.containsKey(name) || !Features.enabled(FEATURE.get(name)) || !ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name)) return false;
         for (String dependency : REQUIREMENTS.getOrDefault(name, Collections.emptyList())) if (!Features.enabled(dependency)) return false;
         if (ALTERNATIVES.containsKey(name) && ALTERNATIVES.get(name).stream().noneMatch(Features::enabled)) return false;
         return true;
@@ -58,14 +58,14 @@ public final class Content {
         if (BLOCKS.put(name, block) != null) throw new IllegalStateException("Duplicate block " + name);
         FEATURE.put(name, feature);
         block.setRegistryName(UAB.ID, name).setTranslationKey("etfuturum." + name);
-        if (Features.enabled(feature)) block.setCreativeTab(TAB);
+        if (Features.enabled(feature) && ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name)) block.setCreativeTab(TAB);
         return block;
     }
     static <T extends Item> T add(String name, String feature, T item) {
         if (ITEMS.put(name, item) != null) throw new IllegalStateException("Duplicate item " + name);
         FEATURE.put(name, feature);
         item.setRegistryName(UAB.ID, name).setTranslationKey("etfuturum." + name);
-        if (Features.enabled(feature)) item.setCreativeTab(TAB);
+        if (Features.enabled(feature) && ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name)) item.setCreativeTab(TAB);
         return item;
     }
     private static void stone(String feature, String... names) {
@@ -122,15 +122,15 @@ public final class Content {
             }
         }
         stone(netherite, "netherite_block");
-        add("netherite_sword", netherite, new ItemSword(NETHERITE));
-        add("netherite_pickaxe", netherite, new ItemPickaxe(NETHERITE) { });
-        add("netherite_axe", netherite, new ItemAxe(NETHERITE, 8, -3) { });
-        add("netherite_shovel", netherite, new ItemSpade(NETHERITE));
-        add("netherite_hoe", netherite, new ItemHoe(NETHERITE));
+        add("netherite_sword", netherite, new ItemSword(NETHERITE) { @Override public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) { return ingredient.getItem() == Content.item("netherite_ingot") || ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(ingredient) || super.getIsRepairable(stack, ingredient); } });
+        add("netherite_pickaxe", netherite, new ItemPickaxe(NETHERITE) { @Override public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) { return ingredient.getItem() == Content.item("netherite_ingot") || ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(ingredient) || super.getIsRepairable(stack, ingredient); } });
+        add("netherite_axe", netherite, new ItemAxe(NETHERITE, 8, -3) { @Override public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) { return ingredient.getItem() == Content.item("netherite_ingot") || ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(ingredient) || super.getIsRepairable(stack, ingredient); } });
+        add("netherite_shovel", netherite, new ItemSpade(NETHERITE) { @Override public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) { return ingredient.getItem() == Content.item("netherite_ingot") || ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(ingredient) || super.getIsRepairable(stack, ingredient); } });
+        add("netherite_hoe", netherite, new ItemHoe(NETHERITE) { @Override public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) { return ingredient.getItem() == Content.item("netherite_ingot") || ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(ingredient) || super.getIsRepairable(stack, ingredient); } });
         for (net.minecraft.inventory.EntityEquipmentSlot slot : net.minecraft.inventory.EntityEquipmentSlot.values()) {
             if (slot.getSlotType() == net.minecraft.inventory.EntityEquipmentSlot.Type.ARMOR) {
                 String name = slot == net.minecraft.inventory.EntityEquipmentSlot.HEAD ? "helmet" : slot == net.minecraft.inventory.EntityEquipmentSlot.CHEST ? "chestplate" : slot == net.minecraft.inventory.EntityEquipmentSlot.LEGS ? "leggings" : "boots";
-                add("netherite_" + name, netherite, new ItemArmor(NETHERITE_ARMOR, 0, slot));
+                add("netherite_" + name, netherite, new ItemArmor(NETHERITE_ARMOR, 0, slot) { @Override public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) { return ingredient.getItem() == Content.item("netherite_ingot") || ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(ingredient) || super.getIsRepairable(stack, ingredient); } });
             }
         }
         add("deepslate", "blocksitems.enableDeepslate", new DeepslateBlock());

@@ -214,6 +214,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityFrog.class, new AmphibianRenderer(false));
 		RenderingRegistry.registerEntityRenderingHandler(EntityTadpole.class, new AmphibianRenderer(true));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCreaking.class, new NetherMobRenderer(3, "creaking"));
+		RenderingRegistry.registerEntityRenderingHandler(EntityZombifiedPiglin.class, new NetherMobRenderer(0, "zombified_piglin"));
 		RenderingRegistry.registerEntityRenderingHandler(EntityPiglin.class, new NetherMobRenderer(0, "piglin"));
 		RenderingRegistry.registerEntityRenderingHandler(EntityPiglinBrute.class, new NetherMobRenderer(0, "piglin_brute"));
 		RenderingRegistry.registerEntityRenderingHandler(EntityHoglin.class, new NetherMobRenderer(1, "hoglin"));

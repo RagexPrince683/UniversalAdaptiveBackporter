@@ -18,6 +18,7 @@ public final class OceanBiomes {
     private static final Biome[] SHALLOW=new Biome[5],DEEP=new Biome[5];
     private static final Map<Biome,String> FLAGS=new IdentityHashMap<>();
     private OceanBiomes() { }
+    public static boolean isModernOcean(Biome biome) { return FLAGS.containsKey(biome); }
     public static void initialize() {
         SHALLOW[0]=ocean("warm_ocean","Warm Ocean",.9F,false,"generateWarmOcean");
         SHALLOW[1]=ocean("lukewarm_ocean","Lukewarm Ocean",.6F,false,"generateLukewarmOcean");

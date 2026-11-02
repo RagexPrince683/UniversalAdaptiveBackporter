@@ -81,7 +81,7 @@ public final class ReleasedBlockModel {
 		double x = a[0], y = a[1], z = a[2], X = b[0], Y = b[1], Z = b[2];
 		return switch (side) {
 			case 0 -> new double[][]{{x,y,Z},{x,y,z},{X,y,z},{X,y,Z}};
-			case 1 -> new double[][]{{X,Y,Z},{X,Y,z},{x,Y,z},{x,Y,Z}};
+			case 1 -> new double[][]{{x,Y,z},{x,Y,Z},{X,Y,Z},{X,Y,z}};
 			case 2 -> new double[][]{{X,Y,z},{X,y,z},{x,y,z},{x,Y,z}};
 			case 3 -> new double[][]{{x,Y,Z},{x,y,Z},{X,y,Z},{X,Y,Z}};
 			case 4 -> new double[][]{{x,Y,z},{x,y,z},{x,y,Z},{x,Y,Z}};

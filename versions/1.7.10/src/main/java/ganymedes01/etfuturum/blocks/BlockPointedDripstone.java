@@ -188,6 +188,15 @@ public class BlockPointedDripstone extends Block {
 	}
 
 	private void setState(World world, int x, int y, int z) {
+		setState(world, x, y, z, 3);
+	}
+
+	/** Finish a generated column without notifying blocks across the population boundary. */
+	public void updateGeneratedState(World world, int x, int y, int z) {
+		setState(world, x, y, z, 2);
+	}
+
+	private void setState(World world, int x, int y, int z, int flags) {
 		int meta = 0;
 		boolean up = world.getBlockMetadata(x, y, z) > 4;
 		for (meta = 0; meta < 2; meta++) {
@@ -203,7 +212,7 @@ public class BlockPointedDripstone extends Block {
 			meta = 3;
 		}
 		if (up) meta += states;
-		world.setBlockMetadataWithNotify(x, y, z, meta, 3);
+		world.setBlockMetadataWithNotify(x, y, z, meta, flags);
 	}
 
 	@Override

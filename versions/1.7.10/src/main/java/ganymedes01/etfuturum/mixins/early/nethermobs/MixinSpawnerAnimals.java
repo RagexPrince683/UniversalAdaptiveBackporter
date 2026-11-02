@@ -17,9 +17,9 @@ public class MixinSpawnerAnimals {
 	@Shadow private java.util.HashMap eligibleChunksForSpawning;
 	@Redirect(method = "findChunksForSpawning", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;countEntities(Lnet/minecraft/entity/EnumCreatureType;Z)I", remap = false))
 	private int etfu$indexedCount(net.minecraft.world.WorldServer world, EnumCreatureType type, boolean spawning) {
-		if (!ganymedes01.etfuturum.world.AquaticPopulation.indexed(type)) return world.countEntities(type, spawning);
+		if (!ganymedes01.etfuturum.world.AquaticPopulation.indexed(type) || eligibleChunksForSpawning == null) return world.countEntities(type, spawning);
 		ganymedes01.etfuturum.world.AquaticPopulation population = ganymedes01.etfuturum.world.AquaticPopulation.get(world);
-		population.prepare(world, eligibleChunksForSpawning);
+		if (!population.tryPrepare(world, eligibleChunksForSpawning)) return world.countEntities(type, spawning);
 		return population.nativeCount(type, eligibleChunksForSpawning.size());
 	}
 	@Redirect(method = "findChunksForSpawning", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/ForgeEventFactory;canEntitySpawn(Lnet/minecraft/entity/EntityLiving;Lnet/minecraft/world/World;FFF)Lcpw/mods/fml/common/eventhandler/Event$Result;", remap = false))

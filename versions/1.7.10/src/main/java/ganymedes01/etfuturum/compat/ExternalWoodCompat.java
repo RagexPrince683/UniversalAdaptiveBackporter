@@ -6,6 +6,9 @@ import ganymedes01.etfuturum.blocks.BaseDoor;
 import ganymedes01.etfuturum.blocks.BaseTrapdoor;
 import ganymedes01.etfuturum.blocks.BlockWoodButton;
 import ganymedes01.etfuturum.blocks.BlockWoodPressurePlate;
+import ganymedes01.etfuturum.blocks.BlockWoodSign;
+import ganymedes01.etfuturum.blocks.itemblocks.ItemBlockSign;
+import ganymedes01.etfuturum.tileentities.TileEntityWoodSign;
 import ganymedes01.etfuturum.blocks.compat.BlockExternalWoodFence;
 import ganymedes01.etfuturum.blocks.compat.BlockExternalWoodLog;
 import ganymedes01.etfuturum.blocks.itemblocks.ItemBlockNewDoor;
@@ -83,6 +86,14 @@ public final class ExternalWoodCompat {
 		}
 		if (log != null && ConfigBlocksItems.enableBarkLogs) family.wood = namedLog(log, logMeta, true, id + "_wood", null);
 		if (planks == null) return;
+		if (ConfigBlocksItems.enableNewSigns) {
+			family.sign = new BlockWoodSign(TileEntityWoodSign.class, true, id, planks, plankMeta);
+			BlockWoodSign wall = new BlockWoodSign(TileEntityWoodSign.class, false, id, planks, plankMeta);
+			family.sign.textureDomain = wall.textureDomain = textureDomain;
+			family.sign.textureType = wall.textureType = textureName;
+			GameRegistry.registerBlock(family.sign, ItemBlockSign.class, id + "_sign");
+			GameRegistry.registerBlock(wall, (Class<? extends net.minecraft.item.ItemBlock>) null, id + "_wall_sign");
+		}
 
 		if (ConfigBlocksItems.enableNewFences) {
 			family.fence = new BlockExternalWoodFence(planks, plankMeta);
@@ -141,6 +152,7 @@ public final class ExternalWoodCompat {
 			}
 			if (family.planks == null) continue;
 			ItemStack plank = new ItemStack(family.planks, 1, family.plankMeta);
+			if (family.sign != null) GameRegistry.addShapedRecipe(new ItemStack(family.sign, 3), "xxx", "xxx", " y ", 'x', plank, 'y', Items.stick);
 			if (family.fence != null) GameRegistry.addShapedRecipe(new ItemStack(family.fence, 3), "xyx", "xyx", 'x', plank, 'y', Items.stick);
 			if (family.button != null) ganymedes01.etfuturum.api.utils.RecipeHelper.addShapelessRecipe(new ItemStack(family.button), plank);
 			if (family.plate != null) GameRegistry.addShapedRecipe(new ItemStack(family.plate), "xx", 'x', plank);
@@ -159,6 +171,7 @@ public final class ExternalWoodCompat {
 		final int plankMeta, logMeta;
 		final boolean raft;
 		Block strippedLog, wood, strippedWood, fence, button, plate, door, trapdoor;
+		BlockWoodSign sign;
 		Item boat, chestBoat;
 
 		ExternalWoodFamily(String prefix, String textureDomain, String name, Block planks, int plankMeta, Block log, int logMeta, boolean raft) {

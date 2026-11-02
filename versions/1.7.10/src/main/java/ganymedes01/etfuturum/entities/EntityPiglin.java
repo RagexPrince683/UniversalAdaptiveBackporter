@@ -144,12 +144,12 @@ public class EntityPiglin extends EntityMob implements IRangedAttackMob {
 			}
 		}
 		unsafeTicks = worldObj.provider.isHellWorld ? 0 : unsafeTicks + 1;
-		if (unsafeTicks >= 300) {
-			EntityPigZombie zombie = new EntityPigZombie(worldObj);
+		if (unsafeTicks >= 300 && ridingEntity == null && riddenByEntity == null && !getLeashed()) {
+			EntityPigZombie zombie = new EntityZombifiedPiglin(worldObj);
 			zombie.copyLocationAndAnglesFrom(this);
 			zombie.setChild(isChild());
 			if (hasCustomNameTag()) zombie.setCustomNameTag(getCustomNameTag());
-			if (getHeldItem() != null) zombie.setCurrentItemOrArmor(0, getHeldItem().copy());
+			for (int slot = 0; slot < 5; slot++) { ItemStack equipment = getEquipmentInSlot(slot); if (equipment != null) { zombie.setCurrentItemOrArmor(slot, equipment.copy()); zombie.setEquipmentDropChance(slot, equipmentDropChances[slot]); } }
 			zombie.func_110163_bv();
 			if (worldObj.spawnEntityInWorld(zombie)) setDead();
 		}

@@ -139,3 +139,19 @@ Templates, pools, processors, encounter configurations, loot tables, retained mo
 `update_1_16.ruined_portals.enabled` adds deterministic ruined portal candidates in 40-chunk regions, independently seeded from existing decoration randomness. New Overworld and Nether chunks can contain repairable broken frames, weathered surrounding blocks, gold and chest rewards. Each footprint remains within its owning chunk, accepts suitable native-height terrain without requiring a vanilla provider, avoids protected tile inventories/native structure reservations and records completed sites in `uab_ruined_portals`. Existing terrain is not regenerated and recorded chests are not refilled. `/uab_locate ruined_portal` reports saved sites in the current dimension.
 
 Spring vegetation and fallen logs use an independent per-chunk seed and native biome tags. They retain terrain, decorators and unrelated structure ownership; no modern height or terrain-engine replacement is installed.
+
+## Dripstone, kelp and Ocean Floor compatibility
+
+Both targets expose these restart-required settings in `config/uab.cfg`:
+
+- `update_1_17.dripstone.dripstoneChunkChance`: one in N chunks attempts cave decoration; default 4, 0 disables it.
+- `dripstoneColumnChance` in the same category: one in N cave columns is sampled; default 4.
+- `dripstoneMaxPlacements`: maximum supporting cave surfaces decorated per chunk; default 32, 0 disables it.
+- `dripstoneMaxLength`: maximum generated column length; default 4. Later growth is independent.
+- `update_1_13.kelp.kelpChunkChance`: one in N eligible ocean chunks attempts kelp; default 1, 0 disables it.
+- `kelpAttempts` in that category: maximum placement attempts per chunk; default 12, 0 disables kelp generation.
+- `kelpMaxHeight`: maximum generated column height; default 10. Later growth is independent.
+
+Generation remains Overworld-only and respects existing cave-biome, ocean-temperature, content and structure restrictions. Kelp changes only source-water blocks above the seabed. Sea-pickle and coral generation retain their own controls. Disabling generation preserves plants, cave blocks and existing chunks. The native 1.12.2 target now supplies sparse dripstone cave decoration as well.
+
+Ocean Floor 1.7.10's generator accepts only the vanilla ocean identities. A conditional adapter translates UAB oceans for that generator's eligibility check, allowing its existing patch rules and configuration to run. The equivalent 1.12.2 adapter uses its native biome type. Neither adapter replaces terrain, changes the world's biome map, nor adds an Ocean Floor dependency. Other Ocean Floor forks with different generator classes require separate qualification.

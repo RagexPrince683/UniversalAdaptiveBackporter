@@ -72,6 +72,7 @@ public final class ClientProxy extends CommonProxy {
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(CopperStatueTile.class,new CopperBlockRenderer(true));
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(DecoratedPotTile.class,new DecoratedPotRenderer());
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(BrushableTile.class,new BrushableRenderer());
+        RenderingRegistry.registerEntityRenderingHandler(EntityZombifiedPiglin.class, manager -> new NetherMobRenderer(manager,"zombified_piglin"));
         RenderingRegistry.registerEntityRenderingHandler(EntityPiglin.class,manager->new NetherMobRenderer(manager,"piglin"));
         RenderingRegistry.registerEntityRenderingHandler(EntityPiglinBrute.class,manager->new NetherMobRenderer(manager,"piglin_brute"));
         RenderingRegistry.registerEntityRenderingHandler(EntityHoglin.class,manager->new NetherMobRenderer(manager,"hoglin"));

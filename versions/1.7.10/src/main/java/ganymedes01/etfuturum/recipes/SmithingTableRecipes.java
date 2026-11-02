@@ -45,7 +45,7 @@ public class SmithingTableRecipes {
 		}
 	}
 
-	private void addUpgrade(ItemStack result, Object material, Object base) { recipes.add(new SmithingTableRecipe(base, material, result, true, upgradeTemplate())); }
+	private void addUpgrade(ItemStack result, Object material, Object base) { if (!ganymedes01.etfuturum.configuration.ContentAvailability.available(result)) return; recipes.add(new SmithingTableRecipe(base, material, result, true, upgradeTemplate())); }
 
 	public void addRecipe(ItemStack result, Object materialSlot, Object toolSlot) {
 		instance.recipes.add(new SmithingTableRecipe(toolSlot, materialSlot, result, true));

@@ -35,7 +35,7 @@ public class ItemEFRArmour extends ItemArmor implements ISpecialArmor {
 
 	@Override
 	public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
-		return ModItems.NETHERITE_INGOT.get() == par2ItemStack.getItem() || super.getIsRepairable(par1ItemStack, par2ItemStack);
+		return ModItems.NETHERITE_INGOT.get() == par2ItemStack.getItem() || ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(par2ItemStack) || super.getIsRepairable(par1ItemStack, par2ItemStack);
 	}
 
 	@Override

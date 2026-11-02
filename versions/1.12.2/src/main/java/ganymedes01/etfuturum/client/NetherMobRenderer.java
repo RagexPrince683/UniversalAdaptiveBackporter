@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 final class NetherMobRenderer extends RenderLiving<EntityLiving> {
     private final ResourceLocation texture;private final ModelModernMob model;
-    NetherMobRenderer(RenderManager manager,String kind){super(manager,new ModelModernMob(kind.startsWith("piglin")?"piglin":kind.equals("strider")?"strider":"hoglin"),.6F);model=(ModelModernMob)mainModel;texture=texture(kind);if(kind.startsWith("piglin")){addLayer(new LayerBipedArmor(this));addLayer(new Equipment());}if(kind.equals("strider"))addLayer(new Saddle());}
+    NetherMobRenderer(RenderManager manager,String kind){super(manager,new ModelModernMob((kind.startsWith("piglin")||kind.equals("zombified_piglin"))?"piglin":kind.equals("strider")?"strider":"hoglin"),.6F);model=(ModelModernMob)mainModel;texture=texture(kind);if((kind.startsWith("piglin")||kind.equals("zombified_piglin"))){addLayer(new LayerBipedArmor(this));addLayer(new Equipment());}if(kind.equals("strider"))addLayer(new Saddle());}
     private static ResourceLocation texture(String name){return new ResourceLocation(UAB.ID,"textures/entity/"+name+".png");}
     @Override protected ResourceLocation getEntityTexture(EntityLiving entity){return entity instanceof EntityStrider&&((EntityStrider)entity).isCold()?texture("strider_cold"):texture;}
     private final class Equipment implements LayerRenderer<EntityLiving> {

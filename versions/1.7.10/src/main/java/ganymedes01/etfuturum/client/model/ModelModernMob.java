@@ -75,6 +75,14 @@ public class ModelModernMob extends ModelBase {
 		if (entity instanceof EntitySniffer sniffer && sniffer.isDigging()) { rotate("head", .5F + MathHelper.sin(age * .5F) * .15F, 0, 0); }
 		if (entity instanceof EntityNautilus) { rotate("body", MathHelper.sin(age * .12F) * .05F, MathHelper.sin(age * .1F) * .04F, 0); }
 		if (kind.startsWith("breeze")) { rotate("rods", 0, age * .1F, 0); rotate("wind_mid", 0, -age * .08F, 0); rotate("wind_top", 0, age * .06F, 0); }
+        if (entity instanceof EntityTadpole) rotate("tail", 0, -MathHelper.sin(age * .3F) * (entity.isInWater() ? .25F : .375F), 0);
+        if (entity instanceof EntityFrog) {
+            show("croaking_body", false); show("tongue", false);
+            float kick = entity.isInWater() ? MathHelper.sin(limb * 1.5F) * amount : entity.onGround ? walk : -.65F;
+            rotate("left_leg", kick + walk, 0, -.15F); rotate("right_leg", kick - walk, 0, .15F);
+            rotate("left_arm", -kick * .6F, 0, -.15F); rotate("right_arm", -kick * .6F, 0, .15F);
+            rotate("body", entity.isInWater() ? MathHelper.sin(age * .1F) * .04F : entity.onGround ? 0 : -.2F, 0, 0);
+        }
 		GL11.glPushMatrix();
 		if (entity instanceof EntityHappyGhast) { float size = entity instanceof net.minecraft.entity.EntityAgeable ageable && ageable.isChild() ? .95F : 4; GL11.glTranslatef(0, 24 * (1 - size) * scale, 0); GL11.glScalef(size, size, size); }
 		else if (entity instanceof net.minecraft.entity.EntityLivingBase living && living.isChild() && !(entity instanceof EntityNautilus)) { GL11.glTranslatef(0, 12 * scale, 0); GL11.glScalef(.5F, .5F, .5F); }

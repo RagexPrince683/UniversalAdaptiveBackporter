@@ -79,7 +79,7 @@ public class BlockChain extends BaseBlock {
 
 	@Override
 	public String getItemIconName() {
-		return "chain";
+		return getTextureName();
 	}
 
 	@Override

@@ -599,3 +599,13 @@
 2026-10-29 20:49 — Restore legacy modded door and trapdoor artwork
 
 - Restore the inherited Biomes O' Plenty and Witchery door block faces, door inventory icons and trapdoor textures for 1.7.10. Resolve their resource paths using the artwork's species names rather than the registry prefixes, preserving all existing registrations and metadata.
+
+2026-11-01 19:58 — Repair reported crashes, amphibians, copper artwork and generation controls
+
+- Both targets: fall back to native spawning counts until optimized aquatic state is ready. Preserve population limits when preparation succeeds.
+- Both targets: restore complete frog and tadpole geometry with matching texture sheets and movement animations; keep tadpoles swimming with drag and normal land gravity. Retain Nether conversion rules and give newly converted piglins a modern zombified appearance while preserving equipment and existing zombie-pigman saves.
+- Both targets: restore complete shelf geometry and Raw Titanium's display name. Add separate kelp frequency, density and height controls, and bounded dripstone frequency, density and length controls. Add the missing native 1.12.2 dripstone cave decoration.
+- Both targets: allow independent netherite tools, armor, resources, ancient debris, storage blocks and decorations. Retain saved identities and support external OreDictionary materials for enabled smithing, repairs, trims and stairs.
+- Both targets: recognize UAB ocean variants inside Ocean Floor's generation checks without replacing seabeds or adding a required dependency.
+- 1.7.10: restore M2Paxel 2.3.0's tool-action integration point and honor its action filter. Restore all waxed copper fixture and oxidized inventory variants, and correct upward model UV orientation, including floor coral fans.
+- 1.7.10: restore conditional Biomes O' Plenty and Witchery signs, including standing/wall placement, inherited artwork, recipes and the existing text synchronization system.

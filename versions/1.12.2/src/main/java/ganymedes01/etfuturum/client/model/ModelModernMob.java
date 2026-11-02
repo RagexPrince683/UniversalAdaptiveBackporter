@@ -56,6 +56,14 @@ public class ModelModernMob extends ModelBase {
         if(entity instanceof EntityPillager){EntityPillager mob=(EntityPillager)entity;show("arms",false);show("right_arm",true);show("left_arm",true);if(mob.getCrossbowChargeTicks()>=0){float charge=MathHelper.clamp((float)mob.getCrossbowChargeTicks()/ganymedes01.etfuturum.CrossbowItem.chargeTime(mob.getHeldItemMainhand()),0,1);rotate("right_arm",-.97F,-.8F,0);rotate("left_arm",-.97F-charge*.6F,.4F+charge*.45F,0);}else if(mob.isAttacking()&&ganymedes01.etfuturum.CrossbowItem.charged(mob.getHeldItemMainhand())){rotate("right_arm",-(float)Math.PI/2+pitch*.0174533F,yaw*.0174533F-.3F,0);rotate("left_arm",-1.5F+pitch*.0174533F,yaw*.0174533F+.6F,0);}else{rotate("right_arm",-walk*.5F-.314159F,0,0);rotate("left_arm",walk,0,0);}}
         if(kind.startsWith("breeze")){rotate("rods",0,age*.1F,0);rotate("wind_mid",0,-age*.08F,0);rotate("wind_top",0,age*.06F,0);}
         if(entity instanceof EntityStrider){rotate("body",pitch*.0174533F,yaw*.0174533F,MathHelper.sin(limb*1.5F)*amount*.1F);for(String name:parts.keySet())if(name.contains("bristle"))rotate(name.substring(name.lastIndexOf('/')+1),0,0,MathHelper.sin(age*.2F+name.hashCode()%5)*.1F);}
+        if (entity instanceof EntityTadpole) rotate("tail", 0, -MathHelper.sin(age * .3F) * (entity.isInWater() ? .25F : .375F), 0);
+        if (entity instanceof EntityFrog) {
+            show("croaking_body", false); show("tongue", false);
+            float kick = entity.isInWater() ? MathHelper.sin(limb * 1.5F) * amount : entity.onGround ? walk : -.65F;
+            rotate("left_leg", kick + walk, 0, -.15F); rotate("right_leg", kick - walk, 0, .15F);
+            rotate("left_arm", -kick * .6F, 0, -.15F); rotate("right_arm", -kick * .6F, 0, .15F);
+            rotate("body", entity.isInWater() ? MathHelper.sin(age * .1F) * .04F : entity.onGround ? 0 : -.2F, 0, 0);
+        }
         GL11.glPushMatrix();if(entity instanceof EntityHappyGhast){float size=((EntityHappyGhast)entity).isChild()?.95F:4;GL11.glTranslatef(0,24*(1-size)*scale,0);GL11.glScalef(size,size,size);}else if(entity instanceof net.minecraft.entity.EntityLivingBase&&((net.minecraft.entity.EntityLivingBase)entity).isChild()&&!(entity instanceof EntityNautilus)){GL11.glTranslatef(0,12*scale,0);GL11.glScalef(.5F,.5F,.5F);}else if(entity instanceof EntityCamel&&((EntityCamel)entity).isSitting())GL11.glTranslatef(0,10*scale,0);root.render(scale);GL11.glPopMatrix();
     }
 }

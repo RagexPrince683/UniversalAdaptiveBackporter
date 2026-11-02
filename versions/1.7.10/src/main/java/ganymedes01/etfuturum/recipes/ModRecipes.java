@@ -1001,8 +1001,9 @@ public class ModRecipes {
 		RecipeHelper.addShapelessRecipe(RecipeHelper.Priority.HIGH, output225, objects168);
 		if (!ModsList.GTNH.isLoaded()) {
 			ItemStack output3 = ModBlocks.NETHERITE_BLOCK.newItemStack();
-			RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output3, "xxx", "xxx", "xxx", 'x', ModItems.NETHERITE_INGOT.get());
+			RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output3, "xxx", "xxx", "xxx", 'x', "ingotNetherite");
 		}
+		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModBlocks.NETHERITE_STAIRS.newItemStack(4), "B  ", "BB ", "BBB", 'B', "blockNetherite");
 		ItemStack output123 = ModItems.NETHERITE_INGOT.newItemStack(9);
 		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output123, "x", 'x', ModBlocks.NETHERITE_BLOCK.get());
 

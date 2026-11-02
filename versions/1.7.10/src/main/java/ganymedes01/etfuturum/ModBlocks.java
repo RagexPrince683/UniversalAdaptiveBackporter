@@ -769,7 +769,7 @@ public enum ModBlocks {
 	}
 
 	public boolean isEnabled() {
-		return isEnabled;
+		return isEnabled && ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name().toLowerCase(java.util.Locale.ROOT));
 	}
 
 	public ItemStack newItemStack() {

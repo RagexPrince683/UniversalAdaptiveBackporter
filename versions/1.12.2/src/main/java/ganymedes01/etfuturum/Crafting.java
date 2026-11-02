@@ -37,7 +37,8 @@ public final class Crafting {
     }
     @SubscribeEvent public static void recipes(RegistryEvent.Register<IRecipe> event) {
         ModernRecipes.register(event);
-        compression(event, "copper_ingot", "copper_block"); compression(event, "netherite_ingot", "netherite_block");
+        compression(event, "copper_ingot", "copper_block"); shaped(event,"netherite_block",Content.stack("netherite_block"),"NNN","NNN","NNN",'N',"ingotNetherite");
+        if(Content.available("netherite_block")&&Content.available("netherite_ingot"))shaped(event,"netherite_ingot_from_block",new ItemStack(Content.item("netherite_ingot"),9),"B",'B',Content.block("netherite_block"));
         for (String ore : new String[]{"copper", "iron", "gold"}) compression(event, "raw_" + ore, "raw_" + ore + "_block");
         compression(event, "dried_kelp", "dried_kelp_block");
         shaped(event,"bamboo_block",Content.stack("bamboo_block"),"BBB","BBB","BBB",'B',Content.item("bamboo"));

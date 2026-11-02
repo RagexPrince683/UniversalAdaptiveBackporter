@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 public class ItemSpear extends ItemSword {
 	private final float thrustDamage;
 	public ItemSpear(ToolMaterial material, String name) { super(material); thrustDamage = 3 + material.getDamageVsEntity(); setUnlocalizedName("etfuturum." + name); setTextureName(name); setCreativeTab(EtFuturum.creativeTabItems); }
+    @Override public boolean getIsRepairable(ItemStack stack, ItemStack ingredient) { return getToolMaterialName().equals(ganymedes01.etfuturum.ModMaterials.NETHERITE_TOOL.name()) && ganymedes01.etfuturum.configuration.NetheriteSettings.isExternalIngot(ingredient) || super.getIsRepairable(stack, ingredient); }
 	@Override public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity target) {
 		if (player.worldObj.isRemote) EtFuturum.proxy.spearLunge(player);
 		return false;

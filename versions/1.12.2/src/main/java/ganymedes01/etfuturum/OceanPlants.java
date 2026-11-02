@@ -14,20 +14,22 @@ final class OceanPlants {
     private static final String[] COLORS={"tube","brain","bubble","fire","horn"};
     private OceanPlants() { }
     private static boolean reserved(World world,StructureBoundingBox area) { return StructureReservations.vanilla(world,area)||OceanStructures.reserved(world,area)||OceanTreasure.reserved(world,area); }
-    static void generate(World world,Random random,int cx,int cz) {
+    static void generate(World world,Random random,int cx,int cz,ganymedes01.etfuturum.configuration.GenerationSettings settings) {
         BlockPos center=new BlockPos((cx<<4)+8,0,(cz<<4)+8);if(!BiomeDictionary.hasType(world.getBiome(center),BiomeDictionary.Type.OCEAN))return;
         reef(world,random,cx,cz);
         if(!Features.enabled("content.generate_ocean_plants"))return;
         int sea=world.getSeaLevel()-1;
-        for(int i=0;i<24;i++) {
+        boolean kelp=settings.kelpChance>0&&settings.kelpAttempts>0&&random.nextInt(settings.kelpChance)==0;
+        for(int i=0;i<Math.max(24,kelp?settings.kelpAttempts:0);i++) {
             int x=(cx<<4)+random.nextInt(16),z=(cz<<4)+random.nextInt(16);BlockPos pos=new BlockPos(x,Math.min(sea,world.getHeight(new BlockPos(x,0,z)).getY()-1),z);Biome biome=world.getBiome(pos);
             boolean warm=biome.getDefaultTemperature()>.8F;
+            if(warm?i>=24:!kelp||i>=settings.kelpAttempts)continue;
             if(!BiomeDictionary.hasType(biome,BiomeDictionary.Type.OCEAN)||(warm?!Content.available("sea_pickle"):!Content.available("kelp")||BiomeDictionary.hasType(biome,BiomeDictionary.Type.SNOWY)))continue;
             while(pos.getY()>1&&AquaticPlant.sourceWater(world,pos))pos=pos.down();pos=pos.up();
             if(pos.getY()>=sea||reserved(world,new StructureBoundingBox(pos.down(),new BlockPos(x,sea,z))))continue;
             Block plant=Content.block(warm?"sea_pickle_underwater":"kelp");if(!plant.canPlaceBlockAt(world,pos))continue;
             if(warm){if(random.nextInt(6)==0)world.setBlockState(pos,plant.getStateFromMeta(random.nextInt(4)),18);}
-            else { int height=1+random.nextInt(10);for(int y=0;y<height&&pos.getY()+y<sea&&AquaticPlant.sourceWater(world,pos.up(y));y++)world.setBlockState(pos.up(y),plant.getDefaultState(),18); }
+            else { int height=1+random.nextInt(settings.kelpHeight);for(int y=0;y<height&&pos.getY()+y<sea&&AquaticPlant.sourceWater(world,pos.up(y));y++)world.setBlockState(pos.up(y),plant.getDefaultState(),18); }
         }
     }
 

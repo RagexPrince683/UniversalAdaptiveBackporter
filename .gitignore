@@ -64,6 +64,10 @@ Temporary Items
 *.bat
 LICENSE*
 forge*
+!common/src/forge/
+!common/src/forge/**
+!common/src/forgeTest/
+!common/src/forgeTest/**
 CREDITS*
 MinecraftForge*
 README.txt

@@ -1087,7 +1087,9 @@ public class ServerEventHandler {
 						//Grass pathing/Log Stripping
 						//This is nested into the same function since they use similar checks
 						if (heldStack != null && !isCustomBroken(heldStack)) {
-							if (ModBlocks.GRASS_PATH.isEnabled() && ItemTags.hasTag(heldStack.getItem(), Tags.MOD_ID + ":dirt_path_tools")
+							// Keep this live lookup as the integration point for tool-action filters (M2Paxel).
+							java.util.Set<String> toolClasses = heldStack.getItem().getToolClasses(heldStack);
+							if (ModBlocks.GRASS_PATH.isEnabled() && allowsToolAction(heldStack, toolClasses, "shovel", "dirt_path_tools")
 									&& !world.getBlock(x, y + 1, z).getMaterial().isSolid() && BlockTags.hasTag(oldBlock, Tags.MOD_ID + ":pathables")) {
 								player.swingItem();
 								if (!world.isRemote) {
@@ -1095,7 +1097,7 @@ public class ServerEventHandler {
 									heldStack.damageItem(1, player);
 									world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, Tags.MC_ASSET_VER + ":item.shovel.flatten", 1.0F, 1.0F);
 								}
-							} else if (ConfigBlocksItems.enableStrippedLogs && ItemTags.hasTag(heldStack.getItem(), Tags.MOD_ID + ":stripped_log_tools")) {
+							} else if (ConfigBlocksItems.enableStrippedLogs && allowsToolAction(heldStack, toolClasses, "axe", "stripped_log_tools")) {
 								BlockMetaPair newBlock = StrippedLogRegistry.getLog(oldBlock, meta);
 								if (newBlock != null) {
 									player.swingItem();
@@ -1111,6 +1113,13 @@ public class ServerEventHandler {
 				}
 			}
 		}
+	}
+
+	private static boolean allowsToolAction(ItemStack stack, java.util.Set<String> filtered, String tool, String tag) {
+		if (!ItemTags.hasTag(stack.getItem(), Tags.MOD_ID + ':' + tag)) return false;
+		java.util.Set<String> declared = stack.getItem().getToolClasses(stack);
+		// Explicit tag-only tools remain supported; filters can veto a declared tool class.
+		return declared == null || !declared.contains(tool) || filtered != null && filtered.contains(tool);
 	}
 
 	/// If this item is broken in a custom way

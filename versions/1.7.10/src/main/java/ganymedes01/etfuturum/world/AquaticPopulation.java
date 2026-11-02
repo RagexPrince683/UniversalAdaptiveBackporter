@@ -48,11 +48,16 @@ public final class AquaticPopulation {
 		Boolean old = population.loaded.get(living);
 		if (old != null) { boolean count = counted(living); if (old != count) { population.loaded.put(living, count); population.counts[species(entity)] += count ? 1 : -1; } }
 	}
-	public void prepare(World world, Map<ChunkCoordIntPair, Boolean> eligible) {
-		if (preparedTick == world.getTotalWorldTime()) return;
-		preparedTick = world.getTotalWorldTime(); eligibleChunks = 0;
-		for (ChunkCoordIntPair position : eligible.keySet()) if (world.getChunkProvider().chunkExists(position.chunkXPos, position.chunkZPos)) eligibleChunks++;
+	public void prepare(World world, Map<ChunkCoordIntPair, Boolean> eligible) { tryPrepare(world, eligible); }
+	public boolean tryPrepare(World world, Map<ChunkCoordIntPair, Boolean> eligible) {
+		// A failed preparation must not poison this tick: an optimizer may supply the map later.
+		if (world == null || eligible == null || world.getChunkProvider() == null) return false;
+		if (preparedTick == world.getTotalWorldTime()) return true;
+		eligibleChunks = 0;
+		for (ChunkCoordIntPair position : eligible.keySet()) if (position != null && world.getChunkProvider().chunkExists(position.chunkXPos, position.chunkZPos)) eligibleChunks++;
 		eligibleChunks = Math.max(1, eligibleChunks);
+		preparedTick = world.getTotalWorldTime();
+		return true;
 	}
 	public static boolean indexed(EnumCreatureType type) { return MobSpawning.isAquatic(type) || type != null && type == ganymedes01.etfuturum.world.structure.MonumentSpawning.GUARDIANS; }
 	public int count(EnumCreatureType type) {

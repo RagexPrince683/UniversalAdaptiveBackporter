@@ -17,6 +17,8 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 
 /** New chunks only; flag 18 suppresses observer callbacks which otherwise load neighboring chunks. */
 public final class WorldGeneration implements IWorldGenerator {
+    private final ganymedes01.etfuturum.configuration.GenerationSettings generationSettings = new ganymedes01.etfuturum.configuration.GenerationSettings();
+    private final DripstoneGeneration dripstone = new DripstoneGeneration(generationSettings);
     private final Geology geology = new Geology();
     private final Geodes geodes = new Geodes();
     private final PlantGeneration plants = new PlantGeneration();
@@ -51,7 +53,8 @@ public final class WorldGeneration implements IWorldGenerator {
                 }
             }
             if (Content.available("cherry_sapling") && cherryChance > 0 && BiomeDictionary.hasType(biome, BiomeDictionary.Type.MOUNTAIN) && random.nextInt(cherryChance) == 0) ModernSapling.generate(world, random, world.getHeight(center), "cherry");
-            OceanPlants.generate(world,random,cx,cz);
+            OceanPlants.generate(world,random,cx,cz,generationSettings);
+            dripstone.generate(world,random,cx,cz);
             OceanTreasure.generate(world, cx, cz);
             OceanStructures.populate(world, cx, cz);
             Seagrass.generate(world,random,cx,cz);

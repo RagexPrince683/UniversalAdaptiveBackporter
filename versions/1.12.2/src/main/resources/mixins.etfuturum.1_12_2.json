@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "package": "ganymedes01.etfuturum.mixins",
   "mixins": [
+    "OceanFloorMixin",
     "HandshakeModListMixin",
     "BundleInventoryMixin",
     "SnowPrecipitationMixin",

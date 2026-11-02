@@ -70,9 +70,19 @@ tasks.register("fenceTextureTest", JavaExec) {
     javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }
 }
 tasks.named("check") { dependsOn(tasks.named("fenceTextureTest")) }
+
+tasks.register("releasedModelGeometryTest", JavaExec) {
+    group = "verification"
+    dependsOn(tasks.named("testClasses"))
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = "ganymedes01.etfuturum.blocks.ReleasedModelGeometryTest"
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }
+}
+tasks.named("check") { dependsOn(tasks.named("releasedModelGeometryTest")) }
 tasks.named("test") {
     dependsOn(tasks.named("configurationTest"))
     dependsOn(tasks.named("fenceTextureTest"))
+    dependsOn(tasks.named("releasedModelGeometryTest"))
     // The regression suites use plain Java entry points rather than JUnit discovery.
     failOnNoDiscoveredTests = false
 }

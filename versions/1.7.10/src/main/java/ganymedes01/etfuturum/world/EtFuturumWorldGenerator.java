@@ -61,6 +61,7 @@ public class EtFuturumWorldGenerator implements IWorldGenerator {
 	protected WorldGenerator caveVineGen;
 	protected WorldGenerator mudGen;
 	protected WorldGenerator dripstoneGen;
+    private final ganymedes01.etfuturum.configuration.GenerationSettings generationSettings = new ganymedes01.etfuturum.configuration.GenerationSettings();
 
 	//trees
 	protected WorldGenAbstractTree cherryTreeGen;
@@ -187,10 +188,10 @@ public class EtFuturumWorldGenerator implements IWorldGenerator {
             ganymedes01.etfuturum.world.structure.surface.RuinedPortals.generate(world,chunkX,chunkZ);
             ganymedes01.etfuturum.SpringPlants.generate(world,chunkX,chunkZ);
 			MobSpawning.seagrass(world, rand, chunkX, chunkZ);
-			ganymedes01.etfuturum.world.generate.decorate.OceanPlants.generate(world, rand, chunkX, chunkZ);
+			ganymedes01.etfuturum.world.generate.decorate.OceanPlants.generate(world, rand, chunkX, chunkZ, generationSettings);
 			ganymedes01.etfuturum.world.structure.OceanTreasure.generate(world, chunkX, chunkZ);
 			ganymedes01.etfuturum.world.structure.OceanSites.populate(world, chunkX, chunkZ);
-			if (dripstoneGen != null) dripstoneGen.generate(world, rand, (chunkX << 4) + 8, 0, (chunkZ << 4) + 8);
+			if (dripstoneGen != null) dripstoneGen.generate(world, rand, (chunkX << 4), 0, (chunkZ << 4));
 			int x;
 			int z;
 

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.*;
 public class AquaticSpawningMixin {
     @Shadow(aliases="field_77193_b",remap=false) @Final private Set<ChunkPos> eligibleChunksForSpawning;
     @Redirect(method={"findChunksForSpawning","func_77192_a"},at=@At(value="INVOKE",target="Lnet/minecraft/world/WorldServer;countEntities(Lnet/minecraft/entity/EnumCreatureType;Z)I",remap=false),remap=false)
-    private int etfu$count(WorldServer world,EnumCreatureType type,boolean spawning){AquaticPopulation index=AquaticPopulation.get(world);index.prepare(eligibleChunksForSpawning);return AquaticPopulation.indexed(type)?index.nativeCount(type):world.countEntities(type,spawning);}
+    private int etfu$count(WorldServer world,EnumCreatureType type,boolean spawning){if(!AquaticPopulation.indexed(type)||eligibleChunksForSpawning==null)return world.countEntities(type,spawning);AquaticPopulation index=AquaticPopulation.get(world);return index.tryPrepare(eligibleChunksForSpawning)?index.nativeCount(type):world.countEntities(type,spawning);}
     private boolean etfu$spawn(WorldServer world,Entity entity){if(!(entity instanceof EntityLiving)||!AquaticPopulation.managed(entity))return world.spawnEntity(entity);AquaticPopulation index=AquaticPopulation.get(world);EntityLiving living=(EntityLiving)entity;if(!index.admit(living))return false;boolean success=world.spawnEntity(entity);index.spawned(living,success);return success;}
     @Group(name="etfu$naturalJoin",min=1,max=1)
     @Redirect(method={"findChunksForSpawning","func_77192_a"},at=@At(value="INVOKE",target="Lnet/minecraft/world/WorldServer;spawnEntity(Lnet/minecraft/entity/Entity;)Z",remap=false),require=0,expect=0,remap=false)

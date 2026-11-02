@@ -150,7 +150,7 @@ public class BlockBarrel extends BlockContainer {
 		String upgrade = CompatIronChests.getNextBarrelUpgrade(barrel.type.name(), upgradeStack);
 		if (upgrade != null) {
 			TileEntityBarrel.BarrelType newType = TileEntityBarrel.BarrelType.map.get(upgrade);
-			if(newType != null) {
+			if(newType != null && ganymedes01.etfuturum.configuration.ContentAvailability.available(newType.getBlock())) {
 				barrel.upgrading = true;
 				ItemStack[] tempCopy = barrel.chestContents == null ? new ItemStack[barrel.getSizeInventory()] : ArrayUtils.clone(barrel.chestContents);
 				TileEntityBarrel newTE = (TileEntityBarrel) newType.getBlock().createTileEntity(world, barrel.getBlockMetadata());
