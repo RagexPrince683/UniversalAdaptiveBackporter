@@ -1,70 +1,214 @@
 # Universal Adaptive Backporter (UAB)
 
-UAB adapts modern Minecraft content to Forge. **Minecraft 1.7.10** and **Minecraft 1.12.2** are the versions it targets. Its content reference extends through **Java Edition 1.21.11**. Blocks, items, mobs, biomes, structures and selected gameplay conveniences use implementations suited to the legacy game.
+**Modern Minecraft. Classic Foundations.**
 
-UAB preserves each target version's vanilla textures and artwork. New content and separate variations supply their own assets; player resource packs retain their normal priority.
+Universal Adaptive Backporter (UAB) adapts content from Minecraft 1.8 through Java Edition 1.21.11 for **Minecraft Forge 1.7.10 and 1.12.2**.
 
-## What UAB supplies
+Originally forked from Et Futurum Requiem, UAB focuses on native integration, survival functionality, configurability, and compatibility with established legacy Minecraft environments.
 
-- Building materials and wood families, functional workstations, copper and netherite progression, crops, equipment and modern mob families.
-- Modern surface and ocean biomes within the native world height, optional Nether biomes, outer End islands and End Cities.
-- Saved ocean monuments, bastions, outposts, woodland mansions, trail ruins, Ancient Cities and Trial Chambers, with native placement, encounters and loot adaptations.
-- One configuration file organized by the update that introduced each feature. Feature families share controls; individual mobs have their own availability and applicable natural-spawning settings.
+The project retains the original engines, world-height limitations, and save formats of its target versions. Modern features are adapted to those environments rather than relying on extensive engine replacements.
 
-The feature list above describes 1.7.10. The 1.12.2 target currently contains selected materials, workstations, fish, drowned, phantoms, tridents and ocean structures; it does not yet provide the full catalog. See [target coverage](CONTENT_CATALOG.md#target-coverage). Some mechanics are adapted or incomplete. The [content catalog](CONTENT_CATALOG.md), [mob coverage](MOB_COVERAGE.md) and [world-generation reference](WORLD_GENERATION.md) describe those boundaries. Registration or a modern name does not imply complete parity with the modern game.
+## Project Overview
 
-Operators can find structures with `/uab_locate <structure>`; press Tab for supported names. Searches report saved sites or potential new-terrain locations without generating terrain. See the [world-generation reference](WORLD_GENERATION.md#locating-structures) for coverage and search limits.
+UAB provides:
+
+- Modern blocks, items, entities, biomes, structures, equipment, and gameplay mechanics.
+- A unified configuration system organized by Minecraft update, with over 350 feature switches.
+- Modern world generation adapted to legacy terrain and structure systems.
+- Optional integrations with other Forge mods.
+- Shared feature definitions with version-specific implementations.
+- Registry and saved-world compatibility with existing Et Futurum installations.
+
+**Implementation coverage differs between 1.7.10 and 1.12.2.** The 1.7.10 target currently has broader content coverage, while 1.12.2 continues to receive native implementations and compatibility improvements.
+
+Detailed documentation:
+
+- [Content Catalog](CONTENT_CATALOG.md) — Features, implementation status, and target coverage.
+- [Mob Coverage](MOB_COVERAGE.md) — Entity implementation and behavior.
+- [World Generation](WORLD_GENERATION.md) — Biomes, structures, generation rules, and limitations.
+- [Configuration Reference](CONFIGURATION.md) — Settings, migration, and configuration behavior.
+
+### Structure Locating
+
+UAB includes `/uab_locate <structure>` for supported structures.
+
+The command searches saved structure locations or potential positions in unexplored terrain without generating chunks during the search. Tab completion provides supported structure identifiers.
+
+See [World Generation](WORLD_GENERATION.md#locating-structures) for details.
 
 ## Installation
 
-For **1.7.10**, use Forge **10.13.4.1614** and Java **8**, with [UniMixins](https://modrinth.com/mod/unimixins), including its GTNH Mixins module. Place the UAB production JAR in the client and dedicated server `mods` folders. Remove the previous EFR/EFR-R JAR when upgrading; both use the same technical mod ID and cannot be installed together.
+Both supported versions require Java 8 at runtime.
 
-The development **1.12.2** target uses Forge **14.23.5.2859**, Java **8**, and [MixinBooter 11.18 or later](https://github.com/CleanroomMC/MixinBooter) on clients and servers. It provides the shared configuration screen and rejects gameplay-setting mismatches during connection. Its client prepares Minecraft 1.21.11 assets at startup; offline installations can supply the official 1.21.11 client JAR with `-Duab.assets=<path>`. Optional-mod integrations and much of the content catalog remain under development.
+| Minecraft | Forge | Required Dependency |
+|---|---|---|
+| 1.7.10 | 10.13.4.1614 | [UniMixins](https://modrinth.com/mod/unimixins), including GTNH Mixins |
+| 1.12.2 | 14.23.5.2859 | [MixinBooter 11.18+](https://github.com/CleanroomMC/MixinBooter) |
 
-UAB 1.7.10 does not require HogUtils, FastUtil, GTNHLib or GTNHExtLib. Optional integrations include NEI, Waila, CraftTweaker and Iron Chests. Their presence is not required to load UAB. Sounds and some other Minecraft assets are supplied through the bundled MCLib AssetDirector integration; an initial asset download may be required.
+Install the appropriate UAB JAR and dependencies in the `mods` directory. Dedicated servers require the same version-specific dependencies.
 
-Back up existing worlds before upgrading. UAB deliberately retains the `etfuturum` registry namespace, resource domain, Java package, entity identities and saved-data keys. Keep configured biome, potion and enchantment IDs stable.
+**Remove existing Et Futurum Requiem or Et Futurum Requiem Reforged installations before installing UAB.** These projects share technical identities and cannot coexist.
+
+Some modern assets are supplied using the bundled MCLib AssetDirector integration and may require an initial download.
+
+For offline Minecraft 1.12.2 environments, the official Minecraft 1.21.11 client JAR can be supplied using:
+
+`-Duab.assets=<path>`
+
+Back up existing worlds before upgrading.
+
+UAB preserves the historical `etfuturum` registry namespace, resource domain, entity identities, and saved-data keys. Existing biome, potion, and enchantment IDs should remain consistent.
 
 ## Configuration
 
-Edit **`config/uab.cfg`** in each installation, or use the configuration screen in Forge's Mods menu on either target. Categories use player-facing names such as **Minecraft 1.16 - Nether Update**, with controls for feature families and their useful parameters. There is no separate experiments file or global experiments switch.
+UAB uses a unified configuration file:
 
-An update switch disables its features while remembering their individual preferences. Dependencies are checked before generation and acquisition. Disabling a feature retains its registry identities and existing saved objects; new recipes, acquisition, generation and spawning are controlled where applicable. It does not remove already generated terrain or erase existing inventories.
+`config/uab.cfg`
 
-Restart Minecraft or the dedicated server after changing content, world generation, spawn parameters or compatibility settings. A small set of client preferences can be applied through the configuration screen without restarting. Both targets check common gameplay settings during connection. Client preferences may differ.
+Configuration categories are organized by Minecraft update, with separate controls for content families, gameplay behavior, spawning, world generation, and compatibility.
 
-Existing recognized EFR configuration values are imported once, with existing UAB settings taking precedence. Original files and adjacent `.uab.bak` backups are retained. Read the startup log for obsolete or unrecognized values. See the [configuration reference](CONFIGURATION.md) for layout, migration and spawn semantics.
+The configuration system supports:
 
-## Scope and approach
+- Individual feature and update-category toggles.
+- Configurable mob spawn weights and group sizes.
+- Structure and biome generation controls.
+- Optional mod integrations.
+- Client-specific preferences.
+- Automatic migration of recognized legacy Et Futurum settings.
 
-UAB is a content backporter. It retains the legacy world height, loader, save model and authoritative server behavior. It does not replace Minecraft's terrain engine, introduce a general combat rewrite or take over the responsibilities of separate cave-generation projects. Missing prerequisites are deferred rather than replaced with unrelated ingredients.
+Disabling content generally prevents new acquisition, generation, or spawning without deleting existing registry identities or saved objects.
 
-Feature support follows behavior and practical use on 1.7.10. UAB can use project-owned lifecycle tracking, retained model data, native structure assembly and bounded gameplay systems when those provide a coherent legacy implementation. Shared technical identifiers are retained for compatibility; internal architecture can change substantially.
+Configuration changes affecting gameplay require restarting the game or dedicated server. Selected client preferences can update immediately.
 
-## Lineage
+Both target versions validate shared gameplay settings during multiplayer connections.
 
-UAB began as a fork of **Et Futurum Requiem (EFR)**, initially maintained as **Et Futurum Requiem Reforged**. EFR itself builds on ganymedes01's Et Futurum and the work of KryptonCaptain, jss2a98aj, Roadhog360, embeddedt, makamys and other contributors.
+Legacy configuration migration preserves original files and creates backups where applicable.
 
-Its architecture and feature-support philosophy differ substantially from the original EFR project. Notably, this project intends for features to actually integrate into that version natively without rewriting the rest of the game's code, and promotes survival usability. 
+See [CONFIGURATION.md](CONFIGURATION.md) for the full configuration reference.
 
-The lineage and inherited contributions retain full credit. The project code uses the existing LGPL-3.0 license; Minecraft assets and other third-party material retain their own rights. See [third-party notices](THIRD_PARTY_NOTICES.md) and the asset credits included in the repository.
+## Optional Mod Compatibility
 
-## Building and contributing
+UAB provides optional integrations for recipes, equipment, world generation, modded materials, rendering, and gameplay behavior.
 
-The root wrapper uses JDK 25 and coordinates independent builds. The 1.7.10 target uses GTNHGradle/Jabel with JDK 25; 1.12.2 uses Unimined with JDK 21. Both production artifacts target Java 8, which is also required for native configuration checks and game launches. Install these JDKs or set `JAVA8_HOME`, `JAVA21_HOME` and `JAVA25_HOME`.
+**Gameplay & Equipment:** Not Enough Items (NEI), WAILA, MineTweaker 3, Iron Chests, Ender IO, Baubles, Baubles Expanded, Tinkers' Construct, Thaumcraft, Forbidden Magic, Mine & Blade: Battlegear 2, CustomNPCs.
 
-```text
+**World Generation & Materials:** Biomes O' Plenty, Witchery, Underground Biomes Constructs, NetheritePlus, Enderlicious, Netherlicious, Hardcore Ender Expansion, Applied Energistics 2, IndustrialCraft 2, Ars Magica 2, Big Reactors, BluePower, Botania, Draconic Evolution, Dragon Block C, Dragon Quest (DQM III Next), Fisk's Superheroes, ProjectRed, SimpleOres, Natura.
+
+**Additional Compatibility:** MineFactory Reloaded, Campfire Backport, Back in Slime, Village Names, UpToDate, GregTech, Extra Utilities, RPLE (Realistic Lighting), LWJGL3ify, EndlessIDs, Forge Multipart.
+
+**All integrations are optional and vary in scope.** Some provide dedicated functionality, while others handle specific blocks, recipes, ore mappings, or engine interactions. Support also varies between Minecraft versions.
+
+Compatibility with replacement dimension or terrain providers is not guaranteed. UAB's Nether provider remains incompatible with replacement Nether terrain generators such as Netherlicious.
+
+UAB does not require HogUtils, FastUtil, GTNHLib, or GTNHExtLib.
+
+## Project Structure
+
+| Directory | Description |
+|---|---|
+| `common/src/main/java` | Platform-independent metadata and utilities |
+| `common/src/forge` | Shared Forge configuration implementation |
+| `common/src/main/resources` | Shared resources and assets |
+| `versions/1.7.10` | Forge 1.7.10 implementation |
+| `versions/1.12.2` | Forge 1.12.2 implementation |
+| `devmods/` | Local development mod dependencies |
+| `tools/` | Verification and development utilities |
+
+Both versions maintain their own gameplay, rendering, and platform-specific implementations while sharing common feature and configuration definitions.
+
+Technical identifiers inherited from Et Futurum are intentionally preserved for compatibility.
+
+## Building
+
+The repository uses a multi-version Gradle build coordinated from the root project.
+
+### Build Requirements
+
+| Component | JDK |
+|---|---|
+| Root Gradle | 25 |
+| Minecraft 1.7.10 (GTNHGradle/Jabel) | 25 |
+| Minecraft 1.12.2 (Unimined) | 21 |
+| Production runtime and native testing | 8 |
+
+Configure the required JDK installations or use `JAVA8_HOME`, `JAVA21_HOME`, and `JAVA25_HOME`.
+
+### Build Commands
+
+```bash
 ./gradlew buildAll
 ./gradlew testAll
 ./gradlew cleanAll
 ```
 
-Each directory under `versions/` can also be opened as an independent IntelliJ Gradle project and built with its own wrapper. Its wrapper selects the appropriate build JDK. Root `runClient1_7_10`, `runServer1_7_10`, `runClient1_12_2` and `runServer1_12_2` launch the corresponding target. Existing root Gradle run-task names continue to delegate to 1.7.10.
+Each directory under `versions/` is also an independent Gradle project with its own wrapper.
 
-The root **`version.properties`** supplies one release version. Production artifacts are **`versions/1.7.10/build/libs/uab-<modVersion>+mc1.7.10.jar`** and **`versions/1.12.2/build/libs/uab-<modVersion>+mc1.12.2.jar`**. Development and source artifacts have classifier suffixes. Normal builds and tests never increment or rewrite the release version. `buildAll` verifies each production JAR's target metadata and Java 8 bytecode.
+Development run tasks:
 
-`common/src/main/java` contains platform-neutral feature metadata and deterministic seed helpers. `common/src/forge` contains configuration logic compiled against each target's native Forge API. Shared resources live under `common/src/main/resources`; native gameplay, rendering and adapters remain under their respective `versions/` directories. Local 1.7.10 development mods follow [devmods/README.md](devmods/README.md).
+```text
+runClient1_7_10
+runServer1_7_10
+runClient1_12_2
+runServer1_12_2
+```
 
-Release tags use `v<modVersion>` and must match `version.properties`. GitHub Actions builds both targets and attaches their production JARs and root update metadata. A successful build does not certify complete 1.12.2 gameplay coverage. Modrinth and CurseForge publishing require this project's own hosting IDs and credentials; inherited upstream project IDs are not used. See [RELEASING.md](RELEASING.md).
+### Production Artifacts
 
-Report reproducible problems in this repository's issue tracker with the exact JAR name, Forge/Java versions, relevant settings and logs. For world-generation issues include the seed, dimension and coordinates. Static checks, a successful build and a short runtime probe are separate evidence from a complete gameplay acceptance test.
+The root `version.properties` defines the release version.
+
+```text
+versions/1.7.10/build/libs/uab-<modVersion>+mc1.7.10.jar
+versions/1.12.2/build/libs/uab-<modVersion>+mc1.12.2.jar
+```
+
+Both production artifacts target Java 8.
+
+The aggregate build verifies target metadata, packaged resources, and bytecode compatibility.
+
+Successful compilation does not guarantee complete gameplay or mod compatibility.
+
+## Releases
+
+Release tags use the format `v<modVersion>` and must match `version.properties`.
+
+GitHub Actions builds both targets and attaches their production JARs and update metadata.
+
+Normal builds do not increment the project version.
+
+See [RELEASING.md](RELEASING.md) for release procedures and publishing requirements.
+
+## Scope & Limitations
+
+UAB is a content backporter, not an engine replacement.
+
+It does not attempt to provide a universal modern swimming or waterlogging engine, expanded world height, a complete cave-generation replacement, or a general combat rewrite.
+
+Feature implementations may differ from modern Minecraft where required by legacy engine limitations.
+
+Existing world data and registry identities are preserved wherever possible. Disabling content is not equivalent to removing previously generated structures, items, or entities.
+
+Optional integrations and specific feature implementations may remain incomplete or require further testing.
+
+## Origins & Credits
+
+UAB began as a fork of **Et Futurum Requiem (EFR)**, initially maintained as **Et Futurum Requiem Reforged**.
+
+EFR itself builds on ganymedes01's Et Futurum and contributions from KryptonCaptain, jss2a98aj, Roadhog360, embeddedt, makamys, and other developers.
+
+UAB retains this lineage while maintaining its own architecture, feature scope, and development direction.
+
+All inherited contributions retain attribution.
+
+The project uses the **LGPL-3.0** license. Minecraft assets and other third-party resources retain their respective licenses.
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for licensing and attribution details.
+
+## Reporting Issues
+
+Report bugs through the [GitHub Issue Tracker](https://github.com/RagexPrince683/UniversalAdaptiveBackporter/issues).
+
+Include the exact UAB JAR filename, Minecraft/Forge/Java versions, reproduction steps, relevant configuration settings, and logs.
+
+For world-generation problems, include the world seed, dimension, and coordinates.
+
+Reproducible issues and compatibility reports are welcome.
