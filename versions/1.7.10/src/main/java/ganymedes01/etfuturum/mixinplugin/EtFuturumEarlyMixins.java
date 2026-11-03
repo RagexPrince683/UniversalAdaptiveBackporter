@@ -275,6 +275,7 @@ mixins.add("spring.MixinWolfBreeding");
 			mixins.add("nethermobs.MixinBiomeGenBase");
 			mixins.add("nethermobs.MixinRiderInput");
 			mixins.add("nethermobs.MixinNautilusBreath");
+            mixins.add("nethermobs.MixinSmallAquaticWater");
 			mixins.add("nethermobs.MixinDolphinGrace");
 			mixins.add("nethermobs.MixinMobDungeons");
 			mixins.add("nethermobs.MixinUndergroundDungeons");

@@ -77,7 +77,7 @@ final class GeneratedResources implements IResourcePack {
             JsonObject modern = read("lang/" + language + ".json"); if (modern == null) modern = read("lang/en_us.json");
             if (modern != null) {
                 for (Map.Entry<String, Block> block : Content.BLOCKS.entrySet()) appendName(merged, existing, modern, block.getValue().getTranslationKey() + ".name", "block.minecraft." + assetName(block.getKey()));
-                for (Map.Entry<String, net.minecraft.item.Item> item : Content.ITEMS.entrySet()){appendName(merged, existing, modern, item.getValue().getTranslationKey() + ".name", "item.minecraft." + assetName(item.getKey()));if(item.getValue() instanceof ModernRecord){String track=((ModernRecord)item.getValue()).track;appendName(merged,existing,modern,"item.record."+track+".desc","jukebox_song.minecraft."+track);}if(item.getValue() instanceof VariantItem)for(String variant:((VariantItem)item.getValue()).variants)appendName(merged,existing,modern,"item.etfuturum."+variant+".name","item.minecraft."+variant);}
+                for (Map.Entry<String, net.minecraft.item.Item> item : Content.ITEMS.entrySet()){appendName(merged, existing, modern, item.getValue().getTranslationKey() + ".name", (item.getValue() instanceof net.minecraft.item.ItemDoor ? "block.minecraft." : "item.minecraft.") + assetName(item.getKey()));if(item.getValue() instanceof ModernRecord){String track=((ModernRecord)item.getValue()).track;appendName(merged,existing,modern,"item.record."+track+".desc","jukebox_song.minecraft."+track);}if(item.getValue() instanceof VariantItem)for(String variant:((VariantItem)item.getValue()).variants)appendName(merged,existing,modern,"item.etfuturum."+variant+".name","item.minecraft."+variant);}
             }
             cached = merged.toString().getBytes(StandardCharsets.UTF_8); generated.put(path, cached); return new ByteArrayInputStream(cached);
         } catch (IOException failure) { throw new IllegalStateException("Cannot adapt UAB language " + path, failure); }
@@ -88,6 +88,11 @@ final class GeneratedResources implements IResourcePack {
     @Override public InputStream getInputStream(ResourceLocation location) throws IOException {
         if(location.getNamespace().equals(ModernSounds.DOMAIN))return audio.open(location.getPath());
         String path = location.getPath();
+        // Java 8 ImageIO drops grayscale PNG tRNS. Prefer the lossless RGBA copies.
+        if (path.equals("textures/blocks/leaf_litter.png") || path.equals("textures/items/iron_nautilus_armor.png")) {
+            InputStream rgba=GeneratedResources.class.getResourceAsStream("/assets/etfuturum/"+path);
+            if (rgba!=null) return rgba;
+        }
         byte[] data = generated.get(path);
         if (data == null) {
             JsonElement json = generate(path);
@@ -230,8 +235,9 @@ final class GeneratedResources implements IResourcePack {
         if ((!path.startsWith("models/block/") && !path.startsWith("models/item/")) || !path.endsWith(".json")) return null;
         boolean item = path.startsWith("models/item/");
         String name = path.substring(item ? 12 : 13, path.length() - 5);
-        if(item&&(name.equals("lodestone_compass")||name.equals("recovery_compass"))){JsonObject compass=new JsonObject(),textures=new JsonObject();compass.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","etfuturum:items/"+(name.equals("recovery_compass")?"recovery_compass":"compass")+"_16");compass.add("textures",textures);JsonArray overrides=new JsonArray();for(int i=0;i<32;i++){JsonObject entry=new JsonObject(),predicate=new JsonObject();predicate.addProperty("angle",i/32D);entry.add("predicate",predicate);entry.addProperty("model","etfuturum:item/"+name+"_"+String.format(Locale.ROOT,"%02d",i));overrides.add(entry);}compass.add("overrides",overrides);return compass;}
-        if(item&&(name.startsWith("lodestone_compass_")||name.startsWith("recovery_compass_"))&&name.matches("(?:lodestone|recovery)_compass_[0-3][0-9]")){JsonObject compass=new JsonObject(),textures=new JsonObject();compass.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","etfuturum:items/"+(name.startsWith("recovery")?"recovery_compass":"compass")+name.substring(name.length()-3));compass.add("textures",textures);return compass;}
+        if(item&&(name.equals("lodestone_compass")||name.equals("recovery_compass"))){JsonObject compass=new JsonObject(),textures=new JsonObject();compass.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","minecraft:items/"+(name.equals("recovery_compass")?"recovery_compass":"compass")+"_16");compass.add("textures",textures);JsonArray overrides=new JsonArray();for(int i=0;i<32;i++){JsonObject entry=new JsonObject(),predicate=new JsonObject();predicate.addProperty("angle",i/32D);entry.add("predicate",predicate);entry.addProperty("model","etfuturum:item/"+name+"_"+String.format(Locale.ROOT,"%02d",i));overrides.add(entry);}compass.add("overrides",overrides);return compass;}
+        if(item&&(name.startsWith("lodestone_compass_")||name.startsWith("recovery_compass_"))&&name.matches("(?:lodestone|recovery)_compass_[0-3][0-9]")){JsonObject compass=new JsonObject(),textures=new JsonObject();compass.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","minecraft:items/"+(name.startsWith("recovery")?"recovery_compass":"compass")+name.substring(name.length()-3));compass.add("textures",textures);return compass;}
+        if(item&&name.equals("conduit")){JsonObject conduit=new JsonObject();conduit.addProperty("parent","etfuturum:block/conduit");return conduit;}
         if(item&&Content.BLOCKS.get(name) instanceof CopperChestBlock){JsonObject chest=rewrite(read("models/item/template_chest.json"),"").getAsJsonObject();chest.addProperty("parent","minecraft:builtin/entity");return chest;}
         if(name.equals("raw_adamantium")||name.equals("raw_adamantium_block")){JsonObject own=read((item?"models/item/":"models/block/")+name+".json");if(own!=null)return own;}
         if(name.endsWith("_barrel")||name.endsWith("_barrel_open")){JsonObject own=read((item?"models/item/":"models/block/")+name+".json");if(own!=null)return own;}

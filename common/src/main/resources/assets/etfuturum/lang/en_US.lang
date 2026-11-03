@@ -4006,3 +4006,7 @@ tile.etfuturum.bop_mahogany_sign.name=Mahogany Sign
 tile.etfuturum.witchery_rowan_sign.name=Rowan Sign
 tile.etfuturum.witchery_alder_sign.name=Alder Sign
 tile.etfuturum.witchery_hawthorn_sign.name=Hawthorn Sign
+
+itemGroup.etfuturum=Universal Adaptive Backporter
+uab.config.update_1_21_9.copper_age.copper_tools=Copper player tools
+uab.config.update_1_21_9.copper_age.copper_armor=Copper player armor

@@ -46,10 +46,22 @@ public final class IronStorage {
    for(Object type:types.getEnumConstants()){StorageTier tier=StorageTier.named(((Enum<?>)type).name());if(tier!=null)available.add(tier);}
    Class<?> changers=Class.forName("cpw.mods.ironchest.common.items.ChestChangerType");
    for(Object changer:changers.getEnumConstants()){StorageTier from=StorageTier.named(((Enum<?>)changers.getField("source").get(changer)).name()),to=StorageTier.named(((Enum<?>)changers.getField("target").get(changer)).name());Object item=changers.getField("item").get(changer);if(from==null||to==null||!(item instanceof Item)||to.size<from.size)continue;Upgrade upgrade=new Upgrade(from,to,(Item)item);external.put((Item)item,upgrade);upgrades.put(from.id()+"_"+to.id(),upgrade);}
+   if (Loader.isModLoaded("enderio")) {
+       available.add(StorageTier.STEEL); available.add(StorageTier.DARKSTEEL);
+       if (!upgrades.containsKey("obsidian_darksteel")) upgrades.put("obsidian_darksteel",new Upgrade(StorageTier.OBSIDIAN,StorageTier.DARKSTEEL,null));
+       if (Content.available("steel_barrel") && available(StorageTier.COPPER) && !net.minecraftforge.oredict.OreDictionary.getOres("ingotSteel").isEmpty())
+           ForgeRegistries.RECIPES.register(new net.minecraftforge.oredict.ShapedOreRecipe(new ResourceLocation(UAB.ID,"steel_barrel"),Content.stack("steel_barrel"),"xxx","xsx","xxx",'x',"ingotSteel",'s',Content.block("copper_barrel")).setRegistryName(UAB.ID,"steel_barrel"));
+   }
+   if (Loader.isModLoaded("enderio") && available(StorageTier.DARKSTEEL) && available(StorageTier.STEEL) && Content.available("darksteel_barrel") && Content.available("steel_barrel") && !net.minecraftforge.oredict.OreDictionary.getOres("ingotDarkSteel").isEmpty())
+       ForgeRegistries.RECIPES.register(new net.minecraftforge.oredict.ShapedOreRecipe(new ResourceLocation(UAB.ID,"darksteel_barrel"), Content.stack("darksteel_barrel"), "xxx", "xsx", "xxx", 'x', "ingotDarkSteel", 's', Content.block("steel_barrel")).setRegistryName(UAB.ID,"darksteel_barrel"));
+   if (Content.available("barrel_upgrade") && Content.available("darksteel_barrel") && upgrades.containsKey("obsidian_darksteel") && !net.minecraftforge.oredict.OreDictionary.getOres("ingotDarkSteel").isEmpty())
+       ForgeRegistries.RECIPES.register(new net.minecraftforge.oredict.ShapedOreRecipe(new ResourceLocation(UAB.ID,"barrel_obsidian_darksteel_upgrade"),new ItemStack(Content.item("barrel_upgrade"),1,7),"XXX","XXX","XYX",'X',"ingotDarkSteel",'Y',net.minecraft.init.Blocks.OBSIDIAN).setRegistryName(UAB.ID,"barrel_obsidian_darksteel_upgrade"));
    for(boolean shulker:new boolean[]{false,true})for(int meta=0;meta<paths(shulker).length;meta++){
     Upgrade upgrade=upgrades.get(paths(shulker)[meta]);if(upgrade==null)continue;
     String name=shulker?"shulker_box_upgrade":"barrel_upgrade";if(!Content.available(name))continue;
-    ItemStack own=new ItemStack(Content.item(name),1,meta),base=new ItemStack(upgrade.item);Object[] input=shulker?new Object[]{base,net.minecraft.init.Items.SHULKER_SHELL}:new Object[]{base};register(name+"_"+meta,own,input);register(name+"_return_"+meta,base,own.copy());
+    ItemStack own=new ItemStack(Content.item(name),1,meta);
+    if (upgrade.item==null) continue;
+    ItemStack base=new ItemStack(upgrade.item);Object[] input=shulker?new Object[]{base,net.minecraft.init.Items.SHULKER_SHELL}:new Object[]{base};register(name+"_"+meta,own,input);register(name+"_return_"+meta,base,own.copy());
    }
   }catch(ReflectiveOperationException failure){throw new IllegalStateException("Cannot initialize native Iron Chests storage integration",failure);}
  }

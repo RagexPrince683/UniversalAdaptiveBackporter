@@ -16,7 +16,7 @@ public final class CopperAge {
     public static final ItemArmor.ArmorMaterial ARMOR=EnumHelper.addArmorMaterial("UAB_COPPER",11,new int[]{2,4,3,1},8);
     private CopperAge(){}
     public static boolean repair(ItemStack ingredient){return EtFuturum.hasDictTag(ingredient,"ingotCopper");}
-    private static void item(String name,Item item){item.setUnlocalizedName("etfuturum."+name);item.setTextureName(name);ModernAdditions.add(name,"copper_age",item);if(!ganymedes01.etfuturum.configuration.configs.ConfigBlocksItems.enableCopper){item.setCreativeTab(null);ContentAvailability.register(item,false);}}
+    private static void item(String name,Item item){item.setUnlocalizedName("etfuturum."+name);item.setTextureName(name);ModernAdditions.add(name,"copper_age",item);if(!ganymedes01.etfuturum.configuration.configs.ConfigBlocksItems.enableCopper || !ganymedes01.etfuturum.configuration.CopperSettings.enabled(name)){item.setCreativeTab(null);ContentAvailability.register(item,false);}}
     private static void block(String name,Block block){ModernAdditions.add(name,"copper_age",block);if(!ganymedes01.etfuturum.configuration.configs.ConfigBlocksItems.enableCopper){block.setCreativeTab(null);ContentAvailability.register(block,false);ContentAvailability.register(Item.getItemFromBlock(block),false);}}
     public static void initialize(){
         item("copper_nugget",new ganymedes01.etfuturum.items.BaseItem("copper_nugget"));

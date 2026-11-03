@@ -78,6 +78,8 @@ public final class TargetConfigurationTest {
         check(!config.nativeConfig().hasCategory(appearance.category),"dedicated server omits client appearance option");
         File independent=Files.createTempDirectory("uab-independent-generation-netherite-").toFile();
         Configuration controls=new Configuration(new File(independent,"uab.cfg"));
+        controls.get("update_1_21_9.copper_age","copper_tools",true).set(false);
+        controls.get("update_1_21_9.copper_age","copper_armor",true).set(false);
         controls.get("update_1_16.netherite","netherite_tools",true).set(false);
         controls.get("update_1_16.netherite","netherite_armor",true).set(false);
         controls.get("update_1_16.netherite","netherite_resources",true).set(false);
@@ -86,6 +88,8 @@ public final class TargetConfigurationTest {
         controls.get("update_1_13.kelp","kelpAttempts",12).set(0);
         controls.save();UabConfiguration.open(independent,false,target);config=UabConfiguration.get();
         GenerationSettings generation=new GenerationSettings();
+        check(!CopperSettings.enabled("copper_pickaxe")&&!CopperSettings.enabled("copper_sword")&&!CopperSettings.enabled("copper_chestplate"),"copper player tools and armor can be disabled independently");
+        check(CopperSettings.enabled("copper_ingot")&&CopperSettings.enabled("copper_block")&&CopperSettings.enabled("copper_horse_armor")&&CopperSettings.enabled("copper_lantern"),"copper resources, building blocks, fixtures and horse armor remain available");
         check(generation.dripstoneChance==0&&generation.kelpAttempts==0,"generation can be disabled independently of content");
         check(!NetheriteSettings.enabled("netherite_pickaxe")&&!NetheriteSettings.enabled("netherite_chestplate"),"overlapping native gear can be disabled");
         check(!NetheriteSettings.enabled("netherite_ingot")&&!NetheriteSettings.enabled("netherite_block"),"resource and storage acquisition can be disabled");

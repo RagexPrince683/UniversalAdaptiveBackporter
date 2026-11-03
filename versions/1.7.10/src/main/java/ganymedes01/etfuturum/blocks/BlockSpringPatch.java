@@ -10,6 +10,8 @@ import net.minecraft.world.*;
 public final class BlockSpringPatch extends BlockStructureDecoration implements IGrowable {
     public final boolean litter;
     public BlockSpringPatch(boolean litter){super(Material.plants,litter?"leaf_litter":"wildflowers",litter?new String[]{"leaf_litter_1","leaf_litter_2","leaf_litter_3","leaf_litter_4"}:new String[]{"wildflowers_1","wildflowers_2","wildflowers_3","wildflowers_4"});this.litter=litter;setHardness(0);setStepSound(soundTypeGrass);setBlockBounds(0,0,0,1,.125F,1);}
+    @Override public int getRenderBlockPass(){return 1;}
+    @Override public boolean canRenderInPass(int pass){return pass==1;}
     @Override @cpw.mods.fml.relauncher.SideOnly(cpw.mods.fml.relauncher.Side.CLIENT) public int colorMultiplier(IBlockAccess world,int x,int y,int z){net.minecraft.world.biome.BiomeGenBase biome=world.getBiomeGenForCoords(x,z);return litter?ganymedes01.etfuturum.client.DryFoliageColors.color(biome.temperature,biome.rainfall):biome.getBiomeGrassColor(x,y,z);}
     @Override @cpw.mods.fml.relauncher.SideOnly(cpw.mods.fml.relauncher.Side.CLIENT) public int getRenderColor(int meta){return litter?ganymedes01.etfuturum.client.DryFoliageColors.color(.5,1):0x79c05a;}
     @Override public net.minecraft.util.AxisAlignedBB getCollisionBoundingBoxFromPool(World world,int x,int y,int z){return null;}

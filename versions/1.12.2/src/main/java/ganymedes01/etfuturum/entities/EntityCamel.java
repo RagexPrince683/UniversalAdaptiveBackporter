@@ -10,6 +10,24 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.*;
 public class EntityCamel extends EntityRideableMob {
+    private float sittingAmount, previousSittingAmount;
+    private int dashAnimationTicks;
+    public float sittingAmount(float partial) { return previousSittingAmount + (sittingAmount - previousSittingAmount) * partial; }
+    public float dashAmount(float partial) { return Math.max(0, (dashAnimationTicks - partial) / 10F); }
+    @Override protected void dash() { int previous = dashCooldown; super.dash(); if (previous == 0 && dashCooldown > 0) world.setEntityState(this, (byte) 64); }
+    @Override public void handleStatusUpdate(byte status) { if (status == 64) dashAnimationTicks = 10; else super.handleStatusUpdate(status); }
+    private void updateAnimation() {
+        previousSittingAmount = sittingAmount;
+        sittingAmount += Math.max(-.1F, Math.min(.1F, (isSitting() ? 1F : 0F) - sittingAmount));
+        if (dashAnimationTicks > 0) --dashAnimationTicks;
+        if (world.isRemote && isBeingRidden()) {
+            prevLimbSwingAmount = limbSwingAmount;
+            double dx = posX - prevPosX, dz = posZ - prevPosZ;
+            float speed = (float) Math.min(1, Math.sqrt(dx * dx + dz * dz) * 4);
+            limbSwingAmount += (speed - limbSwingAmount) * .4F;
+            limbSwing += limbSwingAmount;
+        }
+    }
     public EntityCamel(World world){super(world);setSize(1.7F,2.375F);stepHeight=1.5F;tasks.addTask(2,new EntityAITempt(this,1,Item.getItemFromBlock(Blocks.CACTUS),false));}
     @Override public boolean getCanSpawnHere(){BlockPos pos=new BlockPos(this);return MobRegistry.enabled(getClass())&&world.provider.getDimension()==0&&pos.getY()>60&&world.getBlockState(pos.down()).getMaterial().isSolid()&&world.checkNoEntityCollision(getEntityBoundingBox())&&world.getCollisionBoxes(this,getEntityBoundingBox()).isEmpty()&&!world.containsAnyLiquid(getEntityBoundingBox())&&(!(this instanceof EntityCamelHusk)||!world.isDaytime()&&world.getLight(pos)<=7&&world.getDifficulty()!=EnumDifficulty.PEACEFUL);}
     public boolean isSitting(){return flag(2);}
@@ -19,7 +37,7 @@ public class EntityCamel extends EntityRideableMob {
     @Override public boolean isBreedingItem(ItemStack stack){return stack.getItem()==Item.getItemFromBlock(Blocks.CACTUS);}
     @Override public boolean processInteract(EntityPlayer player,EnumHand hand){if(player.isSneaking()&&player.getHeldItem(hand).isEmpty()&&!isBeingRidden()){if(!world.isRemote)flag(2,!isSitting());return true;}if(!world.isRemote)flag(2,false);return super.processInteract(player,hand);}
     @Override public void travel(float strafe,float vertical,float forward){if(isSitting()&&!isBeingRidden()){move(MoverType.SELF,0,motionY,0);return;}super.travel(strafe,vertical,forward);}
-    @Override public void onLivingUpdate(){super.onLivingUpdate();if(!world.isRemote&&!isAIDisabled()&&!isBeingRidden()&&getNavigator().noPath()&&ticksExisted%200==0&&rand.nextInt(3)==0)flag(2,!isSitting());}
+    @Override public void onLivingUpdate(){super.onLivingUpdate(); updateAnimation();if(!world.isRemote&&!isAIDisabled()&&!isBeingRidden()&&getNavigator().noPath()&&ticksExisted%200==0&&rand.nextInt(3)==0)flag(2,!isSitting());}
     @Override public void writeEntityToNBT(NBTTagCompound tag){super.writeEntityToNBT(tag);tag.setBoolean("Sitting",isSitting());}
     @Override public void readEntityFromNBT(NBTTagCompound tag){super.readEntityFromNBT(tag);flag(2,tag.getBoolean("Sitting"));}
     @Override protected SoundEvent getAmbientSound(){return ModernSounds.get("entity.camel.ambient");}

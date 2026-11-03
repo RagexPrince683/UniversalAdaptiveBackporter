@@ -212,7 +212,7 @@ public enum ModItems {
 
 	public static void init() {
         // Saved item identities remain registered when new acquisition is disabled.
-        for (ModItems item : VALUES) GameRegistry.registerItem(item.get(), item.name().toLowerCase(java.util.Locale.ROOT));
+        for (ModItems item : VALUES) { GameRegistry.registerItem(item.get(), item.name().toLowerCase(java.util.Locale.ROOT)); if (item.get() instanceof ItemFishBucket) ((ItemFishBucket) item.get()).registerDispenser(); }
     }
 
 	final private boolean isEnabled;

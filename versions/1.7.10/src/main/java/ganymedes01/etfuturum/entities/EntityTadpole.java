@@ -16,6 +16,7 @@ public class EntityTadpole extends EntityWaterMob {
 	@Override protected void applyEntityAttributes() { super.applyEntityAttributes(); getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(6); }
 	@Override protected boolean isAIEnabled() { return true; }
 	@Override protected boolean canDespawn() { return !fromBucket && !hasCustomNameTag(); }
+    public void readBucket(NBTTagCompound tag) { setFromBucket(tag.getInteger("Age")); func_110163_bv(); if (tag.hasKey("Health")) setHealth(net.minecraft.util.MathHelper.clamp_float(tag.getFloat("Health"), 1, getMaxHealth())); }
 	public void setFromBucket(int age) { fromBucket = true; this.age = Math.max(0, Math.min(24000, age)); }
 	@Override public void onLivingUpdate() {
 		super.onLivingUpdate();
@@ -40,7 +41,7 @@ public class EntityTadpole extends EntityWaterMob {
 		if (held != null && held.getItem() == Items.slime_ball) { if (!worldObj.isRemote) { age = Math.min(24000, age + Math.max(20, (24000 - age) / 10)); if (!player.capabilities.isCreativeMode && --held.stackSize == 0) player.inventory.setInventorySlotContents(player.inventory.currentItem, null); worldObj.setEntityState(this, (byte) 7); } return true; }
 		if (held != null && held.getItem() == Items.water_bucket && !isDead) {
 			if (!worldObj.isRemote) {
-				ItemStack bucket = ModItems.TADPOLE_BUCKET.newItemStack(); NBTTagCompound nbt = new NBTTagCompound(); nbt.setInteger("Age", age); bucket.setTagCompound(nbt); if (hasCustomNameTag()) bucket.setStackDisplayName(getCustomNameTag());
+				ItemStack bucket = ModItems.TADPOLE_BUCKET.newItemStack(); NBTTagCompound nbt = new NBTTagCompound(); nbt.setInteger("Age", age); nbt.setFloat("Health", getHealth()); bucket.setTagCompound(nbt); if (hasCustomNameTag()) bucket.setStackDisplayName(getCustomNameTag());
 				if (!player.capabilities.isCreativeMode && held.stackSize == 1) player.inventory.setInventorySlotContents(player.inventory.currentItem, bucket);
 				else { if (!player.capabilities.isCreativeMode) held.stackSize--; if (!player.inventory.addItemStackToInventory(bucket)) player.dropPlayerItemWithRandomChoice(bucket, false); }
 				setDead();

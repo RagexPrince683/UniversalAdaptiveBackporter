@@ -71,7 +71,17 @@ public class ModelModernMob extends ModelBase {
 		if (entity instanceof EntityCopperGolem golem) { rotate("right_arm", golem.getHeldItem() == null ? -walk : -1, 0, 0); rotate("left_arm", golem.getHeldItem() == null ? walk : -1, 0, 0); }
 		if (entity instanceof EntityPanda panda && panda.isEating()) { rotate("body", -.9F, 0, 0); rotate("head", .5F + MathHelper.sin(age * .3F) * .1F, 0, 0); rotate("right_front_leg", -1.1F, 0, 0); rotate("left_front_leg", -1.1F, 0, 0); }
 		if (entity instanceof EntityArmadillo armadillo && armadillo.isRolled()) { show("body", false); show("right_hind_leg", false); show("left_hind_leg", false); show("right_front_leg", false); show("left_front_leg", false); show("cube", true); } else if (kind.equals("armadillo")) show("cube", false);
-		if (entity instanceof EntityCamel camel && camel.isSitting()) { rotate("left_front_leg", -1.5F, 0, 0); rotate("right_front_leg", -1.5F, 0, 0); rotate("left_hind_leg", -1.5F, 0, 0); rotate("right_hind_leg", -1.5F, 0, 0); }
+        if (entity instanceof EntityCamel) {
+            EntityCamel camel = (EntityCamel) entity;
+            float partial = Math.max(0, Math.min(1, age - entity.ticksExisted));
+            float sit = camel.sittingAmount(partial), dash = camel.dashAmount(partial);
+            // Cancel walking as the camel folds, and keep saddle and body on the same pose.
+            rotate("left_front_leg", -1.570796F * sit - walk * sit - .7F * dash, 0, 0);
+            rotate("right_front_leg", -1.570796F * sit + walk * sit - .7F * dash, 0, 0);
+            rotate("left_hind_leg", -1.570796F * sit + walk * sit + .7F * dash, 0, 0);
+            rotate("right_hind_leg", -1.570796F * sit - walk * sit + .7F * dash, 0, 0);
+            rotate("body", -.15F * dash, 0, 0);
+        }
 		if (entity instanceof EntitySniffer sniffer && sniffer.isDigging()) { rotate("head", .5F + MathHelper.sin(age * .5F) * .15F, 0, 0); }
 		if (entity instanceof EntityNautilus) { rotate("body", MathHelper.sin(age * .12F) * .05F, MathHelper.sin(age * .1F) * .04F, 0); }
 		if (kind.startsWith("breeze")) { rotate("rods", 0, age * .1F, 0); rotate("wind_mid", 0, -age * .08F, 0); rotate("wind_top", 0, age * .06F, 0); }
@@ -86,7 +96,7 @@ public class ModelModernMob extends ModelBase {
 		GL11.glPushMatrix();
 		if (entity instanceof EntityHappyGhast) { float size = entity instanceof net.minecraft.entity.EntityAgeable ageable && ageable.isChild() ? .95F : 4; GL11.glTranslatef(0, 24 * (1 - size) * scale, 0); GL11.glScalef(size, size, size); }
 		else if (entity instanceof net.minecraft.entity.EntityLivingBase living && living.isChild() && !(entity instanceof EntityNautilus)) { GL11.glTranslatef(0, 12 * scale, 0); GL11.glScalef(.5F, .5F, .5F); }
-		else if (entity instanceof EntityCamel camel && camel.isSitting()) GL11.glTranslatef(0, 10 * scale, 0);
+		if (entity instanceof EntityCamel) GL11.glTranslatef(0, 20 * ((EntityCamel) entity).sittingAmount(Math.max(0, Math.min(1, age - entity.ticksExisted))) * scale, 0);
 		root.render(scale); GL11.glPopMatrix();
 	}
 }

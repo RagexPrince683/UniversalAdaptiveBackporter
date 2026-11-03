@@ -49,6 +49,7 @@ public final class UAB {
         LegacySpawns.initialize();
         MendingCompatibility.initialize();
         HoneyDispenserBehaviors.register();
+        FishBucket.registerDispensers();
         TagDefaults.dynamic();
         UabConfiguration.get().finish();
         ConnectionSettings.capture();

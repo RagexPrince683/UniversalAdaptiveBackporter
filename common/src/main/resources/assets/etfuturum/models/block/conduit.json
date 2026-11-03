@@ -1,7 +1,7 @@
 {
   "textures": {
-    "particle": "conduit",
-    "all": "conduit"
+    "particle": "minecraft:block/conduit_shell",
+    "all": "minecraft:block/conduit_shell"
   },
   "elements": [
     {
@@ -18,55 +18,55 @@
       "faces": {
         "up": {
           "uv": [
+            3,
             0,
-            0,
-            16,
-            16
+            6,
+            3
           ],
           "texture": "#all"
         },
         "down": {
           "uv": [
+            6,
             0,
-            0,
-            16,
-            16
+            9,
+            3
           ],
           "texture": "#all"
         },
         "north": {
           "uv": [
-            0,
-            0,
-            16,
-            16
+            3,
+            3,
+            6,
+            6
           ],
           "texture": "#all"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            16,
-            16
+            9,
+            3,
+            12,
+            6
           ],
           "texture": "#all"
         },
         "east": {
           "uv": [
-            0,
-            0,
-            16,
-            16
+            6,
+            3,
+            9,
+            6
           ],
           "texture": "#all"
         },
         "west": {
           "uv": [
             0,
-            0,
-            16,
-            16
+            3,
+            3,
+            6
           ],
           "texture": "#all"
         }

@@ -1003,7 +1003,13 @@ public class ModRecipes {
 			ItemStack output3 = ModBlocks.NETHERITE_BLOCK.newItemStack();
 			RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output3, "xxx", "xxx", "xxx", 'x', "ingotNetherite");
 		}
-		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModBlocks.NETHERITE_STAIRS.newItemStack(4), "B  ", "BB ", "BBB", 'B', "blockNetherite");
+        if (!ModsList.GTNH.isLoaded() && ModBlocks.STEEL_BARREL.isEnabled() && ModBlocks.COPPER_BARREL.isEnabled() && !OreDictionary.getOres("ingotSteel").isEmpty())
+            RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModBlocks.STEEL_BARREL.newItemStack(), "xxx", "xsx", "xxx", 'x', "ingotSteel", 's', ModBlocks.COPPER_BARREL.get());
+        // Et Futurum 2.6.65: eight Dark Steel ingots around the steel barrel.
+        // Keep the original tier and material prerequisites rather than inventing a substitute.
+        if (!ModsList.GTNH.isLoaded() && ModBlocks.DARKSTEEL_BARREL.isEnabled() && ModBlocks.STEEL_BARREL.isEnabled() && !OreDictionary.getOres("ingotDarkSteel").isEmpty())
+            RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModBlocks.DARKSTEEL_BARREL.newItemStack(), "xxx", "xsx", "xxx", 'x', "ingotDarkSteel", 's', ModBlocks.STEEL_BARREL.get());
+        RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModBlocks.NETHERITE_STAIRS.newItemStack(4), "B  ", "BB ", "BBB", 'B', "blockNetherite");
 		ItemStack output123 = ModItems.NETHERITE_INGOT.newItemStack(9);
 		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output123, "x", 'x', ModBlocks.NETHERITE_BLOCK.get());
 

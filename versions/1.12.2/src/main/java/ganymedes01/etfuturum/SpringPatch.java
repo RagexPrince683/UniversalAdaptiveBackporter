@@ -13,6 +13,7 @@ public final class SpringPatch extends BlockBush implements IGrowable {
     public static final PropertyInteger FLOWERS=PropertyInteger.create("flower_amount",1,4),SEGMENTS=PropertyInteger.create("segment_amount",1,4);public static final PropertyDirection FACING=BlockHorizontal.FACING;
     public final boolean litter;
     public SpringPatch(boolean litter){this.litter=litter;setSoundType(litter?SoundType.PLANT:SoundType.PLANT);setDefaultState(blockState.getBaseState().withProperty(FLOWERS,1).withProperty(SEGMENTS,1).withProperty(FACING,EnumFacing.NORTH));}
+    @Override public BlockRenderLayer getRenderLayer(){return BlockRenderLayer.CUTOUT;}
     private PropertyInteger amount(){return litter?SEGMENTS:FLOWERS;}
     @Override protected BlockStateContainer createBlockState(){return new BlockStateContainer(this,FLOWERS,SEGMENTS,FACING);}
     @Override public IBlockState getStateFromMeta(int meta){return getDefaultState().withProperty(amount(),(meta>>2)+1).withProperty(FACING,EnumFacing.byHorizontalIndex(meta&3));}

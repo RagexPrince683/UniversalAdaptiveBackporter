@@ -41,7 +41,7 @@ public final class Content {
     public static final ItemArmor.ArmorMaterial NETHERITE_ARMOR = EnumHelper.addArmorMaterial("UAB_NETHERITE", "etfuturum:netherite", 37, new int[]{3, 6, 8, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 3);
     private Content() { }
     public static boolean available(String name) {
-        if (!FEATURE.containsKey(name) || !Features.enabled(FEATURE.get(name)) || !ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name)) return false;
+        if (!FEATURE.containsKey(name) || !Features.enabled(FEATURE.get(name)) || !ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name) || !ganymedes01.etfuturum.configuration.CopperSettings.enabled(name)) return false;
         for (String dependency : REQUIREMENTS.getOrDefault(name, Collections.emptyList())) if (!Features.enabled(dependency)) return false;
         if (ALTERNATIVES.containsKey(name) && ALTERNATIVES.get(name).stream().noneMatch(Features::enabled)) return false;
         return true;
@@ -58,14 +58,14 @@ public final class Content {
         if (BLOCKS.put(name, block) != null) throw new IllegalStateException("Duplicate block " + name);
         FEATURE.put(name, feature);
         block.setRegistryName(UAB.ID, name).setTranslationKey("etfuturum." + name);
-        if (Features.enabled(feature) && ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name)) block.setCreativeTab(TAB);
+        if (Features.enabled(feature) && ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name) && ganymedes01.etfuturum.configuration.CopperSettings.enabled(name)) block.setCreativeTab(TAB);
         return block;
     }
     static <T extends Item> T add(String name, String feature, T item) {
         if (ITEMS.put(name, item) != null) throw new IllegalStateException("Duplicate item " + name);
         FEATURE.put(name, feature);
         item.setRegistryName(UAB.ID, name).setTranslationKey("etfuturum." + name);
-        if (Features.enabled(feature) && ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name)) item.setCreativeTab(TAB);
+        if (Features.enabled(feature) && ganymedes01.etfuturum.configuration.NetheriteSettings.enabled(name) && ganymedes01.etfuturum.configuration.CopperSettings.enabled(name)) item.setCreativeTab(TAB);
         return item;
     }
     private static void stone(String feature, String... names) {

@@ -24,17 +24,20 @@ public class CompatIronChests {
 	private static final Map<String, ChestChangerType> upgradeTypes = new LinkedHashMap<>();
 	private static final Map<ChestChangerType, Pair<IronChestType, IronChestType>> upgradeMappings = new IdentityHashMap<>();
 	private static final Map<String, IronChestType> tiers = new LinkedHashMap<>();
+    private static final java.util.Set<String> nativeTiers = new java.util.HashSet<>(), nativeUpgrades = new java.util.HashSet<>();
 	private static double renderDistance;
 	static {
 		// Collects all enabled chest upgrade typee
 		renderDistance = getFieldOrDefault(IronChest.class, null, "TRANSPARENT_RENDER_INSIDE", Boolean.class, true)
 				? getFieldOrDefault(IronChest.class, null, "TRANSPARENT_RENDER_DISTANCE", Double.class, 128D) : 0F;
 		for(IronChestType type : IronChestType.values()) {
+            nativeTiers.add(type.name());
 			if(callOrDefault(type, "isEnabled", Boolean.class, true)) {
 				tiers.put(type.name(), type);
 			}
 		}
 		for(ChestChangerType type : ChestChangerType.values()) {
+            nativeUpgrades.add(type.name());
 			IronChestType source = getRequiredField(type, "source", IronChestType.class);
 			IronChestType target = getRequiredField(type, "target", IronChestType.class);
 			boolean isEnabled = isAllowed(type) && tierExists(source.name()) && tierExists(target.name());
@@ -46,11 +49,11 @@ public class CompatIronChests {
 	}
 
 	public static boolean upgradeExists(String from, String to) {
-		return upgradeTypes.containsKey(from+to);
+		return upgradeTypes.containsKey(from+to) || "OBSIDIAN".equals(from) && "DARKSTEEL".equals(to) && !nativeUpgrades.contains(from+to) && tierExists(from) && tierExists(to) && ModsList.ENDER_IO.isLoaded();
 	}
 
 	public static boolean tierExists(String type) {
-		return tiers.containsKey(type);
+		return tiers.containsKey(type) || !nativeTiers.contains(type) && ("STEEL".equals(type) || "DARKSTEEL".equals(type)) && ModsList.ENDER_IO.isLoaded();
 	}
 
 	public static void init() {
@@ -66,9 +69,12 @@ public class CompatIronChests {
 	public static void registerRecipes() {
 		if(ModItems.BARREL_UPGRADE.isEnabled()) {
 			ItemBarrelUpgrade upgrade = ((ItemBarrelUpgrade) ModItems.BARREL_UPGRADE.get());
+            if (ganymedes01.etfuturum.ModBlocks.DARKSTEEL_BARREL.isEnabled() && upgradeExists("OBSIDIAN", "DARKSTEEL") && !net.minecraftforge.oredict.OreDictionary.getOres("ingotDarkSteel").isEmpty())
+                RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModItems.BARREL_UPGRADE.newItemStack(1, 7), "XXX", "XXX", "XYX", 'X', "ingotDarkSteel", 'Y', net.minecraft.init.Blocks.obsidian);
 			for (int i = 0; i < upgrade.types.length; i++) {
-				Item icUpgrade = upgradeItems.get(upgrade.getSource(i) + upgrade.getTarget(i));
-				RecipeHelper.addShapedRecipe(ModItems.BARREL_UPGRADE.newItemStack(1, i), "X", 'X', new ItemStack(icUpgrade));
+                Item icUpgrade = upgradeItems.get(upgrade.getSource(i) + upgrade.getTarget(i));
+                if (icUpgrade == null) continue;
+                RecipeHelper.addShapedRecipe(ModItems.BARREL_UPGRADE.newItemStack(1, i), "X", 'X', new ItemStack(icUpgrade));
 				RecipeHelper.addShapedRecipe(new ItemStack(icUpgrade), "X", 'X', ModItems.BARREL_UPGRADE.newItemStack(1, i));
 			}
 		}
@@ -76,6 +82,7 @@ public class CompatIronChests {
 			ItemShulkerBoxUpgrade upgrade = ((ItemShulkerBoxUpgrade) ModItems.SHULKER_BOX_UPGRADE.get());
 			for (int i = 0; i < upgrade.types.length; i++) {
 				Item icUpgrade = upgradeItems.get(upgrade.getSource(i) + upgrade.getTarget(i));
+                if (icUpgrade == null) continue;
 					RecipeHelper.addShapelessRecipe(RecipeHelper.Priority.NORMAL, ModItems.SHULKER_BOX_UPGRADE.newItemStack(1, i), ModItems.SHULKER_SHELL.newItemStack(), new ItemStack(icUpgrade));
 					RecipeHelper.addShapedRecipe(RecipeHelper.Priority.NORMAL, new ItemStack(icUpgrade), "X", 'X', ModItems.SHULKER_BOX_UPGRADE.newItemStack(1, i));
 			}
@@ -84,7 +91,7 @@ public class CompatIronChests {
 
 	@Nullable
 	public static String getUpgradeName(String from, Item item) {
-		if(item instanceof ItemChestChanger changer && changer.getType().canUpgrade(tiers.get(from))) {
+		if(tiers.containsKey(from) && item instanceof ItemChestChanger changer && changer.getType().canUpgrade(tiers.get(from))) {
 			Pair<IronChestType, IronChestType> types = upgradeMappings.get(changer.getType());
 			if(types.getLeft().name().equals(from.toUpperCase())) {
 				return types.getRight().name();
@@ -96,7 +103,7 @@ public class CompatIronChests {
 	public static String getNextBarrelUpgrade(String current, ItemStack stack) {
 		if(ModItems.BARREL_UPGRADE.isEnabled()) {
 			if(stack.getItem() instanceof ItemBarrelUpgrade upgrade && upgrade.getSource(stack.getItemDamage()).equals(current)
-					&& upgradeTypes.containsKey(current+upgrade.getTarget(stack.getItemDamage()))) {
+					&& upgradeExists(current, upgrade.getTarget(stack.getItemDamage()))) {
 				return upgrade.getTarget(stack.getItemDamage());
 			}
 			return null;

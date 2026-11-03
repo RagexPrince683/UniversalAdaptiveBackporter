@@ -80,6 +80,16 @@ public class ModTagging {
 
 	@SuppressWarnings("unchecked")
 	static void registerHogTags() {
+        // NetheritePlus 0.9 registers NetheriteBlock but omits blockNetherite.
+        if (ModsList.NETHERITEPLUS.isLoaded()) {
+            Block external = GameRegistry.findBlock("netheriteplus", "NetheriteBlock");
+            if (external != null && external != Blocks.air && Item.getItemFromBlock(external) != null) {
+                ItemStack stack = new ItemStack(external);
+                boolean tagged = false;
+                for (int id : OreDictionary.getOreIDs(stack)) if ("blockNetherite".equals(OreDictionary.getOreName(id))) tagged = true;
+                if (!tagged) OreDictionary.registerOre("blockNetherite", stack);
+            }
+        }
 		BlockTags.addTags(ModBlocks.SHROOMLIGHT.get(), "minecraft:mineable/hoe");
 		BlockTags.addTags(ModBlocks.SPONGE.get(), "minecraft:mineable/hoe");
 		BlockTags.addTags(ModBlocks.TARGET.get(), "minecraft:mineable/hoe");
