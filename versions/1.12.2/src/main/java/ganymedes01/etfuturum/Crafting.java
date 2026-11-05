@@ -42,6 +42,8 @@ public final class Crafting {
         for (String ore : new String[]{"copper", "iron", "gold"}) compression(event, "raw_" + ore, "raw_" + ore + "_block");
         compression(event, "dried_kelp", "dried_kelp_block");
         shaped(event,"bamboo_block",Content.stack("bamboo_block"),"BBB","BBB","BBB",'B',Content.item("bamboo"));
+        Item externalBamboo = BambooCompat.externalItem();
+        if (externalBamboo != null) shaped(event,"bamboo_block_from_bop",Content.stack("bamboo_block"),"BBB","BBB","BBB",'B',new ItemStack(externalBamboo));
         shaped(event,"bamboo_mosaic",Content.stack("bamboo_mosaic"),"S","S",'S',Content.block("bamboo_slab"));
         shaped(event,"moss_carpet",count("moss_carpet",3),"MM",'M',Content.block("moss_block"));
         shaped(event,"turtle_helmet",Content.stack("turtle_helmet"),"SSS","S S",'S',Content.item("turtle_scute"));

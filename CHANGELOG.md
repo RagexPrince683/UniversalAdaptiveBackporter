@@ -633,3 +633,10 @@
 - 1.12.2: remove the six duplicate vanilla wood boat items and the duplicate smooth-stone slab item. Use native boats in chest-boat recipes and saved boat drops, and native slabs in crafting, stonecutting and modern structure conversion. Remap removed item identities and convert saved slabs to vanilla during chunk loading, retaining slab halves and boat wood types. Keep the old slab block IDs only as hidden save-loading adapters. Keep later additions that share older display names, including bark wood and modern sandstone variants.
 - Both targets: restore dense mangrove placement from shallow-water beds, tall and short branching trees, irregular grounded roots, root-top moss, vines, hanging propagule ages, swamp grass variation, underwater mud, lily pads and dead bushes. Preserve the legacy terrain engines, biome identities, configuration and structure/loading boundaries. Correct the mangrove frog spawn weight.
 - 1.12.2: supply missing mangrove and azalea block/item foliage colors so tinted leaf models render correctly. Restore mud as plantable soft ground with the native shovel tool and seven-eighths collision height, matching the legacy implementation.
+
+2026-11-04 21:17 — Support Biomes O' Plenty bamboo and independent pandas
+
+- Both targets: allow nine Biomes O' Plenty bamboo items to craft a UAB Bamboo Block while UAB bamboo plants are disabled. Retain the bamboo building-block switch and existing recipes.
+- Remove the panda dependency on UAB bamboo plants and allow natural spawning in Biomes O' Plenty's Bamboo Forest as well as jungles. Preserve panda availability, passive-spawning controls and configured spawn weights/groups.
+- Let pandas follow and eat Biomes O' Plenty bamboo and count its placed stalks toward breeding. Correct the 1.7.10 panda's native food reference to the usable UAB bamboo item; keep optional-mod integration free of a required BOP dependency.
+- 1.12.2: remap the ore-generation reservation hook normally instead of aliasing a field that Biomes O' Plenty makes public, preventing a startup failure with BOP while preserving structure reservations.

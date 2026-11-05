@@ -27,7 +27,10 @@ public final class ModernMobs {
 		GameRegistry.registerWorldGenerator(new MobAcquisitionWorldgen(), 10);
 		if (ConfigEntities.enableModernPassiveSpawning) {
 			spawn(EntityCat.class, 3, 1, 2, Type.PLAINS, Type.SWAMP, Type.SANDY, Type.CONIFEROUS);
-			if (ModBlocks.BAMBOO.isEnabled()) spawn(EntityPanda.class, 2, 1, 2, Type.JUNGLE);
+			for (BiomeGenBase biome : BiomeGenBase.getBiomeGenArray())
+				if (biome != null && ganymedes01.etfuturum.compat.BambooCompat.isPandaHabitat(biome)
+						&& !BiomeDictionary.isBiomeOfType(biome, Type.NETHER) && !BiomeDictionary.isBiomeOfType(biome, Type.END))
+					ganymedes01.etfuturum.configuration.SpawnSettings.addSpawn(EntityPanda.class, 2, 1, 2, EnumCreatureType.creature, biome);
 			spawn(EntityLlama.class, 5, 2, 4, Type.MOUNTAIN, Type.SAVANNA); spawn(EntityArmadillo.class, 6, 2, 3, Type.SAVANNA, Type.MESA); spawn(EntityCamel.class, 1, 1, 1, Type.SANDY);
 		}
 		if (ConfigEntities.enableModernHostileSpawning) {

@@ -7,9 +7,9 @@ import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-@Mixin(value=WorldGenMinable.class,remap=false)
+@Mixin(WorldGenMinable.class)
 public abstract class StructureOreMixin {
- @Shadow(aliases="field_76541_b",remap=false) @Final private int numberOfBlocks;
- @Inject(method={"generate","func_180709_b"},at=@At("HEAD"),cancellable=true,remap=false)
+ @Shadow @Final protected int numberOfBlocks;
+ @Inject(method="generate",at=@At("HEAD"),cancellable=true)
  private void etfu$reserve(World world,Random random,BlockPos pos,CallbackInfoReturnable<Boolean> callback){if(UndergroundStructures.oreReserved(world,pos.getX(),pos.getY(),pos.getZ(),numberOfBlocks))callback.setReturnValue(false);}
 }
