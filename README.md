@@ -216,7 +216,7 @@ Reproducible issues and compatibility reports are welcome.
 <!-- UAB_ISSUE_LEADERBOARD_START -->
 ## Top Issue Submitters
 
-Recognizing community members whose bug reports and enhancement suggestions have been completed. Rankings are based on issues submitted, not code contributions.
+Recognizing community members whose bug reports and enhancement suggestions have been completed. Thank you for helping us better this project!
 
 | Rank | Issue Submitter | Bugs Reported | Enhancements Suggested | Total |
 |---|---|---|---|---|
