@@ -87,6 +87,16 @@ public final class ClientProxy extends CommonProxy {
             else if(block instanceof AquaticPlant)ModelLoader.setCustomStateMapper(block,aquaticMapper(block));
             else if(block instanceof BubbleColumn)ModelLoader.setCustomStateMapper(block,ignored->Collections.emptyMap());
         }
+        for(String name:new String[]{"smooth_stone_slab","smooth_stone_double_slab"}) {
+            Block legacy=net.minecraftforge.fml.common.registry.ForgeRegistries.BLOCKS.getValue(new ResourceLocation(UAB.ID,name));
+            Block nativeBlock=name.equals("smooth_stone_slab")?net.minecraft.init.Blocks.STONE_SLAB:net.minecraft.init.Blocks.DOUBLE_STONE_SLAB;
+            Map<IBlockState,ModelResourceLocation> nativeModels=new net.minecraft.client.renderer.block.statemap.DefaultStateMapper().putStateModelLocations(nativeBlock);
+            ModelLoader.setCustomStateMapper(legacy,block->{
+                Map<IBlockState,ModelResourceLocation> states=new HashMap<>();
+                for(IBlockState state:block.getBlockState().getValidStates())states.put(state,nativeModels.get(nativeBlock.getStateFromMeta(block.getMetaFromState(state))));
+                return states;
+            });
+        }
         Content.ITEMS.values().forEach(item -> ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory")));
         for(Block block:Content.BLOCKS.values())if(block instanceof ModdedOreBlock)for(int meta=0;meta<16;meta++)ModelLoader.setCustomModelResourceLocation(net.minecraft.item.Item.getItemFromBlock(block),meta,new ModelResourceLocation(new ResourceLocation(UAB.ID,((ModdedOreBlock)block).variant(meta)),"inventory"));
         for(net.minecraft.item.Item item:Content.ITEMS.values())if(item instanceof VariantItem)for(int variant=1;variant<((VariantItem)item).variants.length;variant++)ModelLoader.setCustomModelResourceLocation(item,variant,new ModelResourceLocation(new ResourceLocation(UAB.ID,((VariantItem)item).variants[variant]),"inventory"));
@@ -109,6 +119,12 @@ public final class ClientProxy extends CommonProxy {
     @Override public void init() {
         net.minecraft.client.renderer.color.BlockColors colors=Minecraft.getMinecraft().getBlockColors();for(String name:SpringPlants.PLANTS){Block plant=Content.block(name);if(plant instanceof SpringPatch&&((SpringPatch)plant).litter){colors.registerBlockColorHandler((state,world,pos,tint)->world!=null&&pos!=null?DryFoliageColors.color(world.getBiome(pos).getTemperature(pos),world.getBiome(pos).getRainfall()):DryFoliageColors.color(.5,1),plant);Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack,tint)->DryFoliageColors.color(.5,1),net.minecraft.item.Item.getItemFromBlock(plant));}else if(plant instanceof SpringPatch||plant instanceof SpringPlant&&(((SpringPlant)plant).kind.equals("bush")||((SpringPlant)plant).kind.equals("firefly_bush"))){colors.registerBlockColorHandler((state,world,pos,tint)->world!=null&&pos!=null?net.minecraft.world.biome.BiomeColorHelper.getGrassColorAtPos(world,pos):0x79c05a,plant);Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack,tint)->0x79c05a,net.minecraft.item.Item.getItemFromBlock(plant));}}
 
+        for(String foliage:new String[]{"mangrove_leaves","azalea_leaves","flowering_azalea_leaves"}) {
+            Block leaves=Content.block(foliage);
+            boolean mangrove=foliage.equals("mangrove_leaves");
+            colors.registerBlockColorHandler((state,world,pos,tint)->mangrove?0x92C648:world!=null&&pos!=null?net.minecraft.world.biome.BiomeColorHelper.getFoliageColorAtPos(world,pos):net.minecraft.world.ColorizerFoliage.getFoliageColorBasic(),leaves);
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack,tint)->mangrove?0x92C648:net.minecraft.world.ColorizerFoliage.getFoliageColorBasic(),net.minecraft.item.Item.getItemFromBlock(leaves));
+        }
         if(net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher.instance.getRenderer(net.minecraft.tileentity.TileEntityFlowerPot.class)==null)net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(net.minecraft.tileentity.TileEntityFlowerPot.class,new FlowerPotRenderer());
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(net.minecraft.tileentity.TileEntityShulkerBox.class,new TieredShulkerRenderer());
         net.minecraftforge.fml.client.registry.ClientRegistry.bindTileEntitySpecialRenderer(UndyedShulkerTile.class,new TieredShulkerRenderer());

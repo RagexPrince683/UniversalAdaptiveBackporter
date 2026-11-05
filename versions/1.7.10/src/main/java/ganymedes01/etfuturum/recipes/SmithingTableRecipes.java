@@ -1,8 +1,12 @@
 package ganymedes01.etfuturum.recipes;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import ganymedes01.etfuturum.ModItems;
+import ganymedes01.etfuturum.api.utils.RecipeHelper;
+import ganymedes01.etfuturum.compat.ModsList;
 import ganymedes01.etfuturum.configuration.configs.ConfigBlocksItems;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -28,6 +32,8 @@ public class SmithingTableRecipes {
 
 	public static void init() {
 		if (ConfigBlocksItems.enableNetherite) {
+			// Exact external ingots must take precedence over the generic ingotNetherite recipes.
+			instance.addNetheritePlusRecipes();
             if(ganymedes01.etfuturum.configuration.ContentAvailability.available(ganymedes01.etfuturum.ModernAdditions.item("netherite_horse_armor")))
                 instance.addUpgrade(new ItemStack(ganymedes01.etfuturum.ModernAdditions.item("netherite_horse_armor")), "ingotNetherite", new ItemStack(Items.diamond_horse_armor));
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_PICKAXE.get()), "ingotNetherite", new ItemStack(Items.diamond_pickaxe, 1, OreDictionary.WILDCARD_VALUE));
@@ -42,6 +48,32 @@ public class SmithingTableRecipes {
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_CHESTPLATE.get()), "ingotNetherite", new ItemStack(Items.diamond_chestplate, 1, OreDictionary.WILDCARD_VALUE));
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_LEGGINGS.get()), "ingotNetherite", new ItemStack(Items.diamond_leggings, 1, OreDictionary.WILDCARD_VALUE));
 			SmithingTableRecipes.getInstance().addUpgrade(new ItemStack(ModItems.NETHERITE_BOOTS.get()), "ingotNetherite", new ItemStack(Items.diamond_boots, 1, OreDictionary.WILDCARD_VALUE));
+		}
+	}
+
+	private void addNetheritePlusRecipes() {
+		if (!ModsList.NETHERITEPLUS.isLoaded()) return;
+		Item ingot = GameRegistry.findItem("netheriteplus", "NetheriteIngot");
+		if (ingot != null) {
+			ItemStack material = new ItemStack(ingot);
+			// Beta 0.9 only supplies the nonstandard NetheriteIngot ore name.
+			if (!ingredientMatches(OreDictionary.getOres("ingotNetherite"), material))
+				OreDictionary.registerOre("ingotNetherite", material);
+			String[] names = {"NetheritePickaxe", "ItemNetheriteAxe", "ItemNetheriteShovel",
+					"ItemNetheriteSword", "ItemNetheriteHoe", "NetheriteHelm", "NetheriteChest", "NetheriteLegg", "NetheriteBoots"};
+			Item[] bases = {Items.diamond_pickaxe, Items.diamond_axe, Items.diamond_shovel,
+					Items.diamond_sword, Items.diamond_hoe, Items.diamond_helmet, Items.diamond_chestplate,
+					Items.diamond_leggings, Items.diamond_boots};
+			for (int i = 0; i < names.length; i++) {
+				Item result = GameRegistry.findItem("netheriteplus", names[i]);
+				if (result != null) addUpgrade(new ItemStack(result), material,
+						new ItemStack(bases[i], 1, OreDictionary.WILDCARD_VALUE));
+			}
+		}
+		Item scrap = GameRegistry.findItem("netheriteplus", "NetheriteScrap");
+		if (scrap != null && ModItems.NETHERITE_UPGRADE_SMITHING_TEMPLATE.isEnabled()) {
+			RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, ModItems.NETHERITE_UPGRADE_SMITHING_TEMPLATE.newItemStack(),
+					"dsd", "dnd", "ddd", 'd', Items.diamond, 's', scrap, 'n', Blocks.netherrack);
 		}
 	}
 

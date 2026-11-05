@@ -617,3 +617,19 @@
 - Both targets: preserve leaf-litter and iron-nautilus inventory transparency with lossless RGBA sprites compatible with Java 8, render leaf litter through alpha-aware block passes, use the conduit shell artwork with matching face UVs, and reposition hanging-sign boards with crossed chains and wall brackets. Restore the 1.12.2 conduit inventory model, recovery-compass frame sprites and missing tab/door names.
 - Both targets: add independent copper player-tool and player-armor acquisition controls without unregistering saved items or disabling other copper content.
 - 1.7.10: tag NetheritePlus 0.9's registered storage block as blockNetherite so the existing stairs recipe accepts it even when UAB storage acquisition is disabled. Restore the historical steel and Dark Steel barrel recipes and obsidian-to-darksteel upgrade under their original material requirements. Support the retained barrel tiers when standard Iron Chests lacks them, respect explicit native tier restrictions, and skip absent optional chest-upgrade conversions. Apply the same acquisition paths on 1.12.2.
+
+2026-11-04 15:15 — Support NetheritePlus equipment upgrades and template crafting
+
+- 1.7.10: upgrade vanilla diamond tools and armor into NetheritePlus+ equipment when using that mod's ingot in UAB's Smithing Table. Prioritize these exact-material recipes over generic ingot recipes, preserve damage and NBT, and retain template requirements and UAB-ingot outputs. External equipment remains available when UAB's equipment acquisition is disabled.
+- Supply NetheritePlus Beta 0.9's missing standard ingot tag and add a one-template crafting recipe using seven diamonds, NetheritePlus scrap and netherrack. Keep existing duplication and loot acquisition, configuration gates, and optional-mod loading behavior.
+
+2026-11-04 15:36 — Recognize completed issue submissions in an automated leaderboard
+
+- Add a historical Top Issue Submitters README table that credits original issue creators for completed bugs and enhancements, with duplicate/rejected exclusions and deterministic rankings. Account automation detection is intentionally omitted.
+- Refresh through GitHub Actions on relevant issue/label changes, manual dispatch and a daily schedule; update only the marked README content, with a pull-request fallback when direct pushes are unavailable.
+
+2026-11-04 15:40 — Remove native item duplicates and repair mangrove swamp adaptation
+
+- 1.12.2: remove the six duplicate vanilla wood boat items and the duplicate smooth-stone slab item. Use native boats in chest-boat recipes and saved boat drops, and native slabs in crafting, stonecutting and modern structure conversion. Remap removed item identities and convert saved slabs to vanilla during chunk loading, retaining slab halves and boat wood types. Keep the old slab block IDs only as hidden save-loading adapters. Keep later additions that share older display names, including bark wood and modern sandstone variants.
+- Both targets: restore dense mangrove placement from shallow-water beds, tall and short branching trees, irregular grounded roots, root-top moss, vines, hanging propagule ages, swamp grass variation, underwater mud, lily pads and dead bushes. Preserve the legacy terrain engines, biome identities, configuration and structure/loading boundaries. Correct the mangrove frog spawn weight.
+- 1.12.2: supply missing mangrove and azalea block/item foliage colors so tinted leaf models render correctly. Restore mud as plantable soft ground with the native shovel tool and seven-eighths collision height, matching the legacy implementation.

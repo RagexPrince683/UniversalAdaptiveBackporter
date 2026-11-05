@@ -33,6 +33,7 @@ public final class StonecuttingRecipes {
             IBlockState base = shape.getValue();
             cut(new ItemStack(base.getBlock(), 1, base.getBlock().getMetaFromState(base)), Content.stack(shape.getKey()), shape.getKey().endsWith("_slab") ? 2 : 1);
         }
+        cut(Content.stack("smooth_stone"), new ItemStack(Blocks.STONE_SLAB, 1, 0), 2);
         forms(Blocks.COBBLESTONE, 0, Blocks.STONE_SLAB, 3, Blocks.STONE_STAIRS, Blocks.COBBLESTONE_WALL, 0);
         forms(Blocks.MOSSY_COBBLESTONE, 0, null, 0, null, Blocks.COBBLESTONE_WALL, 1);
         cut(stack(Blocks.STONE, 0), stack(Blocks.STONEBRICK, 0), 1);

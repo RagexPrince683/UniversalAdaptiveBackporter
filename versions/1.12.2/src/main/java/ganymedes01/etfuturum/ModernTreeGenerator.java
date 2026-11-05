@@ -17,27 +17,40 @@ final class ModernTreeGenerator {
     private final Map<BlockPos, IBlockState> plan = new LinkedHashMap<>();
     private ModernTreeGenerator(World world, Random random, String tree) { this.world = world; this.random = random; this.tree = tree; }
     static boolean generate(World world, Random random, BlockPos pos, String tree, boolean notify) {
-        if (!Content.available(tree + "_sapling") || !world.isAreaLoaded(pos.add(-8, -6, -8), pos.add(8, 15, 8))) return false;
+        int margin = tree.equals("mangrove") ? 9 : 8;
+        if (!Content.available(tree + "_sapling") || !world.isAreaLoaded(pos.add(-margin, -6, -margin), pos.add(margin, tree.equals("mangrove") ? 25 : 15, margin))) return false;
         ModernTreeGenerator generator = new ModernTreeGenerator(world, random, tree);
         boolean valid = tree.equals("cherry") ? generator.cherry(pos) : tree.equals("mangrove") ? generator.mangrove(pos) : tree.equals("pale_oak") && generator.paleOak(pos);
         if(valid&&!notify&&tree.equals("pale_oak")&&Content.available("creaking_heart")&&random.nextInt(10)==0){int height=0;while(height<32&&generator.plan.containsKey(pos.up(height))&&generator.plan.get(pos.up(height)).getBlock()==Content.block("pale_oak_log"))height++;if(height>=4)generator.plan.put(pos.up(height-3),Content.block("creaking_heart").getDefaultState());}
         boolean applied=valid&&generator.apply(notify);if(applied){if(notify){BeeNests.beginSapling(world,pos,random);try{BeeNests.afterTree(world,random,pos);}finally{BeeNests.endSapling();}}else BeeNests.afterTree(world,random,pos);}return applied;
     }
     private void log(BlockPos pos, EnumFacing.Axis axis) { plan.put(pos, Content.block(tree + "_log").getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.fromFacingAxis(axis))); }
-    private void leaf(BlockPos pos) { if (!plan.containsKey(pos)) plan.put(pos, Content.block(tree + "_leaves").getDefaultState()); }
+    private void leaf(BlockPos pos) {
+        if (plan.containsKey(pos)) return;
+        IBlockState old = world.getBlockState(pos);
+        if (tree.equals("mangrove") && old.getMaterial() != Material.AIR && old.getMaterial() != Material.LEAVES && !old.getBlock().isReplaceable(world, pos)) return;
+        plan.put(pos, Content.block(tree + "_leaves").getDefaultState());
+    }
     private boolean soil(BlockPos pos, boolean wet) {
         Block block = world.getBlockState(pos).getBlock();
         return block == Blocks.GRASS || block == Blocks.DIRT || block instanceof PaleMoss || wet && (block == Blocks.CLAY || block == Content.block("mud"));
     }
     private boolean apply(boolean notify) {
         for (Map.Entry<BlockPos, IBlockState> entry : plan.entrySet()) {
-            BlockPos p = entry.getKey(); IBlockState old = world.getBlockState(p);
+            BlockPos p = entry.getKey(); if (!world.isBlockLoaded(p)) return false; IBlockState old = world.getBlockState(p);
             if (p.getY() < 1 || p.getY() >= world.getHeight() || world.getTileEntity(p) != null) return false;
             if (old.getMaterial() != Material.AIR && old.getMaterial() != Material.LEAVES && !(old.getBlock() instanceof ModernSapling) && !(tree.equals("mangrove") && old.getMaterial() == Material.WATER) && !old.getBlock().isReplaceable(world, p)) {
-                if (!(entry.getValue().getBlock() == Content.BLOCKS.get("muddy_mangrove_roots") && old.getBlock() == Content.block("mud"))) return false;
+                if (tree.equals("mangrove") && entry.getValue().getMaterial() == Material.LEAVES) continue;
+                if (!(entry.getValue().getBlock() == Content.BLOCKS.get("muddy_mangrove_roots") && (old.getBlock() == Content.block("mud") || old.getBlock() == Content.block("muddy_mangrove_roots"))) && !(tree.equals("mangrove") && old.getBlock() == Content.block("mangrove_roots"))) return false;
             }
         }
-        for (Map.Entry<BlockPos, IBlockState> entry : plan.entrySet()) world.setBlockState(entry.getKey(), entry.getValue(), notify ? 3 : 18);
+        for (Map.Entry<BlockPos, IBlockState> entry : plan.entrySet()) {
+            if (tree.equals("mangrove") && entry.getValue().getMaterial() == Material.LEAVES) {
+                IBlockState old = world.getBlockState(entry.getKey());
+                if (old.getMaterial() != Material.AIR && old.getMaterial() != Material.LEAVES && !old.getBlock().isReplaceable(world, entry.getKey())) continue;
+            }
+            world.setBlockState(entry.getKey(), entry.getValue(), notify ? 3 : 18);
+        }
         return true;
     }
     private boolean cherry(BlockPos pos) {
@@ -76,30 +89,60 @@ final class ModernTreeGenerator {
         }
     }
     private boolean mangrove(BlockPos pos) {
-        int height = 7 + random.nextInt(5); BlockPos ground = pos.down();
-        while (ground.getY() > pos.getY() - 6 && world.getBlockState(ground).getMaterial() == Material.WATER) ground = ground.down();
-        if (!soil(ground, true)) return false;
-        // Root columns start below the raised trunk and reach the shallow-water bed.
-        for (EnumFacing direction : EnumFacing.HORIZONTALS) for (int step = 1; step <= 3; step++) {
-            BlockPos root = pos.offset(direction, step).up(4 - step);
-            for (; root.getY() >= pos.getY() - 5 && root.getY() > 0; root = root.down()) {
-                IBlockState old = world.getBlockState(root);
-                if (old.getBlock() == Content.block("mud")) { if (Content.available("mud")) plan.put(root, Content.block("muddy_mangrove_roots").getDefaultState()); break; }
-                if (old.getMaterial().isSolid() && old.getMaterial() != Material.LEAVES && !old.getBlock().isReplaceable(world, root)) break;
-                plan.put(root, Content.block("mangrove_roots").getDefaultState());
+        // Vanilla selects tall mangroves 85% of the time; both grow from the shallow-water bed.
+        while (world.getBlockState(pos.down()).getMaterial() == Material.WATER && pos.getY() > 1) pos = pos.down();
+        if (!soil(pos.down(), true)) return false;
+        boolean tall = random.nextFloat() < .85F;
+        BlockPos trunk = pos.up(tall ? 3 + random.nextInt(5) : 1 + random.nextInt(3));
+        int height = (tall ? 4 : 2) + random.nextInt(2) + random.nextInt(tall ? 10 : 5);
+        plan.put(trunk.down(), Content.block("mangrove_roots").getDefaultState());
+        for (EnumFacing direction : EnumFacing.HORIZONTALS) if (!mangroveRoot(trunk.down().offset(direction), direction, trunk)) return false;
+        List<BlockPos> crowns = new ArrayList<>();
+        for (int y = 0; y < height; y++) {
+            log(trunk.up(y), EnumFacing.Axis.Y);
+            if (y > 0 && y < height - 1 && random.nextFloat() < .5F) {
+                EnumFacing direction = EnumFacing.HORIZONTALS[random.nextInt(4)];
+                BlockPos branch = trunk.up(y);
+                int steps = Math.min(height - y, 1 + random.nextInt(tall ? 6 : 4));
+                for (int step = 0; step < steps; step++) {
+                    branch = branch.up(); log(branch, EnumFacing.Axis.Y);
+                    branch = branch.offset(direction); log(branch, direction.getAxis());
+                }
+                crowns.add(branch.up());
             }
         }
-        for (int y = 0; y < 3; y++) plan.put(pos.up(y), Content.block("mangrove_roots").getDefaultState());
-        for (int y = 3; y < height; y++) log(pos.up(y), EnumFacing.Axis.Y);
-        for (int y = height - 3; y <= height + 1; y++) {
-            int radius = y >= height ? 2 : 4;
-            for (int x = -radius; x <= radius; x++) for (int z = -radius; z <= radius; z++) {
-                if (x * x + z * z > radius * radius + 1 || x == 0 && z == 0 && y < height) continue;
-                BlockPos p = pos.add(x, y, z); leaf(p);
-                if (y == height - 3 && random.nextInt(8) == 0 && !plan.containsKey(p.down())) plan.put(p.down(), Content.block("mangrove_sapling").getDefaultState().withProperty(MangroveSapling.HANGING, true));
+        crowns.add(trunk.up(height));
+        for (BlockPos crown : crowns) for (int i = 0; i < 70; i++)
+            leaf(crown.add(random.nextInt(3) - random.nextInt(3), random.nextInt(2) - random.nextInt(2), random.nextInt(3) - random.nextInt(3)));
+        for (Map.Entry<BlockPos, IBlockState> entry : new ArrayList<>(plan.entrySet())) {
+            BlockPos at = entry.getKey();
+            if (entry.getValue().getBlock() == Content.block("mangrove_roots") && Content.available("moss_carpet") && random.nextFloat() < .5F && free(at.up()))
+                plan.put(at.up(), Content.block("moss_carpet").getDefaultState());
+            if (entry.getValue().getBlock() != Content.block("mangrove_leaves")) continue;
+            if (random.nextFloat() < .14F && free(at.down()) && free(at.down(2)))
+                plan.put(at.down(), Content.block("mangrove_sapling").getDefaultState().withProperty(MangroveSapling.HANGING, true).withProperty(MangroveSapling.AGE, random.nextInt(5)));
+            for (EnumFacing side : EnumFacing.HORIZONTALS) if (random.nextFloat() < .125F) {
+                IBlockState vine = Blocks.VINE.getDefaultState().withProperty(BlockVine.getPropertyFor(side.getOpposite()), true);
+                BlockPos trailing = at.offset(side);
+                for (int length = 0; length < 4 && free(trailing); length++, trailing = trailing.down()) plan.put(trailing, vine);
             }
         }
         return true;
+    }
+    private boolean free(BlockPos pos) { return !plan.containsKey(pos) && world.isAirBlock(pos); }
+    private boolean mangroveRoot(BlockPos cursor, EnumFacing direction, BlockPos trunk) {
+        for (int length = 0; length < 15 && cursor.getY() > 0; length++) {
+            IBlockState old = world.getBlockState(cursor);
+            Block block = old.getBlock();
+            if (block == Content.block("mud") || block == Content.block("muddy_mangrove_roots")) {
+                plan.put(cursor, Content.block("muddy_mangrove_roots").getDefaultState()); return true;
+            }
+            if (old.getMaterial().isSolid() && old.getMaterial() != Material.LEAVES && block != Content.block("mangrove_roots") && !block.isReplaceable(world, cursor)) return length > 0;
+            plan.put(cursor, Content.block("mangrove_roots").getDefaultState());
+            int distance = Math.abs(cursor.getX() - trunk.getX()) + Math.abs(cursor.getZ() - trunk.getZ());
+            cursor = distance < 6 && random.nextFloat() < .2F ? cursor.offset(direction) : cursor.down();
+        }
+        return false;
     }
     private boolean paleOak(BlockPos pos) {
         int height = 6 + random.nextInt(4);

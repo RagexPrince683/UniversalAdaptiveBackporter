@@ -158,7 +158,8 @@ public final class Content {
         add("budding_amethyst", "blocksitems.enableAmethyst", new BuddingAmethyst());
         for (int stage = 0; stage < AmethystBud.STAGES.length; stage++) add(AmethystBud.STAGES[stage], "blocksitems.enableAmethyst", new AmethystBud(stage));
         simple("blocksitems.enableAmethyst", "amethyst_shard");
-        stone("blocksitems.enableMud", "mud", "packed_mud", "mud_bricks");
+        add("mud", "blocksitems.enableMud", new MudBlock());
+        stone("blocksitems.enableMud", "packed_mud", "mud_bricks");
         add("soul_soil", "blocksitems.enableSoulSoil", new MaterialBlock(Material.GROUND, SoundType.SAND).setHardness(.5F));
         for (boolean crimson : new boolean[]{true, false}) {
             String kind = crimson ? "crimson" : "warped", flag = crimson ? "experiments.enableCrimsonBlocks" : "experiments.enableWarpedBlocks";
@@ -303,7 +304,7 @@ public final class Content {
         for (String name : new String[]{"cobbled_deepslate", "polished_deepslate", "deepslate_bricks", "deepslate_tiles", "blackstone", "polished_blackstone", "polished_blackstone_bricks", "mud_bricks", "tuff", "polished_tuff", "tuff_bricks"}) shapes(name, FEATURE.get(name), block(name).getDefaultState(), true, true);
         for (String tree : new String[]{"cherry", "mangrove", "crimson", "warped", "pale_oak", "bamboo"}) shapes(tree + "_planks", FEATURE.get(tree + "_planks"), block(tree + "_planks").getDefaultState(), true, false);
         shapes("bamboo_mosaic","blocksitems.enableBambooBlocks",block("bamboo_mosaic").getDefaultState(),true,false);
-        for (String name : new String[]{"smooth_sandstone", "smooth_red_sandstone", "smooth_quartz", "smooth_stone"}) shapes(name, FEATURE.get(name), block(name).getDefaultState(), !name.equals("smooth_stone"), false);
+        for (String name : new String[]{"smooth_sandstone", "smooth_red_sandstone", "smooth_quartz"}) shapes(name, FEATURE.get(name), block(name).getDefaultState(), !name.equals("smooth_stone"), false);
         shapes("prismarine", "blocksitems.enablePrismarine", Blocks.PRISMARINE.getDefaultState(), true, true);
         shapes("prismarine_bricks", "blocksitems.enablePrismarine", Blocks.PRISMARINE.getStateFromMeta(1), true, false);
         shapes("dark_prismarine", "blocksitems.enablePrismarine", Blocks.PRISMARINE.getStateFromMeta(2), true, false);

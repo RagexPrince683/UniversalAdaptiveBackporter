@@ -39,30 +39,53 @@ public final class SurfaceBiomes {
     }
     static void decorate(World world,Random random,int cx,int cz){
         BlockPos center=new BlockPos((cx<<4)+8,0,(cz<<4)+8);Biome biome=world.getBiome(center);if(!(biome instanceof Land))return;Land land=(Land)biome;
-        int count=land.kind==Kind.PALE?8:land.kind==Kind.MANGROVE?7:land.kind==Kind.CHERRY?5:land.kind==Kind.GROVE||land.kind==Kind.BAMBOO?6:land.kind==Kind.MEADOW&&random.nextInt(100)==0?1:0;
+        int count=land.kind==Kind.PALE?8:land.kind==Kind.MANGROVE?25:land.kind==Kind.CHERRY?5:land.kind==Kind.GROVE||land.kind==Kind.BAMBOO?6:land.kind==Kind.MEADOW&&random.nextInt(100)==0?1:0;
         if(!net.minecraftforge.event.terraingen.TerrainGen.decorate(world,random,new BlockPos(cx<<4,0,cz<<4),net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType.TREE))count=0;
         for(int i=0;i<count;i++){
             // The complete native tree footprint must already be loaded; never generate its neighbors.
-            BlockPos pos=world.getHeight(center.add(random.nextInt(9)-4,0,random.nextInt(9)-4));if(world.getBiome(pos)!=biome)continue;
-            net.minecraft.world.gen.structure.StructureBoundingBox area=new net.minecraft.world.gen.structure.StructureBoundingBox(pos.add(-8,-6,-8),pos.add(8,15,8));
-            if(!world.isAreaLoaded(pos.add(-8,-6,-8),pos.add(8,15,8))||ModernStructures.reserved(world,area)||StructureReservations.vanilla(world,area)||OceanStructures.reserved(world,area)||OceanTreasure.reserved(world,area))continue;
+            BlockPos pos=land.kind==Kind.MANGROVE?mangrovePosition(world,new BlockPos((cx<<4)+random.nextInt(16),0,(cz<<4)+random.nextInt(16))):world.getHeight(center.add(random.nextInt(9)-4,0,random.nextInt(9)-4));if(pos==null||world.getBiome(pos)!=biome)continue;
+            int margin=land.kind==Kind.MANGROVE?9:8;
+            net.minecraft.world.gen.structure.StructureBoundingBox area=new net.minecraft.world.gen.structure.StructureBoundingBox(pos.add(-margin,-6,-margin),pos.add(margin,land.kind==Kind.MANGROVE?25:15,margin));
+            if(!world.isAreaLoaded(pos.add(-margin,-6,-margin),pos.add(margin,land.kind==Kind.MANGROVE?25:15,margin))||ModernStructures.reserved(world,area)||StructureReservations.vanilla(world,area)||OceanStructures.reserved(world,area)||OceanTreasure.reserved(world,area))continue;
             if(land.kind==Kind.CHERRY||land.kind==Kind.MANGROVE||land.kind==Kind.PALE){ModernTreeGenerator.generate(world,random,pos,land.kind==Kind.CHERRY?"cherry":land.kind==Kind.MANGROVE?"mangrove":"pale_oak",false);}
             else land.tree.generate(world,random,pos);
         }
         if(land.kind==Kind.PALE&&Content.available("pale_moss_block"))for(int i=0;i<64;i++){BlockPos pos=world.getHeight(new BlockPos((cx<<4)+random.nextInt(16),0,(cz<<4)+random.nextInt(16))).down();if(world.getBiome(pos)!=biome||world.getTileEntity(pos)!=null||ModernStructures.occupied(world,pos))continue;Block old=world.getBlockState(pos).getBlock();if(old!=Blocks.GRASS&&old!=Blocks.DIRT)continue;world.setBlockState(pos,Content.block("pale_moss_block").getDefaultState(),18);if(world.isAirBlock(pos.up())&&random.nextInt(3)==0)world.setBlockState(pos.up(),Content.block(Content.available("eyeblossom")&&random.nextInt(5)==0?"eyeblossom":"pale_moss_carpet").getDefaultState(),18);}
     }
+    private static BlockPos mangrovePosition(World world,BlockPos column) {
+        BlockPos pos=world.getHeight(column);
+        // Legacy getHeight includes water; step down to the shallow-water bed.
+        while(pos.getY()>1) {
+            BlockPos below=pos.down();net.minecraft.block.state.IBlockState state=world.getBlockState(below);
+            if(state.getMaterial()==net.minecraft.block.material.Material.WATER){pos=below;continue;}
+            break;
+        }
+        int depth=0;while(depth<=5&&world.getBlockState(pos.up(depth)).getMaterial()==net.minecraft.block.material.Material.WATER)depth++;
+        return depth>5?null:pos;
+    }
     private static final class Land extends Biome {
         final Kind kind;final boolean generate;final BiomeManager.BiomeType climate;final BiomeDictionary.Type[] tags;final WorldGenAbstractTree tree;
         Land(String name,Kind kind,String flag,BiomeManager.BiomeType climate,BiomeDictionary.Type[] tags){
             super(properties(name,kind));this.kind=kind;generate=Features.enabled("world."+flag);this.climate=climate;this.tags=tags;decorator.treesPerChunk=-999;decorator.grassPerChunk=kind==Kind.PALE?0:5;decorator.flowersPerChunk=kind==Kind.MEADOW?12:0;
+            if(kind==Kind.MANGROVE){decorator.deadBushPerChunk=1;decorator.waterlilyPerChunk=4;decorator.sandPatchesPerChunk=0;decorator.gravelPatchesPerChunk=0;}
             tree=kind==Kind.BAMBOO?new WorldGenMegaJungle(false,10,20,Blocks.LOG.getDefaultState().withProperty(BlockOldLog.VARIANT,BlockPlanks.EnumType.JUNGLE),Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT,BlockPlanks.EnumType.JUNGLE)):kind==Kind.MEADOW?new WorldGenTrees(false):new WorldGenTaiga2(false);
             if(kind==Kind.MANGROVE){topBlock=Content.block("mud").getDefaultState();fillerBlock=Blocks.DIRT.getDefaultState();}
             if(kind==Kind.JAGGED||kind==Kind.STONY||kind==Kind.FROZEN)topBlock=fillerBlock=(kind==Kind.FROZEN?Blocks.PACKED_ICE:Blocks.STONE).getDefaultState();
             spawnableCreatureList.clear();spawnableWaterCreatureList.clear();
             switch(kind){case CHERRY:spawnableCreatureList.add(new SpawnListEntry(EntityPig.class,1,1,2));spawnableCreatureList.add(new SpawnListEntry(EntitySheep.class,1,1,2));rabbit();break;case MEADOW:spawnableCreatureList.add(new SpawnListEntry(EntitySheep.class,2,2,6));spawnableCreatureList.add(new SpawnListEntry(EntityHorse.class,1,1,2));rabbit();break;case GROVE:spawnableCreatureList.add(new SpawnListEntry(EntityWolf.class,8,4,4));rabbit();break;case SLOPES:rabbit();break;case BAMBOO:spawnableCreatureList.add(new SpawnListEntry(EntityChicken.class,10,4,4));spawnableCreatureList.add(new SpawnListEntry(EntityOcelot.class,2,1,1));break;default:break;}
         }
+        @Override public void genTerrainBlocks(World world,Random random,net.minecraft.world.chunk.ChunkPrimer primer,int x,int z,double noise) {
+            super.genTerrainBlocks(world,random,primer,x,z,noise);
+            if(kind!=Kind.MANGROVE)return;
+            for(int y=world.getActualHeight()-1;y>0;y--) {
+                Block block=primer.getBlockState(z&15,y,x&15).getBlock();
+                if(block==Blocks.AIR||block==Blocks.WATER||block==Blocks.FLOWING_WATER)continue;
+                if(block==Blocks.DIRT||block==Blocks.GRASS)primer.setBlockState(z&15,y,x&15,topBlock);
+                break;
+            }
+        }
         private void rabbit(){spawnableCreatureList.add(new SpawnListEntry(EntityRabbit.class,2,2,3));}
-        @Override public int getGrassColorAtPos(BlockPos pos){return kind==Kind.PALE?0x778272:kind==Kind.CHERRY?0xB6DB61:kind==Kind.MANGROVE?0x6A7039:super.getGrassColorAtPos(pos);}
+        @Override public int getGrassColorAtPos(BlockPos pos){return kind==Kind.PALE?0x778272:kind==Kind.CHERRY?0xB6DB61:kind==Kind.MANGROVE?(GRASS_COLOR_NOISE.getValue(pos.getX()*.0225D,pos.getZ()*.0225D)<-.1D?0x4C763C:0x6A7039):super.getGrassColorAtPos(pos);}
         @Override public int getFoliageColorAtPos(BlockPos pos){return kind==Kind.PALE?0x878D76:kind==Kind.MANGROVE?0x8DB127:super.getFoliageColorAtPos(pos);}
     }
 }

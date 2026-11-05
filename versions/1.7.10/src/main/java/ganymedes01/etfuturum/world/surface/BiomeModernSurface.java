@@ -4,6 +4,7 @@ import ganymedes01.etfuturum.ModBlocks;
 import ganymedes01.etfuturum.configuration.configs.ConfigWorld;
 import ganymedes01.etfuturum.world.generate.decorate.*;
 import net.minecraft.entity.passive.*;
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -43,6 +44,9 @@ public class BiomeModernSurface extends BiomeGenBase {
 				topBlock = ModBlocks.MUD.get();
 				fillerBlock = Blocks.dirt;
 				waterColorMultiplier = 0x3A7A6A;
+                theBiomeDecorator.deadBushPerChunk = 1;
+                theBiomeDecorator.waterlilyPerChunk = 4;
+                theBiomeDecorator.sandPerChunk = theBiomeDecorator.sandPerChunk2 = 0;
 				spawnableCreatureList.clear();
 				BiomeDictionary.registerBiomeType(this, Type.SWAMP, Type.WET, Type.HOT);
 				break;
@@ -79,6 +83,17 @@ public class BiomeModernSurface extends BiomeGenBase {
 				spawnableCreatureList.clear();
 		}
 	}
+    @Override public void genTerrainBlocks(World world,Random random,Block[] blocks,byte[] metadata,int x,int z,double noise) {
+        super.genTerrainBlocks(world,random,blocks,metadata,x,z,noise);
+        if(kind!=Kind.MANGROVE)return;
+        int height=blocks.length/256,base=((z&15)*16+(x&15))*height;
+        for(int y=height-1;y>0;y--){
+            Block block=blocks[base+y];
+            if(block==null||block==Blocks.air||block==Blocks.water||block==Blocks.flowing_water)continue;
+            if(block==Blocks.dirt||block==Blocks.grass){blocks[base+y]=topBlock;metadata[base+y]=0;}
+            break;
+        }
+    }
 	@Override public WorldGenAbstractTree func_150567_a(Random random) { return tree; }
 	public void finishSpawns() {
 		spawnableCreatureList.clear();
@@ -87,7 +102,7 @@ public class BiomeModernSurface extends BiomeGenBase {
 			case CHERRY:
 				ganymedes01.etfuturum.configuration.SpawnSettings.add(spawnableCreatureList, EntityPig.class, 1, 1, 2); ganymedes01.etfuturum.configuration.SpawnSettings.add(spawnableCreatureList, EntitySheep.class, 1, 1, 2); rabbit(); break;
 			case MANGROVE:
-				if (ganymedes01.etfuturum.configuration.configs.ConfigEntities.enableFrogs) ganymedes01.etfuturum.configuration.SpawnSettings.add(spawnableCreatureList, ganymedes01.etfuturum.entities.EntityFrog.class, 1, 2, 5); break;
+				if (ganymedes01.etfuturum.configuration.configs.ConfigEntities.enableFrogs) ganymedes01.etfuturum.configuration.SpawnSettings.add(spawnableCreatureList, ganymedes01.etfuturum.entities.EntityFrog.class, 10, 2, 5); break;
 			case MEADOW:
 				ganymedes01.etfuturum.configuration.SpawnSettings.add(spawnableCreatureList, EntitySheep.class, 2, 2, 6); ganymedes01.etfuturum.configuration.SpawnSettings.add(spawnableCreatureList, EntityHorse.class, 1, 1, 2); rabbit(); break;
 			case GROVE:
@@ -101,16 +116,25 @@ public class BiomeModernSurface extends BiomeGenBase {
 	}
 	private void rabbit() { if (ganymedes01.etfuturum.configuration.configs.ConfigEntities.enableRabbit) ganymedes01.etfuturum.configuration.SpawnSettings.add(spawnableCreatureList, ganymedes01.etfuturum.entities.EntityRabbit.class, 2, 2, 3); }
 	private void goat() { if (ganymedes01.etfuturum.configuration.configs.ConfigEntities.enableGoats) ganymedes01.etfuturum.configuration.SpawnSettings.add(spawnableCreatureList, ganymedes01.etfuturum.entities.EntityGoat.class, 5, 1, 3); }
-	@Override public int getBiomeGrassColor(int x, int y, int z) { return kind == Kind.PALE ? 0x778272 : kind == Kind.CHERRY ? 0xB6DB61 : kind == Kind.MANGROVE ? 0x6A7039 : super.getBiomeGrassColor(x, y, z); }
+	@Override public int getBiomeGrassColor(int x, int y, int z) { return kind == Kind.PALE ? 0x778272 : kind == Kind.CHERRY ? 0xB6DB61 : kind == Kind.MANGROVE ? (plantNoise.func_151601_a(x * .0225D, z * .0225D) < -.1D ? 0x4C763C : 0x6A7039) : super.getBiomeGrassColor(x, y, z); }
 	@Override public int getBiomeFoliageColor(int x, int y, int z) { return kind == Kind.PALE ? 0x878D76 : kind == Kind.MANGROVE ? 0x8DB127 : super.getBiomeFoliageColor(x, y, z); }
 	@Override public void decorate(World world, Random random, int chunkX, int chunkZ) {
 		super.decorate(world, random, chunkX, chunkZ);
 		boolean treesAllowed = TerrainGen.decorate(world, random, chunkX, chunkZ, DecorateBiomeEvent.Decorate.EventType.TREE);
-		int count = !treesAllowed ? 0 : kind == Kind.PALE ? 8 : kind == Kind.MANGROVE ? 7 : kind == Kind.CHERRY ? 5 : kind == Kind.GROVE || kind == Kind.BAMBOO ? 6 : kind == Kind.MEADOW && random.nextInt(100) == 0 ? 1 : 0;
+		int count = !treesAllowed ? 0 : kind == Kind.PALE ? 8 : kind == Kind.MANGROVE ? 25 : kind == Kind.CHERRY ? 5 : kind == Kind.GROVE || kind == Kind.BAMBOO ? 6 : kind == Kind.MEADOW && random.nextInt(100) == 0 ? 1 : 0;
 		for (int i = 0; i < count; i++) {
 			int x = chunkX + 8 + random.nextInt(16), z = chunkZ + 8 + random.nextInt(16);
 			if (!world.blockExists(x, 0, z) || world.getBiomeGenForCoords(x, z) != this) continue;
 			int y = world.getHeightValue(x, z);
+            if (kind == Kind.MANGROVE) {
+                while (y > 1) {
+                    Block below = world.getBlock(x, y - 1, z);
+                    if (below.getMaterial() != net.minecraft.block.material.Material.water) break;
+                    y--;
+                }
+                int depth=0;while(depth<=5&&world.getBlock(x,y+depth,z).getMaterial()==net.minecraft.block.material.Material.water)depth++;
+                if(depth>5)continue;
+            }
 			if (tree.generate(world, random, x, y, z)) {
 				if ((kind == Kind.MEADOW || kind == Kind.CHERRY && random.nextInt(20) == 0) && ModBlocks.BEE_NEST.isEnabled()) ganymedes01.etfuturum.core.handlers.WorldEventHandler.tryPlaceBeeNest(world, x, y, z, random, 3);
 			}

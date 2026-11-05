@@ -54,6 +54,7 @@ public final class Crafting {
             Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT).setRegistryName(UAB.ID, "netherite_ingot_shapeless"));
         shaped(event, "barrel", Content.stack("barrel"), "PSP", "P P", "PSP", 'P', "plankWood", 'S', "slabWood");
         shaped(event, "smoker", Content.stack("smoker"), " L ", "LFL", " L ", 'L', "logWood", 'F', Blocks.FURNACE);
+        shaped(event, "smooth_stone_slab", new ItemStack(Blocks.STONE_SLAB, 6, 0), "SSS", 'S', Content.block("smooth_stone"));
         shaped(event, "blast_furnace", Content.stack("blast_furnace"), "III", "IFI", "SSS", 'I', Items.IRON_INGOT, 'F', Blocks.FURNACE, 'S', Content.block("smooth_stone"));
         shaped(event, "stonecutter", Content.stack("stonecutter"), " I ", "SSS", 'I', Items.IRON_INGOT, 'S', new ItemStack(Blocks.STONE));
         shaped(event, "loom", Content.stack("loom"), "SS", "PP", 'S', Items.STRING, 'P', "plankWood");
