@@ -66,7 +66,7 @@ export function renderLeaderboard(rows) {
   const lines = [
     '## Top Issue Submitters',
     '',
-    'Recognizing community members whose bug reports and enhancement suggestions have been completed. Rankings are based on issues submitted, not code contributions.',
+    'Recognizing community members whose bug reports and enhancement suggestions have been completed. Thank you for helping us maintain this mod!.',
     '',
   ];
   if (!rows.length) {
