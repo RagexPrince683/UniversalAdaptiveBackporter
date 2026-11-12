@@ -59,6 +59,10 @@ Back up existing worlds before upgrading.
 
 UAB preserves the historical `etfuturum` registry namespace, resource domain, entity identities, and saved-data keys. Existing biome, potion, and enchantment IDs should remain consistent.
 
+On 1.7.10, potion ID `-1` reuses the allocation in `config/legacy-potion-ids.properties`, or chooses an unused ID after mod initialization on a first launch. Explicit IDs such as `78` work within the native 0–127 range; larger IDs require the enabled EndlessIDs potion module. An explicit ID cannot override a different saved allocation. Keep the allocation file with the modpack and use the same file on clients and servers; existing worlds also retain a snapshot to detect accidental changes.
+
+Before a new pack's first launch, reserve a late-registering mod's potion slot in that properties file with an entry such as `modpack\:reserved_lotr_effect=30` and `schema=1` (the colon must be escaped in Java properties files). Reservations affect automatic allocation without excluding ID 30 globally. Do not change allocations already used by saved worlds without a separate migration.
+
 ## Configuration
 
 UAB uses a unified configuration file:

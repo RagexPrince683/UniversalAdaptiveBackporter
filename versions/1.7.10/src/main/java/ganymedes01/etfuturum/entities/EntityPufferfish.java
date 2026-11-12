@@ -19,7 +19,17 @@ public class EntityPufferfish extends EntityFish {
 	@Override public void onLivingUpdate() {
 		super.onLivingUpdate();
 		int state = getPuffState(); float size = state == 2 ? .7F : state == 1 ? .5F : .35F;
-		if (width != size) setSize(size, size);
+		if (width != size) {
+			// Inflation must not push the fish sideways or grow its collision box into a wall.
+			double half = size / 2D;
+			net.minecraft.util.AxisAlignedBB box = net.minecraft.util.AxisAlignedBB.getBoundingBox(
+					posX - half, boundingBox.minY, posZ - half, posX + half, boundingBox.minY + size, posZ + half);
+			if (size < width || worldObj.getCollidingBoundingBoxes(this, box).isEmpty()) {
+				double x = posX, y = posY, z = posZ;
+				setSize(size, size);
+				setPosition(x, y, z);
+			}
+		}
 		if (worldObj.isRemote || !isEntityAlive()) return;
 		if (ticksExisted % 10 == 0) {
 			boolean danger = false;

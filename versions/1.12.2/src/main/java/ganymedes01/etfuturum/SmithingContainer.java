@@ -17,10 +17,10 @@ public final class SmithingContainer extends Container {
     };
     public SmithingContainer(InventoryPlayer inventory, World world, BlockPos pos) {
         this.world = world; this.pos = pos;
-        addSlotToContainer(new Slot(input,0,26,35){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isTemplate(stack);}});
-        addSlotToContainer(new Slot(input,1,62,35){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isBase(stack);}});
-        addSlotToContainer(new Slot(input,2,98,35){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isMaterial(stack);}});
-        addSlotToContainer(new Slot(output, 0, 144, 35) {
+        addSlotToContainer(new Slot(input,0,8,47){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isTemplate(stack);}});
+        addSlotToContainer(new Slot(input,1,48,47){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isBase(stack);}});
+        addSlotToContainer(new Slot(input,2,88,47){@Override public boolean isItemValid(ItemStack stack){return SmithingTableRecipes.getInstance().isMaterial(stack);}});
+        addSlotToContainer(new Slot(output, 0, 142, 47) {
             @Override public boolean isItemValid(ItemStack stack) { return false; }
             @Override public boolean canTakeStack(EntityPlayer player) { return !getStack().isEmpty(); }
             @Override public ItemStack onTake(EntityPlayer player, ItemStack stack) {

@@ -20,6 +20,7 @@ public class EntityVex extends EntityMob {
 	@Override protected boolean isAIEnabled() { return true; }
 	@Override protected void applyEntityAttributes() { super.applyEntityAttributes(); getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(14); getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(4); }
 	@Override protected void fall(float distance) { }
+	@Override public boolean isEntityInsideOpaqueBlock() { return false; }
 	@Override public void onLivingUpdate() {
 		super.onLivingUpdate(); if (worldObj.isRemote) return;
 		if (owner == null && ticksExisted == 1) { homeX = posX; homeY = posY + 1; homeZ = posZ; }

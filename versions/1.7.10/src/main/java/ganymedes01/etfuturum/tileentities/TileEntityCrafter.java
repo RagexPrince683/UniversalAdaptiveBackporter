@@ -34,10 +34,19 @@ public final class TileEntityCrafter extends TileEntity implements ISidedInvento
             if(!outputs.isEmpty()&&retry==0)flush();
         }finally{busy=false;}
     }
-    private void craft(){
+    private InventoryCrafting craftingGrid(){
         InventoryCrafting grid=new InventoryCrafting(new Container(){@Override public boolean canInteractWith(EntityPlayer player){return false;}},3,3);
+        for(int i=0;i<9;i++)grid.setInventorySlotContents(i,disabled(i)||empty(items[i])?null:items[i].copy());
+        return grid;
+    }
+    public ItemStack preview(){
+        ItemStack result=CraftingManager.getInstance().findMatchingRecipe(craftingGrid(),worldObj);
+        return empty(result)?null:result.copy();
+    }
+    private void craft(){
+        InventoryCrafting grid=craftingGrid();
         ItemStack[] before=new ItemStack[9];int mask=disabled;
-        for(int i=0;i<9;i++){before[i]=empty(items[i])?null:items[i].copy();grid.setInventorySlotContents(i,disabled(i)||before[i]==null?null:before[i].copy());}
+        for(int i=0;i<9;i++)before[i]=empty(items[i])?null:items[i].copy();
         ItemStack result=CraftingManager.getInstance().findMatchingRecipe(grid,worldObj);if(empty(result)){fail();return;}
         List<ItemStack> delivery=new ArrayList<>();if(!split(result,delivery)){fail();return;}
         // Legacy recipes have no remaining-items API; use Forge's native per-stack container callback.

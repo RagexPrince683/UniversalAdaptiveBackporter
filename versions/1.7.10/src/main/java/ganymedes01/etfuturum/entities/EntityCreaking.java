@@ -55,10 +55,21 @@ public class EntityCreaking extends EntityMob {
 		if (heartY < 0 || source == DamageSource.outOfWorld) return super.attackEntityFrom(source, amount);
 		if (!worldObj.isRemote && worldObj.blockExists(heartX, heartY, heartZ)) {
 			TileEntity tile = worldObj.getTileEntity(heartX, heartY, heartZ);
-			if (tile instanceof TileEntityCreakingHeart && source.getEntity() instanceof EntityPlayer) ((TileEntityCreakingHeart) tile).createResin();
+			if (tile instanceof TileEntityCreakingHeart && source.getEntity() instanceof EntityPlayer) {
+				((TileEntityCreakingHeart) tile).createResin();
+				playSound(getHurtSound(), 1, 1);
+			}
 		}
 		return false;
 	}
+	@Override public boolean attackEntityAsMob(net.minecraft.entity.Entity target) {
+		boolean hit = super.attackEntityAsMob(target);
+		if (hit) playSound(ganymedes01.etfuturum.Tags.MC_ASSET_VER + ":entity.creaking.attack", 1, 1);
+		return hit;
+	}
+	@Override protected String getLivingSound() { return ganymedes01.etfuturum.Tags.MC_ASSET_VER + ":entity.creaking.ambient"; }
+	@Override protected String getHurtSound() { return ganymedes01.etfuturum.Tags.MC_ASSET_VER + ":entity.creaking.sway"; }
+	@Override protected String getDeathSound() { return ganymedes01.etfuturum.Tags.MC_ASSET_VER + ":entity.creaking.death"; }
 	@Override public void writeEntityToNBT(NBTTagCompound tag) { super.writeEntityToNBT(tag); tag.setInteger("HeartX", heartX); tag.setInteger("HeartY", heartY); tag.setInteger("HeartZ", heartZ); }
 	@Override public void readEntityFromNBT(NBTTagCompound tag) { super.readEntityFromNBT(tag); heartX = tag.getInteger("HeartX"); heartY = tag.hasKey("HeartY") ? tag.getInteger("HeartY") : -1; heartZ = tag.getInteger("HeartZ"); }
 }

@@ -21,7 +21,16 @@ public class EntityPufferfish extends EntityFish {
 	@Override public void onLivingUpdate() {
 		super.onLivingUpdate();
 		int state = getPuffState(); float size = state == 2 ? .7F : state == 1 ? .5F : .35F;
-		if (width != size) setSize(size, size);
+		if (width != size) {
+			double half = size / 2D;
+			net.minecraft.util.math.AxisAlignedBB box = new net.minecraft.util.math.AxisAlignedBB(
+					posX - half, getEntityBoundingBox().minY, posZ - half, posX + half, getEntityBoundingBox().minY + size, posZ + half);
+			if (size < width || world.getCollisionBoxes(this, box).isEmpty()) {
+				double x = posX, y = posY, z = posZ;
+				setSize(size, size);
+				setPosition(x, y, z);
+			}
+		}
 		if (world.isRemote || !isEntityAlive()) return;
 		if (ticksExisted % 10 == 0) {
 			boolean danger = false;

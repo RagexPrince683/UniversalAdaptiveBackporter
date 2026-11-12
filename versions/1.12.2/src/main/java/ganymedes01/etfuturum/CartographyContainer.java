@@ -11,7 +11,7 @@ import net.minecraft.world.storage.MapData;
 
 public final class CartographyContainer extends WorkstationContainer {
     private String operation;
-    public CartographyContainer(InventoryPlayer inventory, World world, BlockPos pos) { super(inventory, world, pos, Content.block("cartography_table"), 2); }
+    public CartographyContainer(InventoryPlayer inventory, World world, BlockPos pos) { super(inventory, world, pos, Content.block("cartography_table"), 2); layoutSlots(new int[]{15,15,15,52},145,39); }
     @Override protected boolean accepts(int slot, ItemStack stack) { return !stack.isEmpty() && (slot == 0 ? stack.getItem() == Items.FILLED_MAP : stack.getItem() == Items.PAPER || stack.getItem() == Items.MAP || stack.getItem() == Item.getItemFromBlock(Blocks.GLASS_PANE)); }
     @Override protected void refresh() {
         operation = null; ItemStack map = inputs.getStackInSlot(0), ingredient = inputs.getStackInSlot(1), result = ItemStack.EMPTY;

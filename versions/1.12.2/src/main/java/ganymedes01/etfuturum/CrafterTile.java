@@ -40,10 +40,20 @@ public final class CrafterTile extends TileEntity implements ISidedInventory,ITi
             if(!outputs.isEmpty()&&retry==0)flush();
         }finally{busy=false;}
     }
-    private void craft(){
+    private InventoryCrafting craftingGrid(){
         InventoryCrafting grid=new InventoryCrafting(new Container(){@Override public boolean canInteractWith(EntityPlayer player){return false;}},3,3);
+        for(int i=0;i<9;i++)grid.setInventorySlotContents(i,disabled(i)?ItemStack.EMPTY:items.get(i).copy());
+        return grid;
+    }
+    public ItemStack preview(){
+        InventoryCrafting grid=craftingGrid();IRecipe recipe=CraftingManager.findMatchingRecipe(grid,world);
+        ItemStack result=recipe==null?ItemStack.EMPTY:recipe.getCraftingResult(grid);
+        return result==null||result.isEmpty()?ItemStack.EMPTY:result.copy();
+    }
+    private void craft(){
+        InventoryCrafting grid=craftingGrid();
         ItemStack[] before=new ItemStack[9];int mask=disabled;
-        for(int i=0;i<9;i++){before[i]=items.get(i).copy();grid.setInventorySlotContents(i,disabled(i)?ItemStack.EMPTY:before[i].copy());}
+        for(int i=0;i<9;i++)before[i]=items.get(i).copy();
         IRecipe recipe=CraftingManager.findMatchingRecipe(grid,world);if(recipe==null){fail();return;}
         ItemStack result=recipe.getCraftingResult(grid);if(result==null||result.isEmpty()){fail();return;}
         NonNullList<ItemStack> remains=recipe.getRemainingItems(grid);if(remains==null||remains.size()!=9){fail();return;}

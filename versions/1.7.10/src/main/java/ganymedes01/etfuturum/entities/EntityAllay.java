@@ -25,6 +25,7 @@ public class EntityAllay extends EntityCreature {
 	public boolean isDancing() { return dataWatcher.getWatchableObjectByte(20) != 0; }
 	public void hearNote(int x, int y, int z) { noteX = x; noteY = y; noteZ = z; noteTicks = 600; }
 	@Override protected void fall(float distance) { }
+	@Override public boolean isEntityInsideOpaqueBlock() { return false; }
 	@Override public boolean attackEntityFrom(DamageSource source, float damage) { return !(source.getEntity() instanceof EntityPlayer player && owner != null && owner.equals(player.getUniqueID())) && super.attackEntityFrom(source, damage); }
 	@Override public boolean interact(EntityPlayer player) {
 		ItemStack held = player.getHeldItem();

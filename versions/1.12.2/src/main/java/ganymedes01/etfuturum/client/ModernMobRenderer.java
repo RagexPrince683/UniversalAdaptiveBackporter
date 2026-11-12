@@ -75,7 +75,7 @@ final class ModernMobRenderer extends RenderLiving<EntityLiving> {
     }
     private static final class Skeleton extends RenderSkeleton {
         private final boolean bogged;
-        Skeleton(RenderManager manager,boolean bogged){super(manager);this.bogged=bogged;if(bogged)addLayer(new LayerRenderer<AbstractSkeleton>(){
+        Skeleton(RenderManager manager,boolean bogged){super(manager);this.bogged=bogged;if(!bogged)mainModel=new ganymedes01.etfuturum.client.model.ModelParched();if(bogged)addLayer(new LayerRenderer<AbstractSkeleton>(){
             private final ModelZombie overlay=new ModelZombie(.25F,true);
             @Override public void doRenderLayer(AbstractSkeleton entity,float limb,float amount,float partial,float age,float yaw,float pitch,float scale){if(((EntityBogged)entity).isSheared())return;bindTexture(texture("skeleton/bogged_overlay"));overlay.setModelAttributes(getMainModel());overlay.setLivingAnimations(entity,limb,amount,partial);overlay.render(entity,limb,amount,age,yaw,pitch,scale);}
             @Override public boolean shouldCombineTextures(){return false;}

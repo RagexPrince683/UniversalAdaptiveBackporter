@@ -16,6 +16,7 @@ public class ContainerCartography extends ContainerSelectableWorkstation {
 	private String operation;
 	public ContainerCartography(InventoryPlayer inventory, World world, int x, int y, int z) {
 		super(inventory, world, x, y, z, ModBlocks.CARTOGRAPHY_TABLE.get(), 2);
+		layoutSlots(new int[]{15, 15, 15, 52}, 145, 39);
 	}
 	@Override protected boolean accepts(int slot, ItemStack stack) {
 		return slot == 0 ? stack.getItem() == Items.filled_map : stack.getItem() == Items.paper
@@ -42,7 +43,14 @@ public class ContainerCartography extends ContainerSelectableWorkstation {
 		output.setInventorySlotContents(0, result);
 	}
 	@Override public List<String> choices() {
-		return operation == null ? Collections.<String>emptyList() : Collections.singletonList("gui.etfuturum.cartography." + operation);
+		String choice = operation;
+		if (world.isRemote) {
+			ItemStack preview = output.getStackInSlot(0);
+			if (preview == null) choice = null;
+			else if (preview.hasTagCompound() && preview.getTagCompound().hasKey("etfuturumCartography")) choice = preview.getTagCompound().getString("etfuturumCartography");
+			else if (preview.stackSize == 2) choice = "copy";
+		}
+		return choice == null ? Collections.<String>emptyList() : Collections.singletonList("gui.etfuturum.cartography." + choice);
 	}
 	@Override protected ItemStack craft(EntityPlayer player) {
 		ItemStack result = output.getStackInSlot(0).copy();

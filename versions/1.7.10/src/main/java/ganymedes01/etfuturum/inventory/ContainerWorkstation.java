@@ -42,6 +42,19 @@ public abstract class ContainerWorkstation extends Container {
 	}
 
 	protected abstract boolean accepts(int slot, ItemStack stack);
+	/** Keep native GUI slot geometry identical on the server and client. */
+	protected final void layoutSlots(int[] inputPositions, int outputX, int outputY) {
+		for (int i = 0; i < inputCount; i++) {
+			getSlot(i).xDisplayPosition = inputPositions[i * 2];
+			getSlot(i).yDisplayPosition = inputPositions[i * 2 + 1];
+		}
+		getSlot(inputCount).xDisplayPosition = outputX;
+		getSlot(inputCount).yDisplayPosition = outputY;
+		for (int i = 0; i < 36; i++) {
+			getSlot(inputCount + 1 + i).xDisplayPosition = 8 + i % 9 * 18;
+			getSlot(inputCount + 1 + i).yDisplayPosition = i < 27 ? 84 + i / 9 * 18 : 142;
+		}
+	}
 	protected abstract void refresh();
 	protected abstract ItemStack craft(EntityPlayer player);
 	public abstract String title();

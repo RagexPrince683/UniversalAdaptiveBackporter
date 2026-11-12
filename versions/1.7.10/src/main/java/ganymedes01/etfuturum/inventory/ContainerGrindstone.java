@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 
 public final class ContainerGrindstone extends ContainerSelectableWorkstation {
     private int experience;
-    public ContainerGrindstone(InventoryPlayer inventory,World world,int x,int y,int z){super(inventory,world,x,y,z,ModernAdditions.block("grindstone"),2);}
+    public ContainerGrindstone(InventoryPlayer inventory,World world,int x,int y,int z){super(inventory,world,x,y,z,ModernAdditions.block("grindstone"),2);layoutSlots(new int[]{49,19,49,40},129,34);}
     @Override protected boolean accepts(int slot,ItemStack stack){return stack!=null&&(stack.isItemStackDamageable()||stack.isItemEnchanted()||stack.getItem()==Items.enchanted_book);}
     @Override public String title(){return "tile.etfuturum.grindstone.name";}
     @Override public List<String> choices(){return Collections.emptyList();}

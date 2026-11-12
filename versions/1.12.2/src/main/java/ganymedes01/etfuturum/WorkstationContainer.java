@@ -34,6 +34,19 @@ public abstract class WorkstationContainer extends Container {
         for (int col = 0; col < 9; col++) addSlotToContainer(new Slot(inventory, col, 16 + col * 18, 204));
     }
     protected abstract boolean accepts(int slot, ItemStack stack);
+    /** Native GUI geometry, applied to the same slots on both logical sides. */
+    protected final void layoutSlots(int[] inputPositions, int outputX, int outputY) {
+        for (int i = 0; i < inputCount; i++) {
+            getSlot(i).xPos = inputPositions[i * 2];
+            getSlot(i).yPos = inputPositions[i * 2 + 1];
+        }
+        getSlot(inputCount).xPos = outputX; getSlot(inputCount).yPos = outputY;
+        for (int i = 0; i < 36; i++) {
+            getSlot(inputCount + 1 + i).xPos = 8 + i % 9 * 18;
+            getSlot(inputCount + 1 + i).yPos = i < 27 ? 84 + i / 9 * 18 : 142;
+        }
+    }
+    public List<ItemStack> previews() { return java.util.Collections.emptyList(); }
     protected abstract void refresh();
     protected abstract ItemStack craft(EntityPlayer player);
     public abstract String title();

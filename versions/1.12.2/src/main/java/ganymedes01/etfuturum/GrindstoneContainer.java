@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 /** Uses the existing atomic workstation extraction paths, including shift/hotbar/drop operations. */
 public final class GrindstoneContainer extends WorkstationContainer {
     private int experience;
-    public GrindstoneContainer(InventoryPlayer inventory,World world,BlockPos pos){super(inventory,world,pos,Content.block("grindstone"),2);}
+    public GrindstoneContainer(InventoryPlayer inventory,World world,BlockPos pos){super(inventory,world,pos,Content.block("grindstone"),2);layoutSlots(new int[]{49,19,49,40},129,34);}
     @Override protected boolean accepts(int slot,ItemStack stack){return stack.isItemStackDamageable()||stack.isItemEnchanted()||stack.getItem()==Items.ENCHANTED_BOOK;}
     @Override public String title(){return "tile.etfuturum.grindstone.name";}
     @Override public List<String> choices(){return Collections.emptyList();}

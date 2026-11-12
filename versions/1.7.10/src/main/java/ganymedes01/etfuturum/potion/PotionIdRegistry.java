@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 /**
  * Cooperative 1.7.10 allocation protocol, shared on disk with other participating mods.
- * Construction reserves legacy overrides; pre-init allocates against the live registry.
+ * Construction reserves legacy overrides; load-complete allocates against the live registry.
  * Each native mod carries its own implementation so neither requires the other.
  */
 public final class PotionIdRegistry {
@@ -54,7 +54,9 @@ public final class PotionIdRegistry {
                     else data.remove(key);
                 } else if (override >= 0 && Integer.parseInt(stored) != override)
                     throw failure(key + " requests " + override + " but its persisted allocation is " + stored
-                            + ". Restore the matching configuration/allocation file; changing saved IDs requires migration.");
+                            + " in config/legacy-potion-ids.properties. -1 reuses that saved identity;"
+                            + " an explicit ID is only an initial assignment, not a save migration."
+                            + " Restore the matching main configuration/allocation file before loading existing worlds.");
                 if (enabled.contains(entry.getKey())) requested.add(key);
             }
             validate(data);
@@ -88,6 +90,7 @@ public final class PotionIdRegistry {
                 requireSupported(key, id);
                 if (Potion.potionTypes[id] != null)
                     throw failure(key + " ID " + id + " is occupied by " + Potion.potionTypes[id].getName()
+                            + " (" + Potion.potionTypes[id].getClass().getName() + ")"
                             + ". Its persisted ID will not be silently reassigned.");
                 result.put(key, id);
             }
@@ -129,8 +132,14 @@ public final class PotionIdRegistry {
         if (registered.size() != active.size()) throw failure("Incomplete potion registration.");
         for (Map.Entry<String, Potion> entry : registered.entrySet()) {
             Potion potion = entry.getValue();
-            if (potion.id >= Potion.potionTypes.length || Potion.potionTypes[potion.id] != potion)
-                throw failure(entry.getKey() + " ID " + potion.id + " was overwritten by another mod.");
+            if (potion.id >= Potion.potionTypes.length || Potion.potionTypes[potion.id] != potion) {
+                Potion replacement = potion.id < Potion.potionTypes.length ? Potion.potionTypes[potion.id] : null;
+                throw failure(entry.getKey() + " ID " + potion.id + " was overwritten by "
+                        + (replacement == null ? "an empty/removed registry slot" : replacement.getName() + " (" + replacement.getClass().getName() + ")")
+                        + ". Restore matching saved IDs. For a new pack, reserve other mods' late IDs as"
+                        + " modpack\\:<name>=<id> in config/legacy-potion-ids.properties before first allocation;"
+                        + " existing allocations will not be silently remapped.");
+            }
         }
     }
 

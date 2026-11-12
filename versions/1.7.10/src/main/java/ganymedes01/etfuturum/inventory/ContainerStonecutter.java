@@ -13,6 +13,7 @@ public class ContainerStonecutter extends ContainerSelectableWorkstation {
 	private ItemStack previous;
 	public ContainerStonecutter(InventoryPlayer inventory, World world, int x, int y, int z) {
 		super(inventory, world, x, y, z, ModBlocks.STONECUTTER.get(), 1);
+		layoutSlots(new int[]{20, 33}, 143, 33);
 	}
 	@Override protected boolean accepts(int slot, ItemStack stack) { return !StonecuttingRecipes.results(stack).isEmpty(); }
 	@Override protected void refresh() {
@@ -27,6 +28,11 @@ public class ContainerStonecutter extends ContainerSelectableWorkstation {
 		List<String> names = new ArrayList<>();
 		for (ItemStack result : recipes) names.add(result.stackSize + " x " + result.getDisplayName());
 		return names;
+	}
+	@Override public List<ItemStack> previews() {
+		List<ItemStack> result = new ArrayList<>();
+		for (ItemStack recipe : recipes) result.add(recipe.copy());
+		return result;
 	}
 	@Override protected ItemStack craft(EntityPlayer player) {
 		ItemStack result = output.getStackInSlot(0).copy();

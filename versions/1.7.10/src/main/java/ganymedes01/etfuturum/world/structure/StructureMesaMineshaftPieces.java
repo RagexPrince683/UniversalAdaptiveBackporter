@@ -804,7 +804,9 @@ public class StructureMesaMineshaftPieces {
 			int i = this.getXWithOffset(p_189916_2_, p_189916_4_);
 			int j = this.getYWithOffset(p_189916_3_);
 			int k = this.getZWithOffset(p_189916_2_, p_189916_4_);
-			return !p_189916_5_.isVecInside(i, j, k) ? EnumSkyBlock.Sky.defaultLightValue : p_189916_1_.getBlockLightValue(i, j, k);
+			// Combined block light falls at night, allowing exposed surface webs. Sky
+			// light records terrain cover independently of time and weather.
+			return !p_189916_5_.isVecInside(i, j, k) ? EnumSkyBlock.Sky.defaultLightValue : p_189916_1_.getSavedLightValue(EnumSkyBlock.Sky, i, j, k);
 		}
 
 		protected void mineshaftWood(World p_189923_1_, StructureBoundingBox p_189923_2_, int p_189923_3_, int p_189923_4_, int p_189923_5_, int p_189923_6_) {
@@ -825,8 +827,18 @@ public class StructureMesaMineshaftPieces {
 
 		protected void placeWeb(World p_189922_1_, StructureBoundingBox p_189922_2_, Random p_189922_3_, float p_189922_4_, int p_189922_5_, int p_189922_6_, int p_189922_7_) {
 			if (this.skyLight(p_189922_1_, p_189922_5_, p_189922_6_, p_189922_7_, p_189922_2_) < 8) {
-				this.func_151552_a(p_189922_1_, p_189922_2_, p_189922_3_, p_189922_4_, p_189922_5_, p_189922_6_, p_189922_7_, Blocks.web, 0);
+				if (p_189922_3_.nextFloat() < p_189922_4_ && hasWebSupport(p_189922_1_, p_189922_2_, p_189922_5_, p_189922_6_, p_189922_7_))
+					this.placeBlockAtCurrentPosition(p_189922_1_, Blocks.web, 0, p_189922_5_, p_189922_6_, p_189922_7_, p_189922_2_);
 			}
+		}
+
+		private boolean hasWebSupport(World world, StructureBoundingBox bounds, int x, int y, int z) {
+			return getBlockAtCurrentPosition(world, x - 1, y, z, bounds).getMaterial().isSolid()
+					|| getBlockAtCurrentPosition(world, x + 1, y, z, bounds).getMaterial().isSolid()
+					|| getBlockAtCurrentPosition(world, x, y - 1, z, bounds).getMaterial().isSolid()
+					|| getBlockAtCurrentPosition(world, x, y + 1, z, bounds).getMaterial().isSolid()
+					|| getBlockAtCurrentPosition(world, x, y, z - 1, bounds).getMaterial().isSolid()
+					|| getBlockAtCurrentPosition(world, x, y, z + 1, bounds).getMaterial().isSolid();
 		}
 
 		protected void randomlyFillWithBlocksLightLimit(World p_151551_1_, StructureBoundingBox p_151551_2_, Random p_151551_3_, float p_151551_4_, int p_151551_5_, int p_151551_6_, int p_151551_7_, int p_151551_8_, int p_151551_9_, int p_151551_10_, Block p_151551_11_, Block p_151551_12_, boolean p_151551_13_, int light) {
@@ -837,6 +849,7 @@ public class StructureMesaMineshaftPieces {
 							if (k1 != p_151551_6_ && k1 != p_151551_9_ && l1 != p_151551_5_ && l1 != p_151551_8_ && i2 != p_151551_7_ && i2 != p_151551_10_) {
 								this.placeBlockAtCurrentPosition(p_151551_1_, p_151551_12_, 0, l1, k1, i2, p_151551_2_);
 							} else {
+								if (p_151551_11_ == Blocks.web && !hasWebSupport(p_151551_1_, p_151551_2_, l1, k1, i2)) continue;
 								this.placeBlockAtCurrentPosition(p_151551_1_, p_151551_11_, 0, l1, k1, i2, p_151551_2_);
 							}
 						}

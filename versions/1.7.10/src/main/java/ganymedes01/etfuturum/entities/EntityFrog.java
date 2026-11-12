@@ -42,6 +42,7 @@ public class EntityFrog extends EntityAnimal {
 	@Override public boolean attackEntityAsMob(Entity target) {
 		if (!(target instanceof EntitySlime) || ((EntitySlime) target).getSlimeSize() != 1) return false;
 		boolean hit = target.attackEntityFrom(DamageSource.causeMobDamage(this), 10);
+		if (hit) playSound(ganymedes01.etfuturum.Tags.MC_ASSET_VER + ":entity.frog.eat", 1, 1);
 		if (hit && ((EntitySlime) target).getHealth() <= 0 && target instanceof EntityMagmaCube) {
 			ModBlocks light = getVariant() == 0 ? ModBlocks.OCHRE_FROGLIGHT : getVariant() == 1 ? ModBlocks.PEARLESCENT_FROGLIGHT : ModBlocks.VERDANT_FROGLIGHT;
 			if (light.isEnabled() && worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) entityDropItem(light.newItemStack(), 0.1F);
@@ -65,4 +66,7 @@ public class EntityFrog extends EntityAnimal {
 	}
 	@Override public void writeEntityToNBT(NBTTagCompound tag) { super.writeEntityToNBT(tag); tag.setInteger("Variant", getVariant()); tag.setBoolean("Pregnant", pregnant); }
 	@Override public void readEntityFromNBT(NBTTagCompound tag) { super.readEntityFromNBT(tag); dataWatcher.updateObject(20, (byte)Math.max(0, Math.min(2, tag.getInteger("Variant")))); pregnant = tag.getBoolean("Pregnant"); }
+	@Override protected String getLivingSound() { return ganymedes01.etfuturum.Tags.MC_ASSET_VER + ":entity.frog.ambient"; }
+	@Override protected String getHurtSound() { return ganymedes01.etfuturum.Tags.MC_ASSET_VER + ":entity.frog.hurt"; }
+	@Override protected String getDeathSound() { return ganymedes01.etfuturum.Tags.MC_ASSET_VER + ":entity.frog.death"; }
 }

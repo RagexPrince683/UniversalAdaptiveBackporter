@@ -2301,6 +2301,9 @@ entity.etfuturum.tadpole.name=Tadpole
 enchantment.soul_speed=Soul Speed
 
 gui.etfuturum.cartography.copy=Copy Map
+gui.etfuturum.loom.slot.banner=Banner
+gui.etfuturum.loom.slot.dye=Dye
+gui.etfuturum.loom.slot.pattern=Optional Banner Pattern
 gui.etfuturum.cartography.scale=Expand Map
 gui.etfuturum.cartography.lock=Lock Map
 gui.etfuturum.loom.base=Fully White Field
@@ -3945,6 +3948,8 @@ item.etfuturum.netherite_horse_armor.name=Netherite Horse Armor
 
 tile.etfuturum.crafter.name=Crafter
 container.crafter=Crafter
+gui.etfuturum.crafter.disable=Click to disable this slot
+gui.etfuturum.crafter.enable=Click to enable this slot
 
 item.etfuturum.bundle.name=Bundle
 item.etfuturum.bundle.weight=Weight: %s/%s

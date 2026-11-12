@@ -27,7 +27,11 @@ public class EntityHusk extends EntityZombie {
 	public EntityHusk(final World p_i1745_1_) {
 		super(p_i1745_1_);
 		getNavigator().setBreakDoors(true);
-		this.tasks.addTask(0, new EntityAISwimming(this));
+		for (Object object : new java.util.ArrayList<>(tasks.taskEntries)) {
+			EntityAITasks.EntityAITaskEntry entry = (EntityAITasks.EntityAITaskEntry) object;
+			if (entry.action instanceof EntityAISwimming) tasks.removeTask(entry.action);
+		}
+		getNavigator().setCanSwim(false);
 		this.tasks.addTask(2, new EntityAIAttackOnCollide(this, EntityPlayer.class, 1.0D, false));
 		this.tasks.addTask(4, new EntityAIAttackOnCollide(this, EntityVillager.class, 1.0D, true));
 		this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
@@ -41,6 +45,7 @@ public class EntityHusk extends EntityZombie {
 		setSize(0.6F, 1.8F);
 	}
 
+	@Override public boolean canBreatheUnderwater() { return true; }
 
 	@Override
 	public boolean attackEntityAsMob(final Entity entity) {

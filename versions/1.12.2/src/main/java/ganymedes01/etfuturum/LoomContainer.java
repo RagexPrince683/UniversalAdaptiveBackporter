@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 public final class LoomContainer extends WorkstationContainer {
     private static final String[] DYES = {"dyeBlack","dyeRed","dyeGreen","dyeBrown","dyeBlue","dyePurple","dyeCyan","dyeLightGray","dyeGray","dyePink","dyeLime","dyeYellow","dyeLightBlue","dyeMagenta","dyeOrange","dyeWhite"};
     private List<BannerPattern> patterns = Collections.emptyList();
-    public LoomContainer(InventoryPlayer inventory, World world, BlockPos pos) { super(inventory, world, pos, Content.block("loom"), 3); }
+    public LoomContainer(InventoryPlayer inventory, World world, BlockPos pos) { super(inventory, world, pos, Content.block("loom"), 3); layoutSlots(new int[]{13,26,33,26,23,45},143,58); }
     public static int dye(ItemStack stack) {
         if (stack.isEmpty()) return -1;
         if (stack.getItem() == Items.DYE && stack.getMetadata() >= 0 && stack.getMetadata() < 16) return stack.getMetadata();
@@ -30,13 +30,18 @@ public final class LoomContainer extends WorkstationContainer {
         if (selected >= patterns.size()) selected = 0;
         ItemStack result = ItemStack.EMPTY;
         if (!patterns.isEmpty()) {
-            result = banner.copy(); result.setCount(1); NBTTagCompound tag = result.getOrCreateSubCompound("BlockEntityTag");
-            NBTTagList layers = tag.getTagList("Patterns", 10); NBTTagCompound layer = new NBTTagCompound();
-            layer.setString("Pattern", patterns.get(selected).getHashname()); layer.setInteger("Color", dye(dye)); layers.appendTag(layer); tag.setTag("Patterns", layers);
+            result = applyPattern(banner, dye(dye), patterns.get(selected));
         }
         output.setInventorySlotContents(0, result);
     }
     @Override public List<String> choices() { List<String> result = new ArrayList<>(); for (BannerPattern pattern : patterns) result.add("gui.etfuturum.loom." + BannerPatternItem.name(pattern)); return result; }
+    private static ItemStack applyPattern(ItemStack banner, int color, BannerPattern pattern) {
+        ItemStack result = banner.copy(); result.setCount(1); NBTTagCompound tag = result.getOrCreateSubCompound("BlockEntityTag");
+        NBTTagList layers = tag.getTagList("Patterns", 10); NBTTagCompound layer = new NBTTagCompound();
+        layer.setString("Pattern", pattern.getHashname()); layer.setInteger("Color", color); layers.appendTag(layer); tag.setTag("Patterns", layers);
+        return result;
+    }
+    @Override public List<ItemStack> previews() { List<ItemStack> result = new ArrayList<>(); for (BannerPattern pattern : patterns) result.add(applyPattern(inputs.getStackInSlot(0),dye(inputs.getStackInSlot(1)),pattern)); return result; }
     @Override protected ItemStack craft(EntityPlayer player) { ItemStack result = output.getStackInSlot(0).copy(); inputs.decrStackSize(0, 1); inputs.decrStackSize(1, 1); return result; }
     @Override public String title() { return "tile.etfuturum.loom.name"; }
 }

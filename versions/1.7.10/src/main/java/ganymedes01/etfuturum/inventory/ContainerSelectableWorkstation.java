@@ -14,6 +14,8 @@ public abstract class ContainerSelectableWorkstation extends ContainerWorkstatio
 		super(inventory, world, x, y, z, block, count);
 	}
 	public abstract List<String> choices();
+	/** Detached visual results; selection and consumption remain owned by the container. */
+	public List<net.minecraft.item.ItemStack> previews() { return java.util.Collections.emptyList(); }
 	@Override public boolean enchantItem(EntityPlayer player, int choice) {
 		if (!canInteractWith(player) || choice < 0 || choice >= choices().size()) return false;
 		selected = choice;

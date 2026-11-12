@@ -89,7 +89,7 @@ public class ModernMobRenderer extends RenderLiving {
 	}
 	private static class MobSkeletonRenderer extends RenderSkeleton {
 		private final boolean bogged; private final ModelZombie overlay = new ModelZombie(.25F, true);
-		MobSkeletonRenderer(boolean bogged) { this.bogged = bogged; }
+		MobSkeletonRenderer(boolean bogged) { this.bogged = bogged; if (!bogged) mainModel = modelBipedMain = new ganymedes01.etfuturum.client.model.ModelParched(); }
 		@Override protected ResourceLocation getEntityTexture(Entity entity) { return texture("skeleton/" + (bogged ? "bogged" : "parched")); }
 		@Override protected int shouldRenderPass(EntityLivingBase entity, int pass, float partial) { if (bogged && pass == 1 && !((EntityBogged) entity).isSheared()) { setRenderPassModel(overlay); bindTexture(texture("skeleton/bogged_overlay")); return 1; } return super.shouldRenderPass(entity, pass, partial); }
 	}

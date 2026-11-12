@@ -20,6 +20,7 @@ public class ContainerLoom extends ContainerSelectableWorkstation {
 	private List<EnumBannerPattern> patterns = Collections.emptyList();
 	public ContainerLoom(InventoryPlayer inventory, World world, int x, int y, int z) {
 		super(inventory, world, x, y, z, ModBlocks.LOOM.get(), 3);
+		layoutSlots(new int[]{13, 26, 33, 26, 23, 45}, 143, 58);
 	}
 	public static int dye(ItemStack stack) {
 		if (stack != null) for (String ore : Utils.getOreNames(stack)) for (EnumColor color : EnumColor.VALUES)
@@ -59,6 +60,12 @@ public class ContainerLoom extends ContainerSelectableWorkstation {
 		List<String> names = new ArrayList<>();
 		for (EnumBannerPattern pattern : patterns) names.add("gui.etfuturum.loom." + pattern.getPatternName());
 		return names;
+	}
+	@Override public List<ItemStack> previews() {
+		List<ItemStack> results = new ArrayList<>();
+		for (EnumBannerPattern pattern : patterns)
+			results.add(applyPattern(inputs.getStackInSlot(0), dye(inputs.getStackInSlot(1)), pattern));
+		return results;
 	}
 	@Override protected ItemStack craft(EntityPlayer player) {
 		ItemStack result = output.getStackInSlot(0).copy();

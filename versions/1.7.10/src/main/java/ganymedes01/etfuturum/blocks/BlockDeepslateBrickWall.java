@@ -10,6 +10,7 @@ import ganymedes01.etfuturum.api.blocksanditems.block.IMultiBlockSound;
 public class BlockDeepslateBrickWall extends BaseWall implements IMultiBlockSound {
 	public BlockDeepslateBrickWall() {
 		super(Material.rock, "deepslate_bricks", "deepslate_tiles");
+		setBlockSound(ModSounds.soundDeepslateBricks);
 		setHardness(ConfigFunctions.useStoneHardnessForDeepslate ? 1.5f : 3.5f);
 		setResistance(6.0F);
 	}

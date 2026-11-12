@@ -3,6 +3,7 @@ package ganymedes01.etfuturum.api.spectator;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ganymedes01.etfuturum.Tags;
 import ganymedes01.etfuturum.core.utils.helpers.SafeEnumHelperClient;
 import net.minecraft.command.IEntitySelector;
@@ -31,18 +32,26 @@ public class SpectatorUtils {
 
     @ApiStatus.AvailableSince("3.0.0")
     public static boolean isSpectator(Entity entity) {
+        if (entity == null || entity.worldObj == null) return false;
         if (entity instanceof EntityPlayerMP player) {
-            if(!(player instanceof FakePlayer) && player.worldObj != null) {
+            if(!(player instanceof FakePlayer) && player.theItemInWorldManager != null) {
                 return player.theItemInWorldManager.getGameType() == SpectatorUtils.SPECTATOR_GAMETYPE;
             }
-        } else if (FMLCommonHandler.instance().getSide() == Side.CLIENT
-                && FMLClientHandler.instance().getClientPlayerEntity() == entity) {
-            return FMLClientHandler.instance().getClient().playerController.currentGameType == SPECTATOR_GAMETYPE;
+        } else if (entity.worldObj.isRemote && FMLCommonHandler.instance().getSide() == Side.CLIENT
+                && isLocalSpectator(entity)) {
+            return true;
         } else if (entity instanceof ISpectatorInfo info) {
             // Remote clients do not receive another player's GameType. The player mixin supplies the synchronized value.
             return info.etfu$isSpectator();
         }
         return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static boolean isLocalSpectator(Entity entity) {
+        net.minecraft.client.Minecraft client = FMLClientHandler.instance().getClient();
+        return client != null && client.theWorld == entity.worldObj && client.thePlayer == entity
+                && client.playerController != null && client.playerController.currentGameType == SPECTATOR_GAMETYPE;
     }
 
     @ApiStatus.AvailableSince("3.0.0")

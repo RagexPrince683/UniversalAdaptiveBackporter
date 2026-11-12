@@ -51,6 +51,25 @@ public final class StonecuttingRecipes {
         forms(Blocks.PURPUR_BLOCK, 0, Blocks.PURPUR_SLAB, 0, Blocks.PURPUR_STAIRS, null, 0);
         cut(stack(Blocks.PURPUR_BLOCK, 0), stack(Blocks.PURPUR_PILLAR, 0), 1);
         for (int meta : new int[]{1, 3, 5}) cut(stack(Blocks.STONE, meta), stack(Blocks.STONE, meta+1), 1);
+        change("resin_bricks", "chiseled_resin_bricks", 1);
+        String[] chiselStones = {"granite", "diorite", "andesite"};
+        for (int pair = 0; pair < chiselStones.length; pair++) {
+            String stone = chiselStones[pair];
+            String ore = "stone" + Character.toUpperCase(stone.charAt(0)) + stone.substring(1);
+            // Chisel 1.12 registers its decorative states under these tags,
+            // including variants in its second/third block. Metadata 0/1 are
+            // not its raw/polished states (those are native Minecraft stone).
+            for (ItemStack input : net.minecraftforge.oredict.OreDictionary.getOres(ore, false)) {
+                if (input.isEmpty() || input.getMetadata() == net.minecraftforge.oredict.OreDictionary.WILDCARD_VALUE) continue;
+                cut(input, stack(Blocks.STONE, pair * 2 + 2), 1);
+                for (Map.Entry<String, IBlockState> shape : Content.SHAPE_BASES.entrySet()) {
+                    IBlockState base = shape.getValue();
+                    int nativeMeta = base.getBlock().getMetaFromState(base);
+                    if (base.getBlock() == Blocks.STONE && (nativeMeta == pair * 2 + 2 || nativeMeta == pair * 2 + 1))
+                        cut(input, Content.stack(shape.getKey()), shape.getKey().endsWith("_slab") ? 2 : 1);
+                }
+            }
+        }
         for (String[] path : new String[][]{{"blackstone","polished_blackstone"},{"polished_blackstone","polished_blackstone_bricks"},{"polished_blackstone","chiseled_polished_blackstone"},{"cobbled_deepslate","polished_deepslate"},{"cobbled_deepslate","chiseled_deepslate"},{"polished_deepslate","deepslate_bricks"},{"deepslate_bricks","deepslate_tiles"},{"tuff","polished_tuff"},{"tuff","chiseled_tuff"},{"polished_tuff","tuff_bricks"},{"tuff_bricks","chiseled_tuff_bricks"}}) change(path[0], path[1], 1);
         for (String stage : new String[]{"", "exposed_", "weathered_", "oxidized_"}) for (String wax : new String[]{"", "waxed_"}) change(wax + (stage.isEmpty() ? "copper_block" : stage + "copper"), wax + stage + "cut_copper", 4);
         for (Key input : EDGES.keySet()) expand(input, input, new HashSet<>());

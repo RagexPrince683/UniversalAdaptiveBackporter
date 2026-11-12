@@ -24,6 +24,7 @@ public final class StonecuttingRecipes {
 	}
 	private static ItemStack stack(Object block, int meta) {
 		if (block == null || block instanceof ModBlocks && !((ModBlocks) block).isEnabled()) return null;
+		if (block instanceof ItemStack) { ItemStack copy = ((ItemStack) block).copy(); copy.stackSize = 1; return copy; }
 		return new ItemStack(block instanceof ModBlocks ? ((ModBlocks) block).get() : (Block) block, 1, meta);
 	}
 	private static void cut(Object in, int im, Object out, int om, int count) {
@@ -66,6 +67,23 @@ public final class StonecuttingRecipes {
 		for (int i = 0; i < 6; i++) {
 			forms(ModBlocks.STONE, i + 1, ModBlocks.STONE_SLAB_2, i, stoneStairs[i], i % 2 == 0 ? ModBlocks.STONE_WALL_2 : null, i / 2);
 			if (i % 2 == 0) cut(ModBlocks.STONE, i + 1, ModBlocks.STONE, i + 2, 1);
+		}
+		String[] chiselStones = {"granite", "diorite", "andesite"};
+		for (int pair = 0; pair < chiselStones.length; pair++) {
+			int raw = pair * 2, polished = raw + 1;
+			String stone = chiselStones[pair];
+			String ore = "stone" + Character.toUpperCase(stone.charAt(0)) + stone.substring(1);
+			for (ItemStack input : net.minecraftforge.oredict.OreDictionary.getOres(ore, false)) {
+				if (input.getItemDamage() == net.minecraftforge.oredict.OreDictionary.WILDCARD_VALUE) continue;
+				forms(input, 0, ModBlocks.STONE_SLAB_2, raw, stoneStairs[raw], ModBlocks.STONE_WALL_2, pair);
+				forms(input, 0, ModBlocks.STONE_SLAB_2, polished, stoneStairs[polished], null, 0);
+				cut(input, 0, ModBlocks.STONE, polished + 1, 1);
+			}
+			// Legacy Chisel tags only its raw metadata 0. Its polished metadata 1
+			// is an additional exact input, even when UAB's base stones are disabled.
+			Block chisel = cpw.mods.fml.common.registry.GameRegistry.findBlock("chisel", stone);
+			forms(chisel, 1, ModBlocks.STONE_SLAB_2, polished, stoneStairs[polished], null, 0);
+			cut(chisel, 1, ModBlocks.STONE, polished + 1, 1);
 		}
 		forms(ModBlocks.PRISMARINE_BLOCK, 0, ModBlocks.PRISMARINE_SLAB, 0, ModBlocks.PRISMARINE_STAIRS, ModBlocks.PRISMARINE_WALL, 0);
 		forms(ModBlocks.PRISMARINE_BLOCK, 1, ModBlocks.PRISMARINE_SLAB, 1, ModBlocks.PRISMARINE_STAIRS_BRICK, null, 0);
