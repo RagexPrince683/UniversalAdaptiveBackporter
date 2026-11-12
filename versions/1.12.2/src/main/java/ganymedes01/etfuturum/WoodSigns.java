@@ -15,7 +15,30 @@ public final class WoodSigns {
  public interface Sign {String wood();boolean standing();String itemId();}
  public static final Map<String,Standing> SIGNS=new LinkedHashMap<>();
  private WoodSigns(){}
- static void define(){boolean old=Features.enabled("blocksitems.enableVanillaSigns"),modern=Features.enabled("blocksitems.enableNewSigns");for(String wood:new String[]{"spruce","birch","jungle","acacia","dark_oak","crimson","warped","mangrove","cherry","bamboo","pale_oak"}){boolean legacy=Arrays.asList("spruce","birch","jungle","acacia","dark_oak").contains(wood);String flag=legacy?"blocksitems.enableVanillaSigns":Content.FEATURE.get(wood+"_planks"),blockId=legacy?"sign_"+wood:wood+"_sign",wallId=legacy?"wall_sign_"+wood:wood+"_wall_sign",itemId=legacy?"item_sign_"+wood:blockId;Standing standing=Content.add(blockId,flag,new Standing(wood,itemId));Wall wall=Content.add(wallId,flag,new Wall(wood,itemId));standing.wall=wall;SIGNS.put(wood,standing);Content.add(itemId,flag,new SignItem(standing));if(!legacy){Content.requires(blockId,"blocksitems.enableNewSigns");Content.requires(wallId,"blocksitems.enableNewSigns");Content.requires(itemId,"blocksitems.enableNewSigns");}wall.setCreativeTab(null);if(!wood.equals("crimson")&&!wood.equals("warped")){Blocks.FIRE.setFireInfo(standing,5,20);Blocks.FIRE.setFireInfo(wall,5,20);}}GameRegistry.registerTileEntity(SignTile.class,new ResourceLocation(UAB.ID,"wood_sign"));}
+ static void define(){boolean old=Features.enabled("blocksitems.enableVanillaSigns"),modern=Features.enabled("blocksitems.enableNewSigns");for(String wood:new String[]{"spruce","birch","jungle","acacia","dark_oak","crimson","warped","mangrove","cherry","bamboo","pale_oak"}){boolean legacy=Arrays.asList("spruce","birch","jungle","acacia","dark_oak").contains(wood);String flag=legacy?"blocksitems.enableVanillaSigns":Content.FEATURE.get(wood+"_planks"),blockId=legacy?"sign_"+wood:wood+"_sign",wallId=legacy?"wall_sign_"+wood:wood+"_wall_sign",itemId=legacy?"item_sign_"+wood:blockId;Standing standing=Content.add(blockId,flag,new Standing(wood,itemId));Wall wall=Content.add(wallId,flag,new Wall(wood,itemId));standing.wall=wall;SIGNS.put(wood,standing);Content.add(itemId,flag,new SignItem(standing));if(!legacy){Content.requires(blockId,"blocksitems.enableNewSigns");Content.requires(wallId,"blocksitems.enableNewSigns");Content.requires(itemId,"blocksitems.enableNewSigns");}wall.setCreativeTab(null);if(!wood.equals("crimson")&&!wood.equals("warped")){Blocks.FIRE.setFireInfo(standing,5,20);Blocks.FIRE.setFireInfo(wall,5,20);}}defineExternal();GameRegistry.registerTileEntity(SignTile.class,new ResourceLocation(UAB.ID,"wood_sign"));}
+ public static final Map<String,ganymedes01.etfuturum.compatibility.WoodFamilies.Family> EXTERNAL=new LinkedHashMap<>();
+ private static void defineExternal(){
+  if(!net.minecraftforge.fml.common.Loader.isModLoaded("biomesoplenty"))return;
+  for(ganymedes01.etfuturum.compatibility.WoodFamilies.Family family:ganymedes01.etfuturum.compatibility.WoodFamilies.forTarget("1.12.2")){
+   String wood=family.provider+"_"+family.name,item=wood+"_sign",flag="blocksitems.enableNewSigns";
+   Standing standing=Content.add(item,flag,new Standing(wood,item));
+   Wall wall=Content.add(wood+"_wall_sign",flag,new Wall(wood,item));standing.wall=wall;
+   Content.add(item,flag,new SignItem(standing));
+   for(String id:new String[]{item,wood+"_wall_sign"})Content.requires(id,"modcompat.provider_"+family.provider);
+   wall.setCreativeTab(null);SIGNS.put(wood,standing);EXTERNAL.put(wood,family);
+  }
+ }
+ public static ItemStack plank(String wood){
+  ganymedes01.etfuturum.compatibility.WoodFamilies.Family family=EXTERNAL.get(wood);
+  if(family==null){BlockPlanks.EnumType old=BoatContent.legacy(wood);return old==null?Content.stack(wood+"_planks"):new ItemStack(Blocks.PLANKS,1,old.getMetadata());}
+  ResourceLocation id=new ResourceLocation(family.planks);
+  if(!net.minecraftforge.fml.common.registry.ForgeRegistries.BLOCKS.containsKey(id))return ItemStack.EMPTY;
+  return new ItemStack(net.minecraftforge.fml.common.registry.ForgeRegistries.BLOCKS.getValue(id),1,family.plankMeta);
+ }
+ public static ResourceLocation texture(String wood){
+  ganymedes01.etfuturum.compatibility.WoodFamilies.Family family=EXTERNAL.get(wood);
+  return family==null?new ResourceLocation(UAB.ID,"textures/entity/signs/"+wood+".png"):new ResourceLocation("biomesoplenty","textures/entity/signs/"+family.texture+".png");
+ }
  public static class Standing extends BlockStandingSign implements Sign {private final String wood,item;Wall wall;Standing(String wood,String item){this.wood=wood;this.item=item;setHardness(1);setSoundType(SoundType.WOOD);}public String wood(){return wood;}public boolean standing(){return true;}public String itemId(){return item;}@Override public TileEntity createNewTileEntity(World world,int meta){return new SignTile();}@Override public Item getItemDropped(IBlockState state,Random random,int fortune){return Content.item(item);}@Override public ItemStack getItem(World world,BlockPos pos,IBlockState state){return new ItemStack(Content.item(item));}}
  public static class Wall extends BlockWallSign implements Sign {private final String wood,item;Wall(String wood,String item){this.wood=wood;this.item=item;setHardness(1);setSoundType(SoundType.WOOD);}public String wood(){return wood;}public boolean standing(){return false;}public String itemId(){return item;}@Override public TileEntity createNewTileEntity(World world,int meta){return new SignTile();}@Override public Item getItemDropped(IBlockState state,Random random,int fortune){return Content.item(item);}@Override public ItemStack getItem(World world,BlockPos pos,IBlockState state){return new ItemStack(Content.item(item));}}
  public static class SignTile extends TileEntitySign {@Override public boolean shouldRefresh(World world,BlockPos pos,IBlockState before,IBlockState after){return before.getBlock()!=after.getBlock();}}

@@ -96,6 +96,10 @@ UAB provides optional integrations for recipes, equipment, world generation, mod
 
 **Additional Compatibility:** MineFactory Reloaded, Campfire Backport, Back in Slime, Village Names, UpToDate, GregTech, Extra Utilities, RPLE (Realistic Lighting), LWJGL3ify, EndlessIDs, Forge Multipart.
 
+See [content compatibility providers](COMPATIBILITY.md) for BOP kelp/bamboo, modded signs and independent provider settings. The [experimental offline importer](tools/world-import/README.md) supports a reviewed subset of Java 1.13.2 worlds; 1.18.2+ worlds are excluded.
+
+See [content compatibility providers](COMPATIBILITY.md) for BOP kelp/bamboo, modded signs and independent provider settings. The [experimental offline importer](tools/world-import/README.md) supports a reviewed subset of Java 1.13.2 worlds; 1.18.2+ worlds are excluded.
+
 **All integrations are optional and vary in scope.** Some provide dedicated functionality, while others handle specific blocks, recipes, ore mappings, or engine interactions. Support also varies between Minecraft versions.
 
 Compatibility with replacement dimension or terrain providers is not guaranteed. UAB's Nether provider remains incompatible with replacement Nether terrain generators such as Netherlicious.

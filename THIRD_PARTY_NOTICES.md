@@ -55,7 +55,7 @@ The Mace sprite and flattened random-loot enchantment tag also derive from the o
 
 The grindstone, bell, chiseled bookshelf, hanging-sign, shelf, Copper Age equipment and fixture, Spring to Life plant and animal textures/models, spyglass scope, and ruined-portal loot references also derive from that official 1.21.11 client. Native rendering and gameplay adapters retain the supported legacy engines. These reference assets retain Mojang/Microsoft rights.
 
-Cow and pig variant texture sheets retain their released upper 32 rows for the native legacy models. The unused modern geometry region is omitted so shared vanilla model data remains unchanged. Dry-foliage colors use the released colormap sampled with native biome climates.
+Cow variant texture sheets and the matching snout, horn and coat geometry use the released 64×64 layout from the official 1.21.11 client. Pig variant sheets retain their released upper 32 rows for the native legacy pig model. These reference assets retain Mojang/Microsoft rights. Dry-foliage colors use the released colormap sampled with native biome climates.
 
 Copper horse armor retains the official 1.12.2 gold-armor coverage and native 128-pixel UV layout. Its colors are translated through corresponding official 1.21.11 gold/copper horse-equipment palette entries; native geometry is retained. Both reference assets retain Mojang/Microsoft rights.
 

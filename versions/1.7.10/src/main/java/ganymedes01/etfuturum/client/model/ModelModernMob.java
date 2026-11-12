@@ -83,7 +83,12 @@ public class ModelModernMob extends ModelBase {
             rotate("body", -.15F * dash, 0, 0);
         }
 		if (entity instanceof EntitySniffer sniffer && sniffer.isDigging()) { rotate("head", .5F + MathHelper.sin(age * .5F) * .15F, 0, 0); }
-		if (entity instanceof EntityNautilus) { rotate("body", MathHelper.sin(age * .12F) * .05F, MathHelper.sin(age * .1F) * .04F, 0); }
+		if (entity instanceof EntityNautilus) {
+            float pulse = MathHelper.sin(age * .25F) * .12F;
+            rotate("body", MathHelper.sin(age * .12F) * .08F, 0, 0);
+            rotate("upper_mouth", -pulse, 0, 0); rotate("lower_mouth", pulse, 0, 0);
+            ModelRenderer body = find("body"); if (body != null) body.rotationPointZ += MathHelper.cos(age * .25F) * .4F;
+        }
 		if (kind.startsWith("breeze")) { rotate("rods", 0, age * .1F, 0); rotate("wind_mid", 0, -age * .08F, 0); rotate("wind_top", 0, age * .06F, 0); }
         if (entity instanceof EntityTadpole) rotate("tail", 0, -MathHelper.sin(age * .3F) * (entity.isInWater() ? .25F : .375F), 0);
         if (entity instanceof EntityFrog) {

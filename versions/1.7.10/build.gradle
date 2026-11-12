@@ -116,3 +116,12 @@ tasks.register('catalogMigrationTest', JavaExec) {
 }
 check.dependsOn catalogMigrationTest
 test.dependsOn catalogMigrationTest
+
+tasks.register('springCowModelTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'ganymedes01.etfuturum.client.model.SpringCowModelTest'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }
+}
+check.dependsOn springCowModelTest
+test.dependsOn springCowModelTest

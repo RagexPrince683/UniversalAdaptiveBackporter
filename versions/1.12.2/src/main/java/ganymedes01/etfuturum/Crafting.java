@@ -22,7 +22,7 @@ public final class Crafting {
         return !id.getNamespace().equals(UAB.ID) || Content.available(id.getPath());
     }
     static void shaped(RegistryEvent.Register<IRecipe> event, String id, ItemStack output, Object... recipe) {
-        if (!enabled(output)) return;
+        if (output.isEmpty() || !enabled(output) || event.getRegistry().containsKey(new ResourceLocation(UAB.ID, id))) return;
         for (Object ingredient : recipe) {
             if (ingredient instanceof ItemStack && !enabled((ItemStack) ingredient)) return;
             if (ingredient instanceof Item && !enabled(new ItemStack((Item) ingredient))) return;
@@ -42,8 +42,9 @@ public final class Crafting {
         for (String ore : new String[]{"copper", "iron", "gold"}) compression(event, "raw_" + ore, "raw_" + ore + "_block");
         compression(event, "dried_kelp", "dried_kelp_block");
         shaped(event,"bamboo_block",Content.stack("bamboo_block"),"BBB","BBB","BBB",'B',Content.item("bamboo"));
-        Item externalBamboo = BambooCompat.externalItem();
-        if (externalBamboo != null) shaped(event,"bamboo_block_from_bop",Content.stack("bamboo_block"),"BBB","BBB","BBB",'B',new ItemStack(externalBamboo));
+        int bambooInput = 0;
+        for (ItemStack bamboo : ContentCompatibility.inputs("bamboo", ganymedes01.etfuturum.compatibility.CompatibilityRegistry.Use.CRAFTING))
+            if (!ContentCompatibility.hasNineMaterialRecipe(bamboo)) shaped(event, "bamboo_block_compat_" + bambooInput++, Content.stack("bamboo_block"), "BBB", "BBB", "BBB", 'B', bamboo);
         shaped(event,"bamboo_mosaic",Content.stack("bamboo_mosaic"),"S","S",'S',Content.block("bamboo_slab"));
         shaped(event,"moss_carpet",count("moss_carpet",3),"MM",'M',Content.block("moss_block"));
         shaped(event,"turtle_helmet",Content.stack("turtle_helmet"),"SSS","S S",'S',Content.item("turtle_scute"));
@@ -135,6 +136,7 @@ public final class Crafting {
         smelt("raw_gold", new ItemStack(Items.GOLD_INGOT), 1);
         smelt("ancient_debris", Content.stack("netherite_scrap"), 2);
         smelt("kelp", Content.stack("dried_kelp"), .1F);
+        if (Content.available("dried_kelp")) ContentCompatibility.smelting("kelp", Content.stack("dried_kelp"), .1F);
         smelt("sea_pickle", new ItemStack(Items.DYE,1,10), .1F);
         smelt("cobbled_deepslate", Content.stack("deepslate"), .1F);
         smelt("deepslate_bricks", Content.stack("cracked_deepslate_bricks"), .1F);

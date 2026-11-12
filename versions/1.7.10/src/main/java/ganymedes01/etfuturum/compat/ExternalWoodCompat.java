@@ -39,31 +39,30 @@ public final class ExternalWoodCompat {
 		contentInitialized = true;
 		if (ModsList.BIOMES_O_PLENTY.isLoaded()) initBop();
 		if (ModsList.WITCHERY.isLoaded()) initWitchery();
+        for (ExternalWoodFamily family : FAMILIES) if (!ContentCompatibility.enabled(family.prefix)) {
+            for (Block block : new Block[]{family.strippedLog,family.wood,family.strippedWood,family.fence,family.button,family.plate,family.door,family.trapdoor,family.sign}) if (block != null) {
+                block.setCreativeTab(null); ganymedes01.etfuturum.configuration.ContentAvailability.register(block,false);
+                Item item=Item.getItemFromBlock(block);if(item!=null){item.setCreativeTab(null);ganymedes01.etfuturum.configuration.ContentAvailability.register(item,false);}
+            }
+            for(Item item:new Item[]{family.boat,family.chestBoat})if(item!=null){item.setCreativeTab(null);ganymedes01.etfuturum.configuration.ContentAvailability.register(item,false);}
+        }
+
 	}
 
-	private static void initBop() {
-		Block planks = requiredBlock("BiomesOPlenty", "planks", "BOP plank families");
-		Block[] logs = new Block[4];
-		for (int i = 0; i < logs.length; i++) logs[i] = requiredBlock("BiomesOPlenty", "logs" + (i + 1), "BOP log group " + (i + 1));
-		String[] names = {"sacred_oak", "cherry", "dark", "fir", "ethereal", "magic", "mangrove", "palm", "redwood", "willow", "bamboo", "pine", "hellbark", "jacaranda", "mahogany"};
-		for (int meta = 0; meta < names.length; meta++) {
-			Block log = meta == 10 ? null : logs[meta < 10 ? meta / 4 : 3];
-			int logMeta = meta < 10 ? meta % 4 : meta - 11;
-			addFamily("bop", "biomesoplenty", names[meta], planks, meta, log, logMeta, meta == 10);
-		}
-		// BOP exposes these as logs but has no corresponding plank species.
-		addFamily("bop", "biomesoplenty", "dead", null, -1, logs[2], 2, false);
-		addFamily("bop", "biomesoplenty", "big_flower_stem", null, -1, logs[2], 3, false);
-	}
-
-	private static void initWitchery() {
-		Block logs = requiredBlock("witchery", "witchlog", "Witchery logs");
-		Block planks = requiredBlock("witchery", "witchwood", "Witchery planks");
-		String[] names = {"rowan", "alder", "hawthorn"};
-		for (int meta = 0; meta < names.length; meta++) {
-			addFamily("witchery", "witchery", names[meta], planks, meta, logs, meta, false);
-		}
-	}
+    private static void initBop() { initFamilies("bop"); }
+    private static void initWitchery() { initFamilies("witchery"); }
+    private static void initFamilies(String provider) {
+        for (ganymedes01.etfuturum.compatibility.WoodFamilies.Family family : ganymedes01.etfuturum.compatibility.WoodFamilies.forTarget("1.7.10")) {
+            if (!family.provider.equals(provider)) continue;
+            Block planks = resolve(family.planks), log = resolve(family.log);
+            addFamily(provider, provider.equals("bop") ? "biomesoplenty" : provider, family.name,
+                    planks, family.plankMeta, log, family.logMeta, family.name.equals("bamboo"));
+        }
+    }
+    private static Block resolve(String id) {
+        if (id == null) return null;
+        String[] parts = id.split(":", 2); return requiredBlock(parts[0], parts[1], id);
+    }
 
 	private static Block requiredBlock(String mod, String name, String feature) {
 		Block block = GameRegistry.findBlock(mod, name);
@@ -138,6 +137,7 @@ public final class ExternalWoodCompat {
 
 	public static void initRecipesAndStripping() {
 		for (ExternalWoodFamily family : FAMILIES) {
+            if (!ContentCompatibility.enabled(family.prefix)) continue;
 			if (family.strippedLog != null) {
 				StrippedLogRegistry.addLog(family.log, family.logMeta, family.strippedLog, 0);
 				OreDictionary.registerOre("logWood", new ItemStack(family.strippedLog, 1, OreDictionary.WILDCARD_VALUE));

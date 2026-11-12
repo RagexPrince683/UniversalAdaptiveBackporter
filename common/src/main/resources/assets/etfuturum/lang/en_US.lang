@@ -4010,3 +4010,7 @@ tile.etfuturum.witchery_hawthorn_sign.name=Hawthorn Sign
 itemGroup.etfuturum=Universal Adaptive Backporter
 uab.config.update_1_21_9.copper_age.copper_tools=Copper player tools
 uab.config.update_1_21_9.copper_age.copper_armor=Copper player armor
+
+tile.etfuturum.bop_umbran_sign.name=Umbran Sign
+tile.etfuturum.bop_ebony_sign.name=Ebony Sign
+tile.etfuturum.bop_eucalyptus_sign.name=Eucalyptus Sign

@@ -8,3 +8,11 @@ tasks.register('catalogTest', JavaExec) {
 }
 check.dependsOn catalogTest
 tasks.named('test') { dependsOn catalogTest; failOnNoDiscoveredTests = false }
+
+tasks.register('compatibilityTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'ganymedes01.etfuturum.compatibility.CompatibilityTest'
+}
+check.dependsOn compatibilityTest
+test.dependsOn compatibilityTest

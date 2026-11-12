@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 
 public enum ModItems {
 	HEART_OF_THE_SEA(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("conduits"), new BaseItem("heart_of_the_sea")),
-	DRIED_KELP(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("kelp"), new ItemDriedKelp()),
+	DRIED_KELP(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("dried_kelp"), new ItemDriedKelp()),
 	WOODEN_SPEAR(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(Item.ToolMaterial.WOOD, "wooden_spear")),
 	STONE_SPEAR(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(Item.ToolMaterial.STONE, "stone_spear")),
 	COPPER_SPEAR(ConfigBlocksItems.enableCopper && ganymedes01.etfuturum.configuration.ContentAvailability.enabled("spears"), new ItemSpear(net.minecraftforge.common.util.EnumHelper.addToolMaterial("EFR_COPPER_SPEAR", 1, 190, 4, 1, 13), "copper_spear")),

@@ -235,6 +235,13 @@ final class GeneratedResources implements IResourcePack {
         if ((!path.startsWith("models/block/") && !path.startsWith("models/item/")) || !path.endsWith(".json")) return null;
         boolean item = path.startsWith("models/item/");
         String name = path.substring(item ? 12 : 13, path.length() - 5);
+        if(item&&name.endsWith("_sign")&&WoodSigns.EXTERNAL.containsKey(name.substring(0,name.length()-5))){
+            ganymedes01.etfuturum.compatibility.WoodFamilies.Family family=WoodSigns.EXTERNAL.get(name.substring(0,name.length()-5));
+            JsonObject sign=new JsonObject(),textures=new JsonObject();sign.addProperty("parent","minecraft:item/generated");
+            String icon=family.name.equals("ebony")||family.name.equals("eucalyptus")?"minecraft:items/sign":"biomesoplenty:items/"+family.texture+"_sign";
+            textures.addProperty("layer0",icon);sign.add("textures",textures);return sign;
+        }
+
         if(item&&(name.equals("lodestone_compass")||name.equals("recovery_compass"))){JsonObject compass=new JsonObject(),textures=new JsonObject();compass.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","minecraft:items/"+(name.equals("recovery_compass")?"recovery_compass":"compass")+"_16");compass.add("textures",textures);JsonArray overrides=new JsonArray();for(int i=0;i<32;i++){JsonObject entry=new JsonObject(),predicate=new JsonObject();predicate.addProperty("angle",i/32D);entry.add("predicate",predicate);entry.addProperty("model","etfuturum:item/"+name+"_"+String.format(Locale.ROOT,"%02d",i));overrides.add(entry);}compass.add("overrides",overrides);return compass;}
         if(item&&(name.startsWith("lodestone_compass_")||name.startsWith("recovery_compass_"))&&name.matches("(?:lodestone|recovery)_compass_[0-3][0-9]")){JsonObject compass=new JsonObject(),textures=new JsonObject();compass.addProperty("parent","minecraft:item/generated");textures.addProperty("layer0","minecraft:items/"+(name.startsWith("recovery")?"recovery_compass":"compass")+name.substring(name.length()-3));compass.add("textures",textures);return compass;}
         if(item&&name.equals("conduit")){JsonObject conduit=new JsonObject();conduit.addProperty("parent","etfuturum:block/conduit");return conduit;}

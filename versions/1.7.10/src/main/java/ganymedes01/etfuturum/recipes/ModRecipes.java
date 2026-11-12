@@ -558,9 +558,8 @@ public class ModRecipes {
 		ItemStack output183 = ModBlocks.BAMBOO_BLOCK.newItemStack();
 		Object[] objects137 = new Object[]{"bbb", "bbb", "bbb", 'b', ModItems.BAMBOO.newItemStack()};
 		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output183, objects137);
-		Item externalBamboo = ganymedes01.etfuturum.compat.BambooCompat.externalItem();
-		if (externalBamboo != null) RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output183,
-				"bbb", "bbb", "bbb", 'b', new ItemStack(externalBamboo));
+		for (ItemStack bamboo : ganymedes01.etfuturum.compat.ContentCompatibility.inputs("bamboo", ganymedes01.etfuturum.compatibility.CompatibilityRegistry.Use.CRAFTING))
+			if (!ganymedes01.etfuturum.compat.ContentCompatibility.hasNineMaterialRecipe(bamboo)) RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, output183, "bbb", "bbb", "bbb", 'b', bamboo);
 		Object[] objects136 = new Object[]{"b", "b", 'b', ModItems.BAMBOO.newItemStack()};
 		RecipeHelper.addShapedRecipe(RecipeHelper.Priority.HIGH, new ItemStack(Items.stick), objects136);
 

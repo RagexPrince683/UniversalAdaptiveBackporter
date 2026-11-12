@@ -86,6 +86,7 @@ public final class ClientProxy extends CommonProxy {
             if(block instanceof LegacyDaylightDetector)ModelLoader.setCustomStateMapper(block,new net.minecraft.client.renderer.block.statemap.StateMap.Builder().ignore(BlockDaylightDetector.POWER).build());
             else if(block instanceof AquaticPlant)ModelLoader.setCustomStateMapper(block,aquaticMapper(block));
             else if(block instanceof BubbleColumn)ModelLoader.setCustomStateMapper(block,ignored->Collections.emptyMap());
+            else if(block instanceof WoodSigns.Sign)ModelLoader.setCustomStateMapper(block,ignored->Collections.emptyMap());
         }
         for(String name:new String[]{"smooth_stone_slab","smooth_stone_double_slab"}) {
             Block legacy=net.minecraftforge.fml.common.registry.ForgeRegistries.BLOCKS.getValue(new ResourceLocation(UAB.ID,name));

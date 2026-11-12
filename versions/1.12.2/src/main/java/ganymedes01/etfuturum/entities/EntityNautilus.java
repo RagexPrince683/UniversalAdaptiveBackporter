@@ -12,6 +12,16 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.*;
 public class EntityNautilus extends EntityRideableMob {
+    // Aquatic mounts must opt out of Forge's default living-mount water dismount.
+    @Override public boolean shouldDismountInWater(Entity rider) { return false; }
+    @Override public void onUpdate() {
+        super.onUpdate();
+        if (!world.isRemote && !(getControllingPassenger() instanceof EntityPlayer) && isInWater() && motionX * motionX + motionZ * motionZ > .0001) {
+            float targetYaw = (float) (Math.atan2(motionZ, motionX) * 180 / Math.PI) - 90;
+            rotationYaw += MathHelper.wrapDegrees(targetYaw - rotationYaw) * .25F;
+            renderYawOffset = rotationYawHead = rotationYaw;
+        }
+    }
     private static final DataParameter<Boolean> TAMED=EntityDataManager.createKey(EntityNautilus.class,DataSerializers.BOOLEAN);
     private int dryTicks,attackCooldown;
     private EntityLivingBase hunting;

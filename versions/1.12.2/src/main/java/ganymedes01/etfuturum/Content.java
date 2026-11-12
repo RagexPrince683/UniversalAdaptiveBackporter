@@ -226,8 +226,8 @@ public final class Content {
             }
         }
         add("bubble_column","blocksitems.enableBubbleColumns",new BubbleColumn()).setCreativeTab(null);
-        add("dried_kelp", "content.kelp", new ItemFood(1, .3F, false) { @Override public int getMaxItemUseDuration(ItemStack s) { return 16; } });
-        add("dried_kelp_block", "content.kelp", new Block(Material.GRASS).setHardness(.5F));
+        add("dried_kelp", "content.dried_kelp", new ItemFood(1, .3F, false) { @Override public int getMaxItemUseDuration(ItemStack s) { return 16; } });
+        add("dried_kelp_block", "content.dried_kelp_block", new Block(Material.GRASS).setHardness(.5F));
         simple("content.nautilus_shells", "nautilus_shell");
         simple("content.conduits", "heart_of_the_sea");
         add("conduit", "content.conduits", new ConduitBlock());

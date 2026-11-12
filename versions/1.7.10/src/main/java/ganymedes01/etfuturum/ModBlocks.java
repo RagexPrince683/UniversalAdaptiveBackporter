@@ -108,7 +108,7 @@ public enum ModBlocks {
 	SCULK_SHRIEKER(ConfigExperiments.enableSculk, new BlockSculkShrieker()),
 	SEAGRASS(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("seagrass"), new BlockSeagrass()),
 	KELP(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("kelp"), new BlockKelp()),
-	DRIED_KELP_BLOCK(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("kelp"), new BlockDriedKelp()),
+	DRIED_KELP_BLOCK(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("dried_kelp_block"), new BlockDriedKelp()),
 	SEA_PICKLE(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("sea_pickles"), new BlockSeaPickle(false), ItemBlockSeaPickle.class),
 	SEA_PICKLE_UNDERWATER(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("sea_pickles"), new BlockSeaPickle(true), null),
 	TURTLE_EGG(ganymedes01.etfuturum.configuration.ContentAvailability.enabled("scutes"), new BlockTurtleEgg()),

@@ -61,7 +61,7 @@ public final class FeatureCatalogTest {
                 if (FeatureVersions.nativeFeature(option, "1.12.2")) nativeFeatures++;
             }
         }
-        check(features == 405, "preserve existing features and independent copper/netherite acquisition groups: " + features);
+        check(features == 410, "preserve existing features and independent copper/netherite acquisition groups: " + features);
         for (FeatureRegistry.Option option : FeatureRegistry.options()) if (option.feature) {
             String update = option.category.substring(0, option.category.indexOf('.'));
             check(FeatureRegistry.UPDATES.containsKey(update), "every feature has a discoverable update group: " + option.alias);

@@ -100,3 +100,6 @@ addon.local.gradle
 **/.idea/
 !versions/*/gradlew.bat
 !versions/*/gradle/wrapper/gradle-wrapper.jar
+
+# Standalone Python tools
+__pycache__/

@@ -96,6 +96,16 @@ public final class TargetConfigurationTest {
         check(NetheriteSettings.enabled("ancient_debris")&&NetheriteSettings.enabled("netherite_stairs")&&NetheriteSettings.enabled("netherite_spear")&&NetheriteSettings.enabled("netherite_horse_armor"),"independent netherite progression and extra equipment remain available");
         config.finish();UabConfiguration.open(independent,false,target);generation=new GenerationSettings();
         check(generation.dripstoneChance==0&&generation.kelpAttempts==0&&!NetheriteSettings.enabled("netherite_pickaxe"),"independent settings persist through restart");
+        File kelpDirectory=Files.createTempDirectory("uab-independent-kelp-").toFile();
+        Configuration kelp=new Configuration(new File(kelpDirectory,"uab.cfg"));
+        kelp.get("update_1_13.kelp","enabled",false).set(false);
+        kelp.get("general.compatibility.bop","enabled",false).set(false);kelp.save();
+        UabConfiguration.open(kelpDirectory,false,target);config=UabConfiguration.get();
+        check(!config.bool("content","kelp",true),"UAB kelp plants can be disabled");
+        check(config.bool("content","dried_kelp",true)&&config.bool("content","dried_kelp_block",true),"dried kelp survives plant disable");
+        check(!config.bool("modcompat","provider_bop",true)&&config.bool("modcompat","provider_undergroundbiomes",true),"providers disable independently");
+        config.finish();UabConfiguration.open(kelpDirectory,false,target);config=UabConfiguration.get();
+        check(!config.bool("content","kelp",true)&&config.bool("content","dried_kelp",true),"kelp split persists on restart");
         System.out.println("UAB " + target + " category migration: " + assertions + " assertions");
     }
 }

@@ -640,3 +640,18 @@
 - Remove the panda dependency on UAB bamboo plants and allow natural spawning in Biomes O' Plenty's Bamboo Forest as well as jungles. Preserve panda availability, passive-spawning controls and configured spawn weights/groups.
 - Let pandas follow and eat Biomes O' Plenty bamboo and count its placed stalks toward breeding. Correct the 1.7.10 panda's native food reference to the usable UAB bamboo item; keep optional-mod integration free of a required BOP dependency.
 - 1.12.2: remap the ore-generation reservation hook normally instead of aliasing a field that Biomes O' Plenty makes public, preventing a startup failure with BOP while preserving structure reservations.
+
+2026-11-06 00:05 — Modular content compatibility, aquatic mounts and complete spring cows
+
+- Both targets: introduce explicit, operation-scoped compatibility declarations with metadata/state matching and independent BOP, Witchery and Underground Biomes provider settings. Route bamboo materials, panda habitats/food, kelp inputs and natural geology through native registry adapters; retain optional loading and saved identities. Reuse versioned wood-family descriptors and retain specialized integrations at their existing boundaries.
+- Separate kelp plant, dried kelp food and dried kelp block acquisition. Add exact BOP kelp smelting inputs without converting neighboring coral variants, preserve existing furnace registrations, and retain dried storage/fuel recipes when UAB plants are disabled. Keep bamboo construction and pandas independent of the UAB plant switch, with existing spawn restrictions and recipe conflict checks.
+- Retain the existing 1.7.10 BOP/Witchery wood identities and signs; add all 16 native 1.12.2 BOP plank-family standing/wall signs through the existing sign system. Share inherited artwork, preserve species metadata, and fall back to vanilla sign artwork when an optional sheet is absent.
+- Opt nautilus mounts out of Forge's submerged-passenger dismount rule, update swimming facing from server-owned movement, and animate the released mouth/body parts. Keep player steering authoritative and preserve the saved once-only jockey guard; do not force remount riders.
+- Pair opted-in spring cow appearances with complete released snout, horn and coat geometry and uncropped 64×64 artwork. Retain native quadruped walking/baby transforms and restore the original renderer model when the appearance override is off.
+- Add an isolated experimental offline importer for reviewed Java 1.13.2 Overworld chunks into new 1.7.10/1.12.2 directories. Use target-world registry snapshots, explicit state mappings, preview-bound confirmation, validation and loss reports. Keep source/template worlds untouched; reject unsupported storage and explicitly exclude all 1.18.2+ worlds. The initial converter has limited block/entity/container coverage and does not replace normal world loading.
+
+2026-11-11 22:45 — Tighten import confirmation and native sign model registration
+
+- Reject duplicate JSON mapping keys and malformed mapping values instead of silently replacing declarations. Reject `waterlogged` properties on unsupported block families, including false values, while retaining reviewed stair, slab and chest conversions.
+- Bind cached source/template metadata to the input fingerprint captured before reading it. Changed inputs require a fresh preview and cannot authorize conversion with stale cached world metadata.
+- Register native 1.12.2 wood signs as rendered by their tile renderer, preventing repeated attempts to load nonexistent baked block models during startup and resource reloads. Sign items, artwork, text, placement and saved identities retain their existing behavior.

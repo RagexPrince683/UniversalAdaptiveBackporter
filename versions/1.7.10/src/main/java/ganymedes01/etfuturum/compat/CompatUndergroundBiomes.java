@@ -26,14 +26,7 @@ public final class CompatUndergroundBiomes {
 		return provider != null && provider.getClass() == ChunkProviderGenerate.class;
 	}
 
-	public static boolean isNaturalStone(Block block) {
-		return block != null && (block == Stones.IGNEOUS || block == Stones.METAMORPHIC || block == Stones.SEDIMENTARY);
-	}
-
-	// First used during terrain generation, after optional mods have registered their blocks.
-	private static final class Stones {
-		static final Block IGNEOUS = GameRegistry.findBlock("UndergroundBiomes", "igneousStone");
-		static final Block METAMORPHIC = GameRegistry.findBlock("UndergroundBiomes", "metamorphicStone");
-		static final Block SEDIMENTARY = GameRegistry.findBlock("UndergroundBiomes", "sedimentaryStone");
-	}
+    public static boolean isNaturalStone(Block block) {
+        return ContentCompatibility.block("natural_stone", ganymedes01.etfuturum.compatibility.CompatibilityRegistry.Use.WORLDGEN, block, 0);
+    }
 }

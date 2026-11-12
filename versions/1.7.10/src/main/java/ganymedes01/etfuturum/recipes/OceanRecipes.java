@@ -11,6 +11,7 @@ public final class OceanRecipes {
 	private OceanRecipes() { }
 	public static void init() {
 		RecipeHelper.addRecipe(ModBlocks.CONDUIT.newItemStack(), "sss", "shs", "sss", 's', ModItems.NAUTILUS_SHELL.get(), 'h', ModItems.HEART_OF_THE_SEA.get());
+		if (ModItems.DRIED_KELP.isEnabled()) ganymedes01.etfuturum.compat.ContentCompatibility.smelting("kelp", ModItems.DRIED_KELP.newItemStack(), .1F);
 		RecipeHelper.addSmelting(ModBlocks.KELP.get(), ModItems.DRIED_KELP.newItemStack(), .1F);
 		if (ModBlocks.KELP.isEnabled() && ModItems.DRIED_KELP.isEnabled()) SmokerRecipes.smelting().addRecipe(ModBlocks.KELP.newItemStack(), ModItems.DRIED_KELP.newItemStack(), .1F);
 		RecipeHelper.addRecipe(ModBlocks.DRIED_KELP_BLOCK.newItemStack(), "kkk", "kkk", "kkk", 'k', ModItems.DRIED_KELP.get());

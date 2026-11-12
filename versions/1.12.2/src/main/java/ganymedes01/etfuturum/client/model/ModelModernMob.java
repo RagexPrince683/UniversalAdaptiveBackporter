@@ -64,6 +64,12 @@ public class ModelModernMob extends ModelBase {
         if(entity instanceof EntityArmadillo){boolean rolled=((EntityArmadillo)entity).isRolled();show("body",!rolled);show("head",!rolled);show("right_hind_leg",!rolled);show("left_hind_leg",!rolled);show("right_front_leg",!rolled);show("left_front_leg",!rolled);show("cube",rolled);}
         if(entity instanceof EntitySniffer&&((EntitySniffer)entity).isDigging())rotate("head",.5F+MathHelper.sin(age*.5F)*.15F,0,0);
         if(entity instanceof EntityPillager){EntityPillager mob=(EntityPillager)entity;show("arms",false);show("right_arm",true);show("left_arm",true);if(mob.getCrossbowChargeTicks()>=0){float charge=MathHelper.clamp((float)mob.getCrossbowChargeTicks()/ganymedes01.etfuturum.CrossbowItem.chargeTime(mob.getHeldItemMainhand()),0,1);rotate("right_arm",-.97F,-.8F,0);rotate("left_arm",-.97F-charge*.6F,.4F+charge*.45F,0);}else if(mob.isAttacking()&&ganymedes01.etfuturum.CrossbowItem.charged(mob.getHeldItemMainhand())){rotate("right_arm",-(float)Math.PI/2+pitch*.0174533F,yaw*.0174533F-.3F,0);rotate("left_arm",-1.5F+pitch*.0174533F,yaw*.0174533F+.6F,0);}else{rotate("right_arm",-walk*.5F-.314159F,0,0);rotate("left_arm",walk,0,0);}}
+        if (entity instanceof EntityNautilus) {
+            float pulse = MathHelper.sin(age * .25F) * .12F;
+            rotate("body", MathHelper.sin(age * .12F) * .08F, 0, 0);
+            rotate("upper_mouth", -pulse, 0, 0); rotate("lower_mouth", pulse, 0, 0);
+            ModelRenderer body = find("body"); if (body != null) body.rotationPointZ += MathHelper.cos(age * .25F) * .4F;
+        }
         if(kind.startsWith("breeze")){rotate("rods",0,age*.1F,0);rotate("wind_mid",0,-age*.08F,0);rotate("wind_top",0,age*.06F,0);}
         if(entity instanceof EntityStrider){rotate("body",pitch*.0174533F,yaw*.0174533F,MathHelper.sin(limb*1.5F)*amount*.1F);for(String name:parts.keySet())if(name.contains("bristle"))rotate(name.substring(name.lastIndexOf('/')+1),0,0,MathHelper.sin(age*.2F+name.hashCode()%5)*.1F);}
         if (entity instanceof EntityTadpole) rotate("tail", 0, -MathHelper.sin(age * .3F) * (entity.isInWater() ? .25F : .375F), 0);

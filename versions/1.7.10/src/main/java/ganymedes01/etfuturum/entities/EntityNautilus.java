@@ -8,6 +8,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 public class EntityNautilus extends EntityRideableMob {
+    // Aquatic mounts must opt out of Forge's default living-mount water dismount.
+    @Override public boolean shouldDismountInWater(Entity rider) { return false; }
+    @Override public void onUpdate() {
+        super.onUpdate();
+        if (!worldObj.isRemote && !(riddenByEntity instanceof EntityPlayer) && isInWater() && motionX * motionX + motionZ * motionZ > .0001) {
+            float targetYaw = (float) (Math.atan2(motionZ, motionX) * 180 / Math.PI) - 90;
+            rotationYaw += MathHelper.wrapAngleTo180_float(targetYaw - rotationYaw) * .25F;
+            renderYawOffset = rotationYawHead = rotationYaw;
+        }
+    }
 	public boolean isTamed() { return dataWatcher.getWatchableObjectByte(23) != 0; }
 	protected void setTamed(boolean value) { dataWatcher.updateObject(23, (byte) (value ? 1 : 0)); }
 	@Override protected void entityInit() { super.entityInit(); dataWatcher.addObject(23, (byte) 0); }
