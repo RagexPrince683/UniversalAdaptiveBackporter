@@ -667,3 +667,7 @@
 - Both targets: replace the generic text-list workstation screens with native-sized Stonecutter, Loom, Grindstone and Cartography Table layouts. Show real recipe icons and counts, wheel/drag scrolling, selected and hovered states, banner-pattern previews, map operation previews and invalid-input indicators. Retain the existing server-owned selections, material consumption, templates, repairs, map operations and inventory actions.
 - 1.12.2: replace the Smithing Table's placeholder chest background with the dedicated three-input smithing artwork and matching slots, localized labels and invalid-recipe indicator. Retain smithing recipes, template rules, equipment data and native item movement.
 - Both targets: replace the Crafter's dispenser screen with its released layout, disabled-slot sprites, redstone indicator and a server-synchronized recipe preview that cannot be extracted. Replace the Lectern's plain panel with the native book artwork and page arrows, retaining server-owned page turns, taking books and overflow navigation.
+
+2026-11-12 12:56 — Restore Husk and Parched drowning
+
+- Both targets: remove underwater-breathing immunity from Husks and Parched so submerged mobs lose air, take normal drowning damage and die. Retain their sinking behavior and the existing 1.7.10 Husk conversion logic.

@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 public class EntityParched extends EntitySkeleton {
 	private boolean checkingSun;
 	public EntityParched(World world) { super(world); setCurrentItemOrArmor(0, new ItemStack(Items.bow)); for (Object object : new java.util.ArrayList<>(tasks.taskEntries)) { EntityAITasks.EntityAITaskEntry entry = (EntityAITasks.EntityAITaskEntry) object; if (entry.action instanceof EntityAIRestrictSun || entry.action instanceof EntityAIFleeSun || entry.action instanceof EntityAISwimming) tasks.removeTask(entry.action); } getNavigator().setCanSwim(false); }
-	@Override public boolean canBreatheUnderwater() { return true; }
+	@Override public boolean canBreatheUnderwater() { return false; }
 	@Override protected void applyEntityAttributes() { super.applyEntityAttributes(); getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(16); }
 	@Override public boolean isPotionApplicable(net.minecraft.potion.PotionEffect effect) { return effect.getPotionID() != net.minecraft.potion.Potion.weakness.id && super.isPotionApplicable(effect); }
 	@Override public void attackEntityWithRangedAttack(EntityLivingBase target, float distance) { if (!worldObj.isRemote) { worldObj.spawnEntityInWorld(new EntityStatusArrow(worldObj, this, target, net.minecraft.potion.Potion.weakness.id, 600)); playSound("random.bow", 1, 1); } }

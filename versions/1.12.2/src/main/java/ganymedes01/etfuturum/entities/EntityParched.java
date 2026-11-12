@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 public class EntityParched extends EntityStatusSkeleton {
     private boolean checkingSun;
     public EntityParched(World world){super(world);for(EntityAITasks.EntityAITaskEntry entry:new java.util.ArrayList<>(tasks.taskEntries))if(entry.action instanceof EntityAIRestrictSun||entry.action instanceof EntityAIFleeSun||entry.action instanceof EntityAISwimming)tasks.removeTask(entry.action);((net.minecraft.pathfinding.PathNavigateGround)getNavigator()).setCanSwim(false);}
-    @Override public boolean canBreatheUnderwater(){return true;}
+    @Override public boolean canBreatheUnderwater(){return false;}
     @Override protected Potion effect(){return MobEffects.WEAKNESS;}
     @Override protected int duration(){return 600;}
     @Override protected String kind(){return "parched";}

@@ -15,7 +15,7 @@ public abstract class HuskSpawningMixin extends EntityZombie {
    if(entry.action instanceof net.minecraft.entity.ai.EntityAISwimming)tasks.removeTask(entry.action);
   ((net.minecraft.pathfinding.PathNavigateGround)getNavigator()).setCanSwim(false);
  }
- @Override public boolean canBreatheUnderwater(){return true;}
+ @Override public boolean canBreatheUnderwater(){return false;}
  @Inject(method={"getCanSpawnHere","func_70601_bi"},at=@At("HEAD"),cancellable=true,remap=false)
  private void uab$legacy(CallbackInfoReturnable<Boolean> ci){if(Features.enabled("world.oldHuskSpawning"))ci.setReturnValue(super.getCanSpawnHere());}
 }

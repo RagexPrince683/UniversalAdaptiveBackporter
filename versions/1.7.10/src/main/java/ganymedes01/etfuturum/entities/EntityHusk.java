@@ -45,7 +45,7 @@ public class EntityHusk extends EntityZombie {
 		setSize(0.6F, 1.8F);
 	}
 
-	@Override public boolean canBreatheUnderwater() { return true; }
+	@Override public boolean canBreatheUnderwater() { return false; }
 
 	@Override
 	public boolean attackEntityAsMob(final Entity entity) {
