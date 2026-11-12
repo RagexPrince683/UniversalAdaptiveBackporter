@@ -228,9 +228,9 @@ Recognizing community members whose bug reports and enhancement suggestions have
 
 | Rank | Issue Submitter | Bugs Reported | Enhancements Suggested | Total |
 |---|---|---|---|---|
-| 1 | [@branman5949](https://github.com/branman5949) | 12 | 11 | 23 |
-| 2 | [@DDRAIGOCH117](https://github.com/DDRAIGOCH117) | 1 | 0 | 1 |
-| 3 | [@GlowingFederal](https://github.com/GlowingFederal) | 1 | 0 | 1 |
-| 4 | [@UristMcFarmer](https://github.com/UristMcFarmer) | 1 | 0 | 1 |
+| 1 | [@branman5949](https://github.com/branman5949) | 15 | 12 | 27 |
+| 2 | [@GlowingFederal](https://github.com/GlowingFederal) | 4 | 0 | 4 |
+| 3 | [@UristMcFarmer](https://github.com/UristMcFarmer) | 2 | 0 | 2 |
+| 4 | [@DDRAIGOCH117](https://github.com/DDRAIGOCH117) | 1 | 0 | 1 |
 | 5 | [@VioletWyvern](https://github.com/VioletWyvern) | 1 | 0 | 1 |
 <!-- UAB_ISSUE_LEADERBOARD_END -->
