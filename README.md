@@ -224,7 +224,7 @@ Recognizing community members whose bug reports and enhancement suggestions have
 
 | Rank | Issue Submitter | Bugs Reported | Enhancements Suggested | Total |
 |---|---|---|---|---|
-| 1 | [@branman5949](https://github.com/branman5949) | 10 | 10 | 20 |
+| 1 | [@branman5949](https://github.com/branman5949) | 12 | 11 | 23 |
 | 2 | [@DDRAIGOCH117](https://github.com/DDRAIGOCH117) | 1 | 0 | 1 |
 | 3 | [@GlowingFederal](https://github.com/GlowingFederal) | 1 | 0 | 1 |
 | 4 | [@VioletWyvern](https://github.com/VioletWyvern) | 1 | 0 | 1 |
